@@ -26,7 +26,7 @@ export default function Page() {
             return;
         }
 
-        const response = await fetch("https://italk-server.vercel.app:3000/register", {
+        const response = await fetch("https://italk-server.vercel.app/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
