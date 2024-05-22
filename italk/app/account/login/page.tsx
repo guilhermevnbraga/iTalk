@@ -60,10 +60,11 @@ export default function Page() {
                 </div>
                 <button
                     onClick={() =>
-                        signIn(
-                            "credentials",
-                            { email: email, password: password, callbackUrl: "/dashboard"},
-                        )
+                        signIn("credentials", {
+                            email: email,
+                            password: password,
+                            callbackUrl: "/dashboard",
+                        })
                     }
                     className="mb-6 shadow-lg w-full landscape:w-3/5 bg-yellow-400 w-7/12 rounded-3xl p-1 text-white md:text-base lg:text-lg xl:text-xl md:w-4/5 font-medium hover:bg-white hover:text-yellow-400 border-solid border-2 border-yellow-400"
                 >
@@ -73,7 +74,7 @@ export default function Page() {
             </div>
             <Link href="./register">
                 <span className="font-light md:text-base text-xs hover:underline cursor-pointer">
-                    Doesn't have an account yet? Sign up
+                    Doesn&apos;t have an account yet? Sign up
                 </span>
             </Link>
         </div>

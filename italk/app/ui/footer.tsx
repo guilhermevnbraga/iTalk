@@ -1,5 +1,9 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
+import github from "./imgs/github.webp";
+import linkedin from "./imgs/linkedin.png";
+import instagram from "./imgs/instagram.webp";
 
 export default function Footer() {
     return (
@@ -17,9 +21,9 @@ export default function Footer() {
                         href="https://github.com/guilhermevnbraga"
                         target="_blank"
                     >
-                        <img
+                        <Image
+                            src={github}
                             className="md:w-6 w-5 hover:scale-105 border-1 border-solid rounded"
-                            src="https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png"
                             alt="github"
                         />
                     </Link>
@@ -27,9 +31,9 @@ export default function Footer() {
                         href="https://www.linkedin.com/in/guilhermevnbraga/"
                         target="_blank"
                     >
-                        <img
+                        <Image
+                            src={linkedin}
                             className="md:w-6 w-5 hover:scale-105"
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/2048px-LinkedIn_icon.svg.png"
                             alt="linkedin"
                         />
                     </Link>
@@ -37,9 +41,9 @@ export default function Footer() {
                         href="https://www.instagram.com/guilherme_vnb/"
                         target="_blank"
                     >
-                        <img
+                        <Image
+                            src={instagram}
                             className="md:w-6 w-5 hover:scale-105"
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png"
                             alt="instragram"
                         />
                     </Link>
