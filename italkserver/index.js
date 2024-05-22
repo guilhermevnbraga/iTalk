@@ -64,7 +64,9 @@ async function GET(email, password) {
     }
 }
 
-app.use(express.json());
+app.use("/", (req, res) => {
+    res.send("Server is running.")
+});
 
 app.post("/register", async (req, res) => {
     const { userName, email, password } = req.body;
