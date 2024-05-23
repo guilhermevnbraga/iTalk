@@ -42,7 +42,7 @@ export default function PasswordInput({ label, onChange }: PasswordInputProps) {
             >
                 {label}
             </label>
-            <div className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white mb-2 px-2">
+            <div className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white px-2">
                 <input
                     type={showPassword ? "text" : "password"}
                     id="password"

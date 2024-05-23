@@ -11,10 +11,10 @@ export default function Page() {
             <div className="flex lg:flex-row flex-col justify-around items-center grow">
                 <section className="flex flex-col lg:w-1/2 items-center w-full">
                     <span className="font-black lg:text-5xl md:text-7xl sm:text-5xl text-4xl lg:mb-3 mb-6 w-fit">
-                        Manage profiles
+                        Manage your life
                     </span>
                     <span className="lg:text-lg md:text-2xl sm:text-lg text-sm font-light mb-16 w-fit">
-                        Seamless authentication process for you
+                        Connect with friends and family
                     </span>
                     <Link
                         className="hover:scale-105 shadow flex justify-center 2xl:w-1/5 xl:w-1/4 lg:w-1/3 md:w-1/5 p-3 rounded-3xl border-solid border-2 border-yellow-400 bg-yellow-400 text-white hover:bg-white hover:text-yellow-500"

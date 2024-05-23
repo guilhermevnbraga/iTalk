@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import emailIcon from "../../ui/imgs/email.png";
-import ProvidersButtons from "../../ui/providersButtons";
-import PasswordInput from "../../ui/passwordInput";
+import ProvidersButtons from "@/app/ui/providersButtons";
+import PasswordInput from "@/app/ui/passwordInput";
+import ErrorButton from "@/app/ui/errorButton";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -13,47 +14,74 @@ export default function Page() {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [firstNameError, setFirstNameError] = useState("");
+    const [lastNameError, setLastNameError] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const [compareError, setCompareError] = useState("");
     const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const userName = firstName + " " + lastName;
+        if (!firstName) {
+            await setFirstNameError("Please enter your first name");
+        }
 
-        if (password !== confirmPassword) {
-            setError("Passwords do not match");
+        if (!lastName) {
+            await setLastNameError("Please enter your last name");
+        }
+
+        if (!email) {
+            await setEmailError("Please enter your email");
+        }
+
+        if (!password) {
+            await setPasswordError("Please enter your password");
+        }
+
+        if (
+            emailError ||
+            passwordError ||
+            compareError ||
+            firstNameError ||
+            lastNameError
+        ) {
             return;
         }
 
-        const response = await fetch("https://italk-server.vercel.app/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                userName: userName,
-                email: email,
-                password: password,
-            }),
-        });
+        const userName = firstName + " " + lastName;
+
+        const response = await fetch(
+            "https://italk-server.vercel.app/register",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userName: userName,
+                    email: email,
+                    password: password,
+                }),
+            }
+        );
 
         const data = await response.json();
 
         if (response.status == 200) {
             console.log(data.message);
-            router.push("/account/login");
+            //router.push("/account/login");
         } else {
             setError(data.error);
         }
-
     };
 
     return (
         <div className="flex flex-col w-full h-full justify-evenly items-center">
             <h1 className="md:text-5xl text-3xl font-bold mb-6">Sign Up</h1>
             <div className="flex flex-col w-full justify-center items-center">
-                <form className="flex flex-col w-full landscape:w-3/5 md:w-5/6">
+                <form className="flex flex-col w-full md:w-3/4">
                     <div className="flex flex-row justify-between">
                         <div className="flex flex-col w-[48%]">
                             <label
@@ -64,13 +92,15 @@ export default function Page() {
                             </label>
                             <input
                                 onChange={(e) => {
+                                    setFirstNameError("");
                                     setFirstName(e.target.value);
                                 }}
                                 type="text"
                                 id="first-name"
                                 placeholder="First Name"
-                                className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white mb-2 px-3 w-full w-11/12 py-2 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
+                                className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white px-3 w-full w-11/12 py-2 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
                             />
+                            <ErrorButton error={firstNameError}></ErrorButton>
                         </div>
                         <div className="flex flex-col w-[48%]">
                             <label
@@ -81,13 +111,15 @@ export default function Page() {
                             </label>
                             <input
                                 onChange={(e) => {
+                                    setLastNameError("");
                                     setLastName(e.target.value);
                                 }}
                                 type="text"
                                 id="last-name"
                                 placeholder="Last Name"
-                                className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white mb-2 px-3 w-full w-11/12 py-2 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
+                                className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white px-3 w-full w-11/12 py-2 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
                             />
+                            <ErrorButton error={lastNameError}></ErrorButton>
                         </div>
                     </div>
                     <label
@@ -96,9 +128,21 @@ export default function Page() {
                     >
                         Email
                     </label>
-                    <div className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white mb-2 px-2 w-full">
+                    <div className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white px-2 w-full">
                         <input
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => {
+                                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                if (emailRegex.test(e.target.value)) {
+                                    setEmail(e.target.value);
+                                    setEmailError("");
+                                } else {
+                                    setEmailError("Please enter a valid email");
+                                }
+
+                                if (e.target.value === "") {
+                                    setEmailError("");
+                                }
+                            }}
                             type="text"
                             id="email"
                             className="w-11/12 py-2 px-3 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
@@ -111,16 +155,52 @@ export default function Page() {
                             alt="email"
                         />
                     </div>
+                    <ErrorButton error={emailError}></ErrorButton>
                     <PasswordInput
                         label="Password"
-                        onChange={setPassword}
+                        onChange={(e) => {
+                            if (!/(?=.*[a-z])/.test(e)) {
+                                setPasswordError(
+                                    "Password must contain at least one lowercase letter"
+                                );
+                            } else if (!/(?=.*[A-Z])/.test(e)) {
+                                setPasswordError(
+                                    "Password must contain at least one uppercase letter"
+                                );
+                            } else if (!/(?=.*\d)/.test(e)) {
+                                setPasswordError(
+                                    "Password must contain at least one number"
+                                );
+                            } else if (e.length < 8) {
+                                setPasswordError(
+                                    "Password must be at least 8 characters long"
+                                );
+                            } else {
+                                setPasswordError("");
+                            }
+                            setPassword(e);
+
+                            if (e === "") {
+                                setPasswordError("");
+                            }
+                        }}
                     ></PasswordInput>
+                    <ErrorButton error={passwordError}></ErrorButton>
                     <PasswordInput
                         label="Confirm Password"
-                        onChange={setConfirmPassword}
+                        onChange={(e) => {
+                            if (e !== password) {
+                                setCompareError("Passwords do not match");
+                            }
+
+                            if (e === "" || e === password) {
+                                setCompareError("");
+                            }
+                        }}
                     ></PasswordInput>
+                    <ErrorButton error={compareError}></ErrorButton>
                 </form>
-                <div className="flex justify-around items-center w-full landscape:w-3/5 mb-3 landscape:w-3/5 landscape:justify-between md:text-sm xl:text-base text-xs">
+                <div className="flex justify-around items-center w-full mb-3 landscape:w-3/4 landscape:justify-between md:text-sm xl:text-base text-xs">
                     <div className="flex flex-row items-center justify-center">
                         <input
                             type="checkbox"
@@ -134,13 +214,13 @@ export default function Page() {
                 </div>
                 <button
                     onClick={handleSubmit}
-                    className="mb-6 shadow-lg w-full landscape:w-7/12 bg-yellow-400 w-7/12 rounded-3xl p-1 text-white md:text-base lg:text-lg xl:text-xl md:w-4/5 font-medium hover:bg-white hover:text-yellow-400 border-solid border-2 border-yellow-400"
+                    className="active:scale-95 mb-6 shadow-lg w-full landscape:w-3/4 bg-yellow-400 rounded-3xl p-1 text-white md:text-base lg:text-lg xl:text-xl font-medium hover:bg-white hover:text-yellow-400 border-solid border-2 border-yellow-400"
                 >
                     Sign Up
                 </button>
                 <ProvidersButtons></ProvidersButtons>
             </div>
-            <div className="error-message">{error && <span>{error}</span>}</div>
+            <div>{error && <span>{error}</span>}</div>
         </div>
     );
 }

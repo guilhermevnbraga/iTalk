@@ -4,7 +4,7 @@ export default function Header() {
     return (
         <div className="p-3 flex justify-between lg:justify-around items-center w-full absolute top-0">
             <span className="font-bold lg:text-xl md:text-lg sm:text-md">
-                AuthConnect
+                iTalk
             </span>
             <button></button>
             <Link

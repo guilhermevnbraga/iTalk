@@ -7,10 +7,10 @@ import github from "../ui/imgs/github.png";
 
 export default function ProvidersButtons() {
     return (
-        <div className="flex flex-row w-full landscape:w-3/5 justify-around mb-3">
+        <div className="flex flex-row w-full landscape:w-3/5 justify-between mb-3">
             <figure className="shadow-lg flex bg-yellow-400 hover:bg-white rounded-3xl border-solid border-4 border-yellow-400 w-2/5 xl:w-2/6 justify-center items-center hover:scale-105">
                 <button
-                    className="flex justify-center items-center w-full h-full p-2"
+                    className="active:scale-95 flex justify-center items-center w-full h-full p-2"
                     onClick={() =>
                         signIn("google", {
                             callbackUrl: "/dashboard",
@@ -22,7 +22,7 @@ export default function ProvidersButtons() {
             </figure>
             <figure className="shadow-lg flex bg-yellow-400 hover:bg-white rounded-3xl border-solid border-4 border-yellow-400 w-2/5 xl:w-2/6 justify-center items-center hover:scale-105 ">
                 <button
-                    className="flex justify-center items-center w-full h-full p-2"
+                    className="active:scale-95 flex justify-center items-center w-full h-full p-2"
                     onClick={() =>
                         signIn("github", {
                             callbackUrl: "/dashboard",
