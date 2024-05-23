@@ -31,7 +31,6 @@ export default function Page() {
                         <input
                             onChange={(e) => {
                                 setEmail(e.target.value);
-                                console.log(email);
                             }}
                             type="text"
                             id="email"

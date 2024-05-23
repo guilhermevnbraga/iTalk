@@ -6,7 +6,7 @@ import ProvidersButtons from "@/app/ui/providersButtons";
 import PasswordInput from "@/app/ui/passwordInput";
 import ErrorButton from "@/app/ui/errorButton";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 export default function Page() {
     const router = useRouter();
@@ -19,25 +19,34 @@ export default function Page() {
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [compareError, setCompareError] = useState("");
-    const [error, setError] = useState("");
+    let con = true;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!firstName) {
-            await setFirstNameError("Please enter your first name");
+            setFirstNameError("Please enter your first name");
+            con = false;
         }
 
         if (!lastName) {
-            await setLastNameError("Please enter your last name");
+            setLastNameError("Please enter your last name");
+            con = false;
         }
 
         if (!email) {
-            await setEmailError("Please enter your email");
+            setEmailError("Please enter your email");
+            con = false;
         }
 
         if (!password) {
-            await setPasswordError("Please enter your password");
+            setPasswordError("Please enter your password");
+            con = false;
+        }
+
+        if (!con) {
+            con = true;
+            return;
         }
 
         if (
@@ -70,15 +79,14 @@ export default function Page() {
         const data = await response.json();
 
         if (response.status == 200) {
-            console.log(data.message);
             router.push("/account/login");
         } else {
-            setError(data.error);
+            setEmailError(data.error);
         }
     };
 
     return (
-        <div className="flex flex-col w-full h-full justify-evenly items-center">
+        <div className="min-h-screen flex flex-col w-full h-full justify-evenly items-center">
             <h1 className="md:text-5xl text-3xl font-bold mb-6">Sign Up</h1>
             <div className="flex flex-col w-full justify-center items-center">
                 <form className="flex flex-col w-full md:w-3/4">
@@ -133,7 +141,6 @@ export default function Page() {
                             onChange={(e) => {
                                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                                 if (emailRegex.test(e.target.value)) {
-                                    setEmail(e.target.value);
                                     setEmailError("");
                                 } else {
                                     setEmailError("Please enter a valid email");
@@ -142,6 +149,8 @@ export default function Page() {
                                 if (e.target.value === "") {
                                     setEmailError("");
                                 }
+
+                                setEmail(e.target.value);
                             }}
                             type="text"
                             id="email"
@@ -178,11 +187,12 @@ export default function Page() {
                             } else {
                                 setPasswordError("");
                             }
-                            setPassword(e);
 
                             if (e === "") {
                                 setPasswordError("");
                             }
+
+                            setPassword(e);
                         }}
                     ></PasswordInput>
                     <ErrorButton error={passwordError}></ErrorButton>
@@ -220,7 +230,7 @@ export default function Page() {
                 </button>
                 <ProvidersButtons></ProvidersButtons>
             </div>
-            <div>{error && <span>{error}</span>}</div>
+            <div></div>
         </div>
     );
 }
