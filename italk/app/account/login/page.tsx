@@ -35,7 +35,7 @@ export default function Page() {
                             }}
                             type="text"
                             id="email"
-                            className="w-11/12 md:p-3 p-2 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
+                            className="w-11/12 py-2 px-3 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
                             placeholder="email@email.com"
                             autoComplete="off"
                         />
