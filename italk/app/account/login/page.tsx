@@ -4,16 +4,18 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import emailIcon from "../../ui/imgs/email.png";
-import ProvidersButtons from "../../ui/providersButtons";
-import PasswordInput from "../../ui/passwordInput";
+import ProvidersButtons from "@/app/ui/providersButtons";
+import PasswordInput from "@/app/ui/passwordInput";
+import ErrorButton from "@/app/ui/errorButton";
 import { signIn } from "next-auth/react";
 
 export default function Page() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     return (
-        <div className="flex flex-col justify-evenly h-full items-center w-full">
+        <div className="flex flex-col justify-evenly landscape:min-h-screen items-center w-full">
             <h1 className="text-5xl font-bold">Log in</h1>
             <div className="flex flex-col w-full justify-center items-center">
                 <form className="flex flex-col w-full landscape:w-3/5 md:w-5/6">
@@ -45,8 +47,9 @@ export default function Page() {
                         label="Password"
                         onChange={setPassword}
                     ></PasswordInput>
+                    <ErrorButton error={error}></ErrorButton>
                 </form>
-                <div className="flex justify-around items-center w-full landscape:w-3/5 mb-3 landscape:w-3/5 landscape:justify-between md:text-sm xl:text-base text-xs">
+                <div className="portrait:mt-2 flex justify-around items-center w-full landscape:w-3/5 mb-3 landscape:w-3/5 landscape:justify-between md:text-sm xl:text-base text-xs">
                     <div className="flex flex-row items-center justify-center">
                         <input
                             type="checkbox"
@@ -59,13 +62,18 @@ export default function Page() {
                     </span>
                 </div>
                 <button
-                    onClick={() =>
-                        signIn("credentials", {
+                    onClick={async () => {
+                        const response = await signIn("credentials", {
                             email: email,
                             password: password,
                             callbackUrl: "/dashboard",
+                            redirect: false,
                         })
-                    }
+
+                        if(response.status === 401) {
+                            setError("Invalid email or password");
+                        }
+                    }}
                     className="mb-6 shadow-lg w-full landscape:w-3/5 bg-yellow-400 w-7/12 rounded-3xl p-1 text-white md:text-base lg:text-lg xl:text-xl md:w-4/5 font-medium hover:bg-white hover:text-yellow-400 border-solid border-2 border-yellow-400"
                 >
                     Login

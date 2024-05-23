@@ -71,7 +71,7 @@ export default function Page() {
 
         if (response.status == 200) {
             console.log(data.message);
-            //router.push("/account/login");
+            router.push("/account/login");
         } else {
             setError(data.error);
         }
@@ -200,7 +200,7 @@ export default function Page() {
                     ></PasswordInput>
                     <ErrorButton error={compareError}></ErrorButton>
                 </form>
-                <div className="flex justify-around items-center w-full mb-3 landscape:w-3/4 landscape:justify-between md:text-sm xl:text-base text-xs">
+                <div className="portrait:mt-2 flex justify-around items-center w-full mb-3 landscape:w-3/4 landscape:justify-between md:text-sm xl:text-base text-xs">
                     <div className="flex flex-row items-center justify-center">
                         <input
                             type="checkbox"
