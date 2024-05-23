@@ -8,8 +8,10 @@ import ProvidersButtons from "@/app/ui/providersButtons";
 import PasswordInput from "@/app/ui/passwordInput";
 import ErrorButton from "@/app/ui/errorButton";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -66,12 +68,13 @@ export default function Page() {
                         const response = await signIn("credentials", {
                             email: email,
                             password: password,
-                            callbackUrl: "/dashboard",
                             redirect: false,
                         })
 
                         if(response.status === 401) {
                             setError("Invalid email or password");
+                        } else {
+                            router.push("/dashboard");
                         }
                     }}
                     className="mb-6 shadow-lg w-full landscape:w-3/5 bg-yellow-400 w-7/12 rounded-3xl p-1 text-white md:text-base lg:text-lg xl:text-xl md:w-4/5 font-medium hover:bg-white hover:text-yellow-400 border-solid border-2 border-yellow-400"
