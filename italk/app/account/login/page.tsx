@@ -73,7 +73,7 @@ export default function Page() {
                         if(response && response.status === 401) {
                             setError("Invalid email or password");
                         } else {
-                            router.push("/dashboard");
+                            router.push("/home");
                         }
                     }}
                     className="mb-6 shadow-lg w-full landscape:w-3/5 bg-yellow-400 w-7/12 rounded-3xl p-1 text-white md:text-base lg:text-lg xl:text-xl md:w-4/5 font-medium hover:bg-white hover:text-yellow-400 border-solid border-2 border-yellow-400"

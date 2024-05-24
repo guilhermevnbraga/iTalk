@@ -13,7 +13,7 @@ export default function ProvidersButtons() {
                     className="active:scale-95 flex justify-center items-center w-full h-full p-2"
                     onClick={() =>
                         signIn("google", {
-                            callbackUrl: "/dashboard",
+                            callbackUrl: "/home",
                         })
                     }
                 >
@@ -25,7 +25,7 @@ export default function ProvidersButtons() {
                     className="active:scale-95 flex justify-center items-center w-full h-full p-2"
                     onClick={() =>
                         signIn("github", {
-                            callbackUrl: "/dashboard",
+                            callbackUrl: "/home",
                         })
                     }
                 >

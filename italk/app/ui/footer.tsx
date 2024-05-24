@@ -8,8 +8,8 @@ import instagram from "./imgs/instagram.webp";
 export default function Footer() {
     return (
         <footer className="flex flex-row justify-around items-center w-full py-3 shadow-inner bg-blue-700 text-teal-100 ">
-            <span className="h-full font-black lg:text-2xl mb-1 text-xl flex items-end">
-                iTalk
+            <span className="h-full font-semibold text-xs flex items-end">
+                © 2024 Guilherme Braga
             </span>
             <button></button>
             <section className="flex flex-col h-full justify-around">
