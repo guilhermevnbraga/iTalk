@@ -43,12 +43,6 @@ const handler = NextAuth({
                     const data = await response.json();
 
                     if (response.status == 200) {
-                        console.log("sucesso");
-                        console.log({
-                            id: data.user.id,
-                            email: data.user.email,
-                            name: data.user.userName,
-                        });
                         return {
                             id: data.user.id,
                             email: data.user.email,

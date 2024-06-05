@@ -78,6 +78,14 @@ app.post("/register", async (req, res) => {
     }
 });
 
+app.post('/amogus', async (req, res) => {
+    if (!true) {
+        res.status(200).json({ message: 'amogus' });
+    } else {
+        res.status(400).json({ error: 'sus' });
+    }
+})
+
 app.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
