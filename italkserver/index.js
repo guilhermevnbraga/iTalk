@@ -64,6 +64,19 @@ async function GET(email, password) {
     }
 }
 
+async function postMessage(email, message, pictures, attachments, locale, mood) {
+    try {
+        id = await pool.execute("SELECT id FROM user WHERE email = ?", [email]);
+
+        await pool.execute(
+            "INSERT INTO message (user_id, message, pictures, attachments, locale, mood) VALUES (?, ?, ?, ?, ?, ?)",
+            [id, message, pictures, attachments, locale, mood]
+        );
+    } catch (err) {
+        throw new Error("Error when posting message\n\n" + err)
+    }
+}
+
 app.use(express.json());
 
 app.post("/register", async (req, res) => {
@@ -101,6 +114,16 @@ app.post("/login", async (req, res) => {
         res.status(400).json({ error: err });
     }
 });
+
+app.post("/post", async (req, res) => {
+    try {
+        const { email, message, pictures, attachments, locale, mood } = req.body;
+        await postMessage(email, message, pictures, attachments, locale, mood);
+        res.status(200).json({ message: "Message posted successfully" });
+    } catch (err) {
+        res.status(400).json({ error: err });
+    }
+})
 
 app.listen(3001, () => {
     console.log("Server is running on port 3001")
