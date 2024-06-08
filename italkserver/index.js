@@ -1,7 +1,6 @@
 const mysql = require("mysql2/promise");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
-const dotenv = require('dotenv').config();
 const express = require("express");
 const app = express();
 
@@ -18,33 +17,46 @@ const pool = mysql.createPool({
     queueLimit: 0,
 });
 
-async function POST(userName, email, password) {
+app.use(express.json());
+
+app.post("/register", async (req, res) => {
+    let result = null;
+    const { userName, email, password } = req.body;
+
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
-    password = hash;
+    const hashedPassword = hash;
 
     try {
         await pool.execute(
-            "INSERT INTO user (userName, email, password) VALUES (?, ?, ?)",
-            [userName, email, password]
+            "INSERT INTO user (name, email, password) VALUES (?, ?, ?)",
+            [userName, email, hashedPassword]
         );
     } catch (err) {
         if (err.code === "ER_DUP_ENTRY") {
-            if (err.sqlMessage.includes("userName")) {
-                return "Username already exists";
+            if (err.sqlMessage.includes("name")) {
+                result = "Username already exists";
             } else if (err.sqlMessage.includes("email")) {
-                return "Email already exists";
+                result = "Email already exists";
             } else {
-                return "Duplication error";
+                result = "Duplication error";
             }
         } else {
-            return "Error when entering user: " + err;
+            result = "Error when entering user: " + err;
         }
     }
-}
 
-async function GET(email, password) {
+    if (result) {
+        res.status(400).json({ error: result });
+    } else {
+        res.status(200).json({ message: "User registered successfully" });
+    }
+});
+
+app.post("/login", async (req, res) => {
     try {
+        const { email, password } = req.body;
+
         const [rows] = await pool.execute(
             "SELECT * FROM user WHERE email = ?",
             [email]
@@ -54,59 +66,11 @@ async function GET(email, password) {
 
         const match = await bcrypt.compare(password, user.password);
 
-        if(match) {
-            return user;
-        } else {
-            return null;
-        }
-    } catch (err) {
-        throw new Error("Error when logging in\n\n" + err)
-    }
-}
-
-async function postMessage(email, message, pictures, attachments, locale, mood) {
-    try {
-        id = await pool.execute("SELECT id FROM user WHERE email = ?", [email]);
-
-        await pool.execute(
-            "INSERT INTO message (user_id, message, pictures, attachments, locale, mood) VALUES (?, ?, ?, ?, ?, ?)",
-            [id, message, pictures, attachments, locale, mood]
-        );
-    } catch (err) {
-        throw new Error("Error when posting message\n\n" + err)
-    }
-}
-
-app.use(express.json());
-
-app.post("/register", async (req, res) => {
-    const { userName, email, password } = req.body;
-
-    const result = await POST(userName, email, password);
-
-    if (typeof result === 'string') {
-        res.status(400).json({ error: result });
-    } else {
-        res.status(200).json({ message: "User registered successfully" });
-    }
-});
-
-app.post('/amogus', async (req, res) => {
-    if (!true) {
-        res.status(200).json({ message: 'amogus' });
-    } else {
-        res.status(400).json({ error: 'sus' });
-    }
-})
-
-app.post("/login", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        const result = await GET(email, password);
-
-        if (result) {
-            res.status(200).json({ message: "User logged in successfully", user: result});
+        if (match) {
+            res.status(200).json({
+                message: "User logged in successfully",
+                user: result,
+            });
         } else {
             res.status(400).json({ error: "Invalid credentials" });
         }
@@ -117,14 +81,65 @@ app.post("/login", async (req, res) => {
 
 app.post("/post", async (req, res) => {
     try {
-        const { email, message, pictures, attachments, locale, mood } = req.body;
-        await postMessage(email, message, pictures, attachments, locale, mood);
+        const { email, message, pictures, attachments, locale, mood } =
+            req.body;
+        const id = await pool.execute("SELECT id FROM user WHERE email = ?", [
+            email,
+        ]);
+        console.log(id[0][0].id);
+        console.log(email);
+
+        await pool.execute(
+            "INSERT INTO post (user_id, message, pictures, attachments, locale, mood) VALUES (?, ?, ?, ?, ?, ?)",
+            [id[0][0].id, message, pictures, attachments, locale, mood]
+        );
         res.status(200).json({ message: "Message posted successfully" });
     } catch (err) {
         res.status(400).json({ error: err });
     }
-})
+});
+
+app.post("/userPost", async (req, res) => {
+    try {
+        const { ids } = req.body;
+        let rows = [];
+        let limit = 0;
+        const postQuantity = await pool.execute(
+            "SELECT COUNT(*) FROM post"
+        );
+
+        for(let i = 1; i <= postQuantity[0][0]["COUNT(*)"]; i++) {
+            let [row] = await pool.execute(
+                "SELECT * FROM post WHERE id = ?",
+                [i]
+            );
+
+            if (row[0].id in ids) {
+                continue;
+            }
+
+            limit++;
+
+            const user = await pool.execute(
+                "SELECT name FROM user WHERE id = ?",
+                [row[0].user_id]
+            )
+
+            row[0].name = user[0][0].name;
+            row[0].picture = user[0][0].picture || null;
+            rows.push(row[0]);
+
+            if (limit === 5) {
+                break;
+            }
+        }
+
+        res.status(200).json({ posts: rows, max: postQuantity[0][0]["COUNT(*)"]  });
+    } catch (err) {
+        res.status(400).json({ error: err });
+    }
+});
 
 app.listen(3001, () => {
-    console.log("Server is running on port 3001")
+    console.log("Server is running on port 3001");
 });

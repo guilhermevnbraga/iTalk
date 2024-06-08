@@ -2,50 +2,19 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Header from "../ui/home/header";
 import Footer from "../ui/footer";
-import ImageButton from "../ui/home/imageButton";
-import AttachmentButton from "../ui/home/attachmentButton";
+import Post from "../ui/home/post";
+import Posts from "../ui/home/posts";
 import { UserIcon } from "@heroicons/react/24/solid";
-import { UserIcon as UserOutline } from "@heroicons/react/24/outline";
-import { MapPinIcon } from "@heroicons/react/24/solid";
-import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import { HomeIcon } from "@heroicons/react/24/solid";
 import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/solid";
 import { UsersIcon } from "@heroicons/react/24/solid";
 
 export default async function Page() {
     const session = await getServerSession();
-    let picture = null;
-    let attachment : File | null = null;
 
     if (!session) {
         redirect("/");
     }
-
-    /*async function post(
-        content: string,
-        picture: string,
-        attachment: string,
-        locale: string,
-        mood: string
-    ) {
-        const response = await fetch("/post", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: session?.user?.email,
-                message: content,
-                pictures: picture,
-                attachments: attachment,
-                locale: locale,
-                mood: mood,
-            }),
-        });
-
-        const data = await response.json();
-        console.log(data);
-    }*/
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -83,33 +52,8 @@ export default async function Page() {
                     </div>
                 </div>
                 <div className="w-[44%] p-6 items-center flex flex-col">
-                    <div className="w-full bg-white rounded-2xl shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)]">
-                        <div className="w-full flex flex-row items-end justify-center p-6 pb-0">
-                            <UserOutline className="h-8 w-8 text-gray-900 mr-3"></UserOutline>
-                            <div className="flex grow shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] rounded-2xl p-2">
-                                <input
-                                    className="w-full ml-2 focus:outline-0"
-                                    placeholder="What's on your mind?"
-                                    type="text"
-                                />
-                            </div>
-                        </div>
-                        <div className="w-full flex flex-row justify-between items-center p-6">
-                            <div className="flex flex-row justify-between ml-1">
-                                <ImageButton></ImageButton>
-                                <AttachmentButton></AttachmentButton>
-                                <button>
-                                    <MapPinIcon className="hover:scale-105 h-6 w-6 text-gray-400 mr-1"></MapPinIcon>
-                                </button>
-                                <button>
-                                    <FaceSmileIcon className="hover:scale-105 h-6 w-6 text-gray-500"></FaceSmileIcon>
-                                </button>
-                            </div>
-                            <button className="hover:scale-105 rounded-xl shadow-[0_4px_9px_0px_rgba(0,0,0,0.15)] py-2 px-6 active:scale-95">
-                                Share
-                            </button>
-                        </div>
-                    </div>
+                    <Post email={session?.user?.email || ""}></Post>
+                    <Posts></Posts>
                 </div>
                 <div className="flex justify-center w-[22%] bg-yellow-400 p-6">
                     Events
