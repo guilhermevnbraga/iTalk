@@ -6,18 +6,30 @@ import { UserIcon } from "@heroicons/react/24/solid";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 
+interface Post {
+    id: number;
+    name: string;
+    message: string;
+    picture?: string;
+    locale?: string;
+    mood?: string;
+    pictures?: File | null;
+    attachments?: File;
+  }
+
+  interface PostElement {
+    id?: number;
+    name: string;
+    locale: string | null;
+    message: string;
+    mood: string;
+    pictures: File | null;
+    attachments: File | null;
+    picture?: string;
+  }
+
 export default function Posts() {
-    const [start, setStart] = useState(1);
-    const [elements, setElements] = useState<
-        Array<{
-            name: string;
-            locale: string;
-            message: string;
-            mood: string;
-            pictures: File;
-            attachments: File;
-        }>
-    >([]);
+    const [elements, setElements] = useState<PostElement[]>([]);
     const ids: number[] = [];
 
     const fetchPosts = async () => {
@@ -34,23 +46,22 @@ export default function Posts() {
         const data = await response.json();
         const posts = data.posts;
 
-        posts.forEach((post) => {
+        posts.forEach((post: Post) => {
             if (!(post.id in ids)) {
                 ids.push(post.id);
                 setElements((prevElements) => [
                     ...prevElements,
                     {
-                        id: post.id,
-                        name: post.name,
-                        message: post.message,
-                        picture: post.picture || null,
-                        locale: post.locale || null,
-                        mood: post.mood || null,
-                        pictures: post.pictures || null,
-                        picture: post.picture || null,
-                        attachments: post.attachments || null,
+                      id: post.id,
+                      name: post.name,
+                      message: post.message,
+                      picture: post.picture || '',
+                      locale: post.locale || '',
+                      mood: post.mood || '',
+                      pictures: post.pictures || null,
+                      attachments: post.attachments || null,
                     },
-                ]);
+                  ]);
             }
         });
         console.log('elements: ', elements)
@@ -77,7 +88,7 @@ export default function Posts() {
 
         // Retorna uma função de limpeza que remove o ouvinte de evento
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [start]);
+    });
 
     return (
         <>
