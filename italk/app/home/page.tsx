@@ -19,7 +19,6 @@ export default async function Page() {
     return (
         <div className="min-h-screen flex flex-col">
             <Header username={session?.user?.name || ""}></Header>
-            <button>{session?.user?.name || 'aaaa'}</button>
             <main className="flex grow min-h-screen">
                 <div className="w-1/6 shadow-[3px_0_9px_0_rgba(0,0,0,0.15)]">
                     <div className="mt-16 w-full shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] p-6">
