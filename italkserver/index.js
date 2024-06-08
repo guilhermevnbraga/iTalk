@@ -101,6 +101,7 @@ app.post("/post", async (req, res) => {
 app.post("/userPost", async (req, res) => {
     try {
         const { ids } = req.body;
+        console.log(ids);
         let rows = [];
         let limit = 0;
         const postQuantity = await pool.execute(

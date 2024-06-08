@@ -30,7 +30,7 @@ interface Post {
 
 export default function Posts() {
     const [elements, setElements] = useState<PostElement[]>([]);
-    const ids: number[] = [];
+    const [ids, setIds] = useState<number[]>([]);
 
     const fetchPosts = async () => {
         const response = await fetch("https://italk-server.vercel.app/userPost", {
@@ -47,8 +47,8 @@ export default function Posts() {
         const posts = data.posts;
 
         posts.forEach((post: Post) => {
-            if (!(post.id in ids)) {
-                ids.push(post.id);
+            if (!ids.includes(post.id)) {
+                setIds((prevIds) => [...prevIds, post.id]);
                 setElements((prevElements) => [
                     ...prevElements,
                     {
@@ -64,8 +64,6 @@ export default function Posts() {
                   ]);
             }
         });
-        console.log('elements: ', elements)
-        console.log('ids: ', ids)
     };
 
     useEffect(() => {
@@ -74,9 +72,8 @@ export default function Posts() {
 
     useEffect(() => {
         const handleScroll = () => {
-            // Verifica se o usuário rolou até o final da página
             if (
-                window.innerHeight + window.pageYOffset >=
+                window.innerHeight + window.scrollY >=
                 document.documentElement.scrollHeight
             ) {
                 fetchPosts();

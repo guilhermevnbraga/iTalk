@@ -11,6 +11,7 @@ import { UsersIcon } from "@heroicons/react/24/solid";
 
 export default async function Page() {
     const session = await getServerSession();
+    console.log(session)
 
     if (!session) {
         redirect("/");
