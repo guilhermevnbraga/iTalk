@@ -6,7 +6,7 @@ import ProvidersButtons from "@/app/ui/providersButtons";
 import PasswordInput from "@/app/ui/passwordInput";
 import ErrorButton from "@/app/ui/errorButton";
 import { useState } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
     const router = useRouter();
@@ -62,7 +62,7 @@ export default function Page() {
         const userName = firstName + " " + lastName;
 
         const response = await fetch(
-            "https://italk-server.vercel.app/register",
+            "http://localhost:3001/register",
             {
                 method: "POST",
                 headers: {

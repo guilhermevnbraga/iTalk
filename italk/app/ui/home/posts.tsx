@@ -10,30 +10,19 @@ interface Post {
     id: number;
     name: string;
     message: string;
-    picture?: string;
-    locale?: string;
-    mood?: string;
-    pictures?: File | null;
-    attachments?: File;
-  }
-
-  interface PostElement {
-    id?: number;
-    name: string;
-    locale: string | null;
-    message: string;
-    mood: string;
-    pictures: File | null;
-    attachments: File | null;
-    picture?: string;
-  }
+    picture?: File | null;
+    locale?: string | null;
+    mood?: string | null;
+    pictures?: any;
+    attachments?: File | null;
+}
 
 export default function Posts() {
-    const [elements, setElements] = useState<PostElement[]>([]);
+    const [elements, setElements] = useState<Post[]>([]);
     const [ids, setIds] = useState<number[]>([]);
 
     const fetchPosts = async () => {
-        const response = await fetch("https://italk-server.vercel.app/userPost", {
+        const response = await fetch("http://localhost:3001/userPost", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -47,21 +36,23 @@ export default function Posts() {
         const posts = data.posts;
 
         posts.forEach((post: Post) => {
-            if (!ids.includes(post.id)) {
-                setIds((prevIds) => [...prevIds, post.id]);
-                setElements((prevElements) => [
-                    ...prevElements,
-                    {
-                      id: post.id,
-                      name: post.name,
-                      message: post.message,
-                      picture: post.picture || '',
-                      locale: post.locale || '',
-                      mood: post.mood || '',
-                      pictures: post.pictures || null,
-                      attachments: post.attachments || null,
-                    },
-                  ]);
+            if (!ids.includes(post.id) && post.id !== 0) {
+                console.log(post.pictures)
+                setElements((prevElements) => {
+                    const newElement = {
+                        id: post.id,
+                        name: post.name,
+                        message: post.message,
+                        picture: post.picture || null,
+                        locale: post.locale || null,
+                        mood: post.mood || null,
+                        pictures: post.pictures ? Buffer.from(post.pictures.data).toString('base64') : null,
+                        attachments: post.attachments || null,
+                    };
+                    const updatedElements = [...prevElements, newElement];
+                    setIds((prevIds) => [...prevIds, newElement.id]);
+                    return updatedElements;
+                });
             }
         });
     };
@@ -80,10 +71,7 @@ export default function Posts() {
             }
         };
 
-        // Adiciona o ouvinte de evento de scroll
         window.addEventListener("scroll", handleScroll);
-
-        // Retorna uma função de limpeza que remove o ouvinte de evento
         return () => window.removeEventListener("scroll", handleScroll);
     });
 
@@ -97,7 +85,7 @@ export default function Posts() {
                     <div className="flex flex-row mb-2">
                         {element.picture ? (
                             <Image
-                                src={element.picture}
+                                src={""}
                                 alt="perfil"
                                 className="w-12 h-12 mr-2 rounded-[50%] p-1"
                             />
@@ -121,6 +109,16 @@ export default function Posts() {
                         </div>
                     </div>
                     <span>{element.message}</span>
+                    {element.pictures ? (
+                        <Image
+                            src={`data:image/jpeg;base64,${element.pictures}`}
+                            alt="perfil"
+                            width={60}
+                            height={60}
+                        />
+                    ) : (
+                        <></>
+                    )}
                 </div>
             ))}
         </>

@@ -63,26 +63,40 @@ export default function Post({ email }: PostProps) {
 
     const post = async (e: React.FormEvent) => {
         e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+        formData.append("email", email);
+        formData.append("message", content);
+        if (picture) {
+            formData.append("picture", picture);
+        }
+        if (attachment) {
+            formData.append("attachment", attachment);
+        }
+        if (locale) {
+            formData.append("locale", locale);
+        }
+        if (mood) {
+            formData.append("mood", mood);
+        }
+
         if (mapVisibility) setMapVisibility(false);
         if (moodVisibility) setMoodVisibility(false);
-
-        const response = await fetch("https://italk-server.vercel.app/post", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-                message: content,
-                pictures: picture,
-                attachments: attachment,
-                locale: locale,
-                mood: mood,
-            }),
-        });
-
-        const data = await response.json();
-        console.log(data);
+        
+        try {
+            formData.forEach((value, key) => {
+                console.log(`${key}: ${value}`);
+            });
+            const response = await fetch("http://localhost:3001/post", {
+                method: "POST",
+                body: formData,
+            });
+    
+            const data = await response.json();
+            console.log(data);
+            console.log(picture);
+        } catch (err) {
+            console.log(err);
+        }
 
         if (e.target instanceof HTMLFormElement) {
             e.target.reset();
@@ -96,7 +110,12 @@ export default function Post({ email }: PostProps) {
     };
 
     return (
-        <form onSubmit={post} className="w-full bg-white rounded-2xl shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] mb-6">
+        <form
+            onSubmit={post}
+            className="w-full bg-white rounded-2xl shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] mb-6"
+            method="post"
+            encType="multipart/form-data"
+        >
             <div className="w-full flex flex-row items-end justify-center p-6 pb-0">
                 <UserIcon className="h-8 w-8 text-gray-900 mr-3"></UserIcon>
                 <div className="flex grow shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] rounded-2xl p-2">
@@ -110,7 +129,7 @@ export default function Post({ email }: PostProps) {
             </div>
             <div className="w-full flex flex-row justify-between items-center p-6">
                 <div className="flex flex-row justify-between ml-1">
-                    <button type='button' onClick={handlePictureClick}>
+                    <button type="button" onClick={handlePictureClick}>
                         <input
                             type="file"
                             ref={pictureInputRef}
@@ -120,7 +139,7 @@ export default function Post({ email }: PostProps) {
                         />
                         <PhotoIcon className="hover:scale-105 h-6 w-6 text-gray-400 mr-1" />
                     </button>
-                    <button type='button' onClick={handleAttachmentClick}>
+                    <button type="button" onClick={handleAttachmentClick}>
                         <input
                             type="file"
                             ref={attachmentInputRef}
@@ -129,7 +148,7 @@ export default function Post({ email }: PostProps) {
                         />
                         <PaperClipIcon className="hover:scale-105 h-6 w-6 text-gray-400 mr-1" />
                     </button>
-                    <button type='button' onClick={toogleMapVisibility}>
+                    <button type="button" onClick={toogleMapVisibility}>
                         <MapPinIcon className="hover:scale-105 h-6 w-6 text-gray-400 mr-1"></MapPinIcon>
                     </button>
                     <div
@@ -144,7 +163,7 @@ export default function Post({ email }: PostProps) {
                             onChange={(e) => setLocale(e.target.value)}
                         />
                     </div>
-                    <button type='button' onClick={toogleMoodVisibility}>
+                    <button type="button" onClick={toogleMoodVisibility}>
                         <FaceSmileIcon className="hover:scale-105 h-6 w-6 text-gray-500"></FaceSmileIcon>
                     </button>
                     <div
@@ -161,7 +180,7 @@ export default function Post({ email }: PostProps) {
                     </div>
                 </div>
                 <button
-                    type='submit'
+                    type="submit"
                     className="hover:scale-105 rounded-xl shadow-[0_4px_9px_0px_rgba(0,0,0,0.15)] py-2 px-6 active:scale-95"
                 >
                     Share

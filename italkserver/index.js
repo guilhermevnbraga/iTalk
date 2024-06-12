@@ -2,7 +2,9 @@ const mysql = require("mysql2/promise");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 const express = require("express");
+const multer = require('multer')
 const app = express();
+const upload = multer({ dest: 'uploads/' })
 
 app.use(cors());
 
@@ -78,19 +80,19 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.post("/post", async (req, res) => {
+app.post("/post", upload.single('pictures'), async (req, res) => {
     try {
-        const { email, message, pictures, attachments, locale, mood } =
+        console.log('a')
+        const { email, message, attachment, locale, mood } =
             req.body;
         const id = await pool.execute("SELECT id FROM user WHERE email = ?", [
             email,
         ]);
-        console.log(id[0][0].id);
-        console.log(email);
-
+        const picturePath = req.file ? req.file.path : null;
+        console.log(picturePath);
         await pool.execute(
-            "INSERT INTO post (user_id, message, pictures, attachments, locale, mood) VALUES (?, ?, ?, ?, ?, ?)",
-            [id[0][0].id, message, pictures, attachments, locale, mood]
+            "INSERT INTO post (user_id, message, pictures, attachment, locale, mood) VALUES (?, ?, ?, ?, ?, ?)",
+            [id[0][0].id, message, picturePath, attachment, locale, mood]
         );
         res.status(200).json({ message: "Message posted successfully" });
     } catch (err) {
@@ -101,7 +103,6 @@ app.post("/post", async (req, res) => {
 app.post("/userPost", async (req, res) => {
     try {
         const { ids } = req.body;
-        console.log(ids);
         let rows = [];
         let limit = 0;
         const postQuantity = await pool.execute(
