@@ -22,7 +22,7 @@ export default function Posts() {
     const [ids, setIds] = useState<number[]>([]);
 
     const fetchPosts = async () => {
-        const response = await fetch("http://localhost:3001/userPost", {
+        const response = await fetch("https://italk-server.vercel.app/userPost", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

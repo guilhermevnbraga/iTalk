@@ -86,7 +86,7 @@ export default function Post({ email }: PostProps) {
             formData.forEach((value, key) => {
                 console.log(`${key}: ${value}`);
             });
-            const response = await fetch("http://localhost:3001/post", {
+            const response = await fetch("https://italk-server.vercel.app/post", {
                 method: "POST",
                 body: formData,
             });
