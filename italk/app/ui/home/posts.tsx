@@ -13,7 +13,7 @@ interface Post {
     picture?: File | null;
     locale?: string | null;
     mood?: string | null;
-    pictures?: any;
+    pictures?: string | null;
     attachments?: File | null;
 }
 
@@ -27,9 +27,7 @@ export default function Posts() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                ids: ids,
-            }),
+            body: JSON.stringify({ ids }),
         });
 
         const data = await response.json();
@@ -46,7 +44,7 @@ export default function Posts() {
                         picture: post.picture || null,
                         locale: post.locale || null,
                         mood: post.mood || null,
-                        pictures: post.pictures ? Buffer.from(post.pictures.data).toString('base64') : null,
+                        pictures: post.pictures ? `data:image/jpeg;base64,${post.pictures}` : null,
                         attachments: post.attachments || null,
                     };
                     const updatedElements = [...prevElements, newElement];
@@ -111,10 +109,10 @@ export default function Posts() {
                     <span>{element.message}</span>
                     {element.pictures ? (
                         <Image
-                            src={`data:image/jpeg;base64,${element.pictures}`}
+                            src={element.pictures}
                             alt="perfil"
-                            width={60}
-                            height={60}
+                            width={999}
+                            height={1}
                         />
                     ) : (
                         <></>

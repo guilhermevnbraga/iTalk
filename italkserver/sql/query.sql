@@ -12,6 +12,9 @@ create table user (
     primary key(id)
 );
 
+select * from user;
+truncate table post;
+
 create table friend_list (
 	id int auto_increment primary key,
     user_id int not null,
@@ -46,11 +49,14 @@ alter table chat_history
 add constraint fk_history_user2 foreign key (user2_id) references user(id);
 
 create table post (
-	id int auto_increment primary key,
+	id int primary key,
     user_id int,
     post_id int,
     message text not null,
-    attachments longblob
+    attachments longblob,
+    pictures longblob,
+    locale text,
+    mood text
 );
 
 alter table post
@@ -58,6 +64,11 @@ add constraint fk_post_user foreign key (user_id) references user(id);
 
 alter table post
 add constraint fk_post_id foreign key (post_id) references post(id);
+
+select * from post;
+insert into post (id, user_id, message, pictures) values(2, 1, 'a', 'C:/WIN_20240205_20_03_21_Pro.jpg');
+delete from post where id > 0;
+SELECT id FROM post ORDER BY id DESC LIMIT 1;
 
 create table message (
 	user_id int,

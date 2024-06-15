@@ -67,10 +67,10 @@ export default function Post({ email }: PostProps) {
         formData.append("email", email);
         formData.append("message", content);
         if (picture) {
-            formData.append("picture", picture);
+            formData.append("pictures", picture);
         }
         if (attachment) {
-            formData.append("attachment", attachment);
+            formData.append("attachments", attachment);
         }
         if (locale) {
             formData.append("locale", locale);
@@ -83,9 +83,6 @@ export default function Post({ email }: PostProps) {
         if (moodVisibility) setMoodVisibility(false);
         
         try {
-            formData.forEach((value, key) => {
-                console.log(`${key}: ${value}`);
-            });
             const response = await fetch("https://italk-server.vercel.app/post", {
                 method: "POST",
                 body: formData,
@@ -93,7 +90,6 @@ export default function Post({ email }: PostProps) {
     
             const data = await response.json();
             console.log(data);
-            console.log(picture);
         } catch (err) {
             console.log(err);
         }
