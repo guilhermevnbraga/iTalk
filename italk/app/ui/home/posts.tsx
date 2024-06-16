@@ -155,7 +155,7 @@ export default function Posts() {
                                       <Image
                                           src={`data:image/jpeg;base64,${p}`}
                                           alt="perfil"
-                                          width={250}
+                                          width={333}
                                           height={100}
                                           className="object-cover"
                                       />
