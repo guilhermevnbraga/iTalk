@@ -62,7 +62,7 @@ export default function Page() {
         const userName = firstName + " " + lastName;
 
         const response = await fetch(
-            "https://italk-server.vercel.app//register",
+            "https://italk-server.vercel.app/register",
             {
                 method: "POST",
                 headers: {

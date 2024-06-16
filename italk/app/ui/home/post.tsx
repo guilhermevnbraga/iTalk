@@ -88,7 +88,7 @@ export default function Post({ email, profile, name }: PostProps) {
         if (moodVisibility) setMoodVisibility(false);
 
         try {
-            const response = await fetch("https://italk-server.vercel.app//post", {
+            const response = await fetch("https://italk-server.vercel.app/post", {
                 method: "POST",
                 body: formData,
             });
@@ -156,8 +156,9 @@ export default function Post({ email, profile, name }: PostProps) {
                     <div className="flex flex-row justify-around">
 
                         {pictures ? (
-                            pictures.map((p) => (
+                            pictures.map((p, idx) => (
                                 <Image
+                                    key={idx}
                                     src={URL.createObjectURL(p)}
                                     alt="Pictures"
                                     width={200}
