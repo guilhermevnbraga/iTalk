@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useEffect } from "react";
-import { UserIcon } from "@heroicons/react/24/solid";
-import { MapPinIcon } from "@heroicons/react/24/solid";
+import { useState, useEffect } from "react";
+import { UserIcon, MapPinIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 
 interface Post {
@@ -13,46 +11,63 @@ interface Post {
     picture?: File | null;
     locale?: string | null;
     mood?: string | null;
-    pictures?: string | null;
+    pictures?: Array<string> | null;
     attachments?: File | null;
+    date: Date;
 }
 
 export default function Posts() {
     const [elements, setElements] = useState<Post[]>([]);
     const [ids, setIds] = useState<number[]>([]);
+    const [loading, setLoading] = useState(false);
 
     const fetchPosts = async () => {
-        const response = await fetch("https://italk-server.vercel.app/userPost", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ ids }),
-        });
+        if (loading) return;
 
-        const data = await response.json();
-        const posts = data.posts;
+        setLoading(true);
+        try {
+            const response = await fetch("https://italk-server.vercel.app//userPost", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ ids }),
+            });
 
-        posts.forEach((post: Post) => {
-            if (!ids.includes(post.id) && post.id !== 0) {
-                console.log(post.pictures)
-                setElements((prevElements) => {
-                    const newElement = {
-                        id: post.id,
-                        name: post.name,
-                        message: post.message,
-                        picture: post.picture || null,
-                        locale: post.locale || null,
-                        mood: post.mood || null,
-                        pictures: post.pictures ? `data:image/jpeg;base64,${post.pictures}` : null,
-                        attachments: post.attachments || null,
-                    };
-                    const updatedElements = [...prevElements, newElement];
-                    setIds((prevIds) => [...prevIds, newElement.id]);
-                    return updatedElements;
+            const data = await response.json();
+            if (response.status === 400) {
+                console.log(data);
+            } else {
+                const posts = data.posts;
+
+                posts.forEach((post: Post) => {
+                    if (!ids.includes(post.id) && post.id !== 0) {
+                        setElements((prevElements) => {
+                            const newElement = {
+                                id: post.id,
+                                name: post.name,
+                                message: post.message,
+                                picture: post.picture || null,
+                                locale: post.locale || null,
+                                mood: post.mood || null,
+                                pictures: post.pictures || null,
+                                attachments: post.attachments || null,
+                                date: new Date(post.date),
+                            };
+                            const updatedElements = [
+                                ...prevElements,
+                                newElement,
+                            ];
+                            setIds((prevIds) => [...prevIds, newElement.id]);
+                            return updatedElements;
+                        });
+                    }
                 });
             }
-        });
+        } catch (error) {
+            console.error("Failed to fetch posts:", error);
+        }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -60,18 +75,18 @@ export default function Posts() {
     }, []);
 
     useEffect(() => {
-        const handleScroll = () => {
+        const handleScroll = async () => {
             if (
                 window.innerHeight + window.scrollY >=
-                document.documentElement.scrollHeight
+                document.documentElement.scrollHeight - 69
             ) {
-                fetchPosts();
+                await fetchPosts();
             }
         };
 
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    });
+    }, [ids, loading]);
 
     return (
         <>
@@ -80,43 +95,74 @@ export default function Posts() {
                     key={index}
                     className="flex flex-col w-full bg-white rounded-2xl shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] p-6 mb-6"
                 >
-                    <div className="flex flex-row mb-2">
-                        {element.picture ? (
-                            <Image
-                                src={""}
-                                alt="perfil"
-                                className="w-12 h-12 mr-2 rounded-[50%] p-1"
-                            />
-                        ) : (
-                            <UserIcon className="bg-gray-300 text-gray-500 w-12 h-12 mr-2 rounded-[50%] p-1" />
-                        )}
-                        <div className="flex flex-col justify-center">
-                            <span className="">{`${element.name} ${
-                                element.mood
-                                    ? `está se sentindo ${element.mood}.`
-                                    : ""
-                            }`}</span>
-                            {element.locale ? (
-                                <div className="flex flex-row items-center">
-                                    <MapPinIcon className="w-4 h-4 text-gray-500" />
-                                    <span className="font-light text-sm">{`em ${element.locale}`}</span>
-                                </div>
+                    <div className="flex justify-between items-center">
+                        <div className="flex flex-row mb-2">
+                            {element.picture ? (
+                                <Image
+                                    src={""}
+                                    alt="perfil"
+                                    className="w-12 h-12 mr-2 rounded-[50%] p-1"
+                                />
                             ) : (
-                                <></>
+                                <UserIcon className="bg-gray-300 text-gray-500 w-12 h-12 mr-2 rounded-[50%] p-1" />
                             )}
+                            <div className="flex flex-col justify-center">
+                                <span className="">{`${element.name} ${
+                                    element.mood
+                                        ? `está se sentindo ${element.mood}.`
+                                        : ""
+                                }`}</span>
+                                {element.locale ? (
+                                    <div className="flex flex-row items-center">
+                                        <MapPinIcon className="w-4 h-4 text-gray-500" />
+                                        <span className="font-light text-sm">{`em ${element.locale}`}</span>
+                                    </div>
+                                ) : null}
+                            </div>
                         </div>
+                        <aside className="font-thin">
+                            <span>{`${
+                                element.date.getMonth() + 1 >= 10
+                                    ? element.date.getMonth() + 1
+                                    : "0" + (element.date.getMonth() + 1)
+                            } / ${
+                                element.date.getDate() >= 10
+                                    ? element.date.getDate()
+                                    : "0" + element.date.getDate()
+                            } / ${element.date.getFullYear()} - ${
+                                element.date.getHours() % 12 === 0
+                                    ? 12
+                                    : element.date.getHours() % 12
+                            }:${
+                                element.date.getMinutes() >= 10
+                                    ? element.date.getMinutes()
+                                    : "0" + element.date.getMinutes()
+                            } ${
+                                element.date.getHours() >= 12 ? "PM" : "AM"
+                            }`}</span>
+                        </aside>
                     </div>
-                    <span>{element.message}</span>
-                    {element.pictures ? (
-                        <Image
-                            src={element.pictures}
-                            alt="perfil"
-                            width={999}
-                            height={1}
-                        />
-                    ) : (
-                        <></>
-                    )}
+                    <span className="mb-2 text-wrap break-words">
+                        {element.message}
+                    </span>
+                    <div className="flex flex-row flex-wrap justify-between">
+                        {element.pictures
+                            ? element.pictures.map((p, idx) => (
+                                  <button
+                                      key={idx}
+                                      className="flex items-center drop-shadow-[3px_3px_5px_rgba(0,0,0,0.5)] mb-6 grow"
+                                  >
+                                      <Image
+                                          src={`data:image/jpeg;base64,${p}`}
+                                          alt="perfil"
+                                          width={250}
+                                          height={100}
+                                          className="object-cover"
+                                      />
+                                  </button>
+                              ))
+                            : null}
+                    </div>
                 </div>
             ))}
         </>

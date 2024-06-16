@@ -52,7 +52,7 @@ export default async function Page() {
                     </div>
                 </div>
                 <div className="w-[44%] p-6 items-center flex flex-col">
-                    <Post email={session?.user?.email || ""}></Post>
+                    <Post email={session?.user?.email || ""} profile={null} name={session?.user?.name || ""}></Post>
                     <Posts></Posts>
                 </div>
                 <div className="flex justify-center w-[22%] bg-yellow-400 p-6">

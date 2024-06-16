@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const cors = require("cors");
 const express = require("express");
 const multer = require("multer");
-const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 const app = express();
 
 const storage = multer.memoryStorage();
@@ -105,27 +105,32 @@ app.post(
                 [email]
             );
             const userId = user[0].id;
-            const picture = req.files.pictures
-                ? req.files.pictures[0].buffer
-                : null;
+
             const attachment = req.files.attachments
                 ? req.files.attachments[0].buffer
                 : null;
-            const lastId = await pool.execute(
-                "SELECT id FROM post ORDER BY id DESC LIMIT 1"
-            );
+            const id = uuidv4();
             await pool.execute(
-                "INSERT INTO post (id, user_id, message, pictures, attachments, locale, mood) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO post (id, user_id, message, attachments, locale, mood, date) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 [
-                    lastId[0][0] ? lastId[0][0].id + 1 : 1,
+                    id,
                     userId,
                     message,
-                    picture,
                     attachment,
                     locale || null,
                     mood || null,
+                    Date.now(),
                 ]
             );
+            
+            if(req.files.pictures) {
+                req.files.pictures.forEach(async (picture) => {
+                    await pool.execute(
+                        "INSERT INTO post_picture (id, post_id, picture) VALUES (?, ?, ?)",
+                        [uuidv4(), id, picture.buffer]
+                    );
+                });
+            }
             res.status(200).json({ message: "Message posted successfully" });
         } catch (err) {
             res.status(400).json({ error: err.message });
@@ -136,37 +141,38 @@ app.post(
 app.post("/userPost", async (req, res) => {
     try {
         const { ids } = req.body;
-        let posts = [];
-        let limit = 0;
-        const postQuantity = await pool.execute("SELECT COUNT(*) FROM post");
+        console.log(ids)
+        const [rows] = await pool.execute(
+            `SELECT * FROM post${
+                ids.length
+                    ? ` WHERE id NOT IN (${ids.map(() => "?").join(", ")})`
+                    : ""
+            } ORDER BY DATE DESC LIMIT 5`,
+            ids
+        );
 
-        for (let i = 1; i <= postQuantity[0][0]["COUNT(*)"]; i++) {
-            let [row] = await pool.execute("SELECT * FROM post WHERE id = ?", [
-                i,
-            ]);
+        const posts = await Promise.all(
+            rows.map(async (row) => {
+                const user = await pool.execute(
+                    "SELECT name FROM user WHERE id = ?",
+                    [row.user_id]
+                );
 
-            if (row[0].id in ids) {
-                continue;
-            }
+                row.name = user[0][0].name;
 
-            limit++;
+                const rawPictures = await pool.execute(
+                    "SELECT picture FROM post_picture WHERE post_id = ?",
+                    [row.id]
+                );
+                console.log(row)
 
-            const user = await pool.execute(
-                "SELECT name FROM user WHERE id = ?",
-                [row[0].user_id]
-            );
+                const pictures = rawPictures[0].map((picture) => Buffer.from(picture.picture).toString('base64'))
+                
+                row.pictures = pictures;
 
-
-            row[0].name = user[0][0].name;
-            row[0].pictures = row[0].pictures
-                ? Buffer.from(row[0].pictures).toString("base64")
-                : null;
-            posts.push(row[0]);
-
-            if (limit === 5) {
-                break;
-            }
-        }
+                return row;
+            })
+        );
 
         res.status(200).json({ posts });
     } catch (err) {
