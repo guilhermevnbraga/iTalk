@@ -142,7 +142,7 @@ export default function Posts() {
                             }`}</span>
                         </aside>
                     </div>
-                    <span className="mb-2 text-wrap break-words">
+                    <span className="mb-2 text-wrap break-words whitespace-pre-wrap">
                         {element.message}
                     </span>
                     <div className="flex flex-row flex-wrap justify-between">
