@@ -150,7 +150,7 @@ export default function Posts() {
                             ? element.pictures.map((p, idx) => (
                                   <button
                                       key={idx}
-                                      className="flex items-center drop-shadow-[3px_3px_5px_rgba(0,0,0,0.5)] mb-6 grow"
+                                      className="flex items-center drop-shadow-[3px_3px_5px_rgba(0,0,0,0.5)] mb-6"
                                   >
                                       <Image
                                           src={`data:image/jpeg;base64,${p}`}
