@@ -141,7 +141,6 @@ app.post(
 app.post("/userPost", async (req, res) => {
     try {
         const { ids } = req.body;
-        console.log(ids)
         const [rows] = await pool.execute(
             `SELECT * FROM post${
                 ids.length
@@ -150,7 +149,6 @@ app.post("/userPost", async (req, res) => {
             } ORDER BY DATE DESC LIMIT 5`,
             ids
         );
-        console.log(rows)
 
         const posts = await Promise.all(
             rows.map(async (row) => {
