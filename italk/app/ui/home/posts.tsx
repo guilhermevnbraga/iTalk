@@ -78,7 +78,7 @@ export default function Posts() {
         const handleScroll = async () => {
             if (
                 window.innerHeight + window.scrollY >=
-                document.documentElement.scrollHeight - 69
+                document.documentElement.scrollHeight
             ) {
                 await fetchPosts();
             }
@@ -109,13 +109,13 @@ export default function Posts() {
                             <div className="flex flex-col justify-center">
                                 <span className="">{`${element.name} ${
                                     element.mood
-                                        ? `está se sentindo ${element.mood}.`
+                                        ? `is feeling ${element.mood}.`
                                         : ""
                                 }`}</span>
                                 {element.locale ? (
                                     <div className="flex flex-row items-center">
-                                        <MapPinIcon className="w-4 h-4 text-gray-500" />
-                                        <span className="font-light text-sm">{`em ${element.locale}`}</span>
+                                        <MapPinIcon className="w-4 h-4 text-gray-500 mr-0.5" />
+                                        <span className="font-light text-sm">{`in ${element.locale}`}</span>
                                     </div>
                                 ) : null}
                             </div>
@@ -142,7 +142,7 @@ export default function Posts() {
                             }`}</span>
                         </aside>
                     </div>
-                    <span className="mb-2 text-wrap break-words whitespace-pre-wrap">
+                    <span className="mb-6 text-wrap break-words whitespace-pre-wrap">
                         {element.message}
                     </span>
                     <div className="flex flex-row flex-wrap justify-between">

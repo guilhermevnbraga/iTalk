@@ -150,6 +150,7 @@ app.post("/userPost", async (req, res) => {
             } ORDER BY DATE DESC LIMIT 5`,
             ids
         );
+        console.log(rows)
 
         const posts = await Promise.all(
             rows.map(async (row) => {
@@ -164,7 +165,6 @@ app.post("/userPost", async (req, res) => {
                     "SELECT picture FROM post_picture WHERE post_id = ?",
                     [row.id]
                 );
-                console.log(row)
 
                 const pictures = rawPictures[0].map((picture) => Buffer.from(picture.picture).toString('base64'))
                 

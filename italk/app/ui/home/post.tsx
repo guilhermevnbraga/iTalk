@@ -131,12 +131,12 @@ export default function Post({ email, profile, name }: PostProps) {
                         )}
                         <div className="flex flex-col justify-center">
                             <span className="">{`${name} ${
-                                mood ? `está se sentindo ${mood}.` : ""
+                                mood ? `is feeling ${mood}.` : ""
                             }`}</span>
                             {locale ? (
                                 <div className="flex flex-row items-center">
-                                    <MapPinIcon className="w-4 h-4 text-gray-500" />
-                                    <span className="font-light text-sm">{`em ${locale}`}</span>
+                                    <MapPinIcon className="w-4 h-4 text-gray-500 mr-0.5" />
+                                    <span className="font-light text-sm">{`in ${locale}`}</span>
                                 </div>
                             ) : (
                                 <></>
@@ -144,7 +144,7 @@ export default function Post({ email, profile, name }: PostProps) {
                         </div>
                     </div>
                     <textarea
-                        className="w-full ml-2 mr-2 mb-2 focus:outline-0 resize-none"
+                        className="w-full ml-2 mr-2 mb-6 focus:outline-0 resize-none"
                         placeholder="What's on your mind?"
                         onChange={(e) => {
                             e.target.style.height = "auto";
@@ -153,8 +153,7 @@ export default function Post({ email, profile, name }: PostProps) {
                             setContent(e.target.value);
                         }}
                     />
-                    <div className="flex flex-row justify-around">
-
+                    <div className="flex flex-row flex-wrap justify-between">
                         {pictures ? (
                             pictures.map((p, idx) => (
                                 <Image
