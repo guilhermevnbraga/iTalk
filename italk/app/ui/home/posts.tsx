@@ -12,7 +12,7 @@ interface Post {
     locale?: string | null;
     mood?: string | null;
     pictures?: Array<string> | null;
-    attachments?: File | null;
+    attachments?: Array<any> | null;
     date: Date;
 }
 
@@ -42,6 +42,7 @@ export default function Posts() {
 
                 posts.forEach((post: Post) => {
                     if (!ids.includes(post.id) && post.id !== 0) {
+                        console.log(post.attachments)
                         setElements((prevElements) => {
                             const newElement = {
                                 id: post.id,
@@ -148,20 +149,33 @@ export default function Posts() {
                     <div className="flex flex-row flex-wrap justify-between">
                         {element.pictures
                             ? element.pictures.map((p, idx) => (
-                                  <button
-                                      key={idx}
-                                      className="flex items-center drop-shadow-[3px_3px_5px_rgba(0,0,0,0.5)] mb-6"
-                                  >
+                                  <figure className="flex items-center m-1">
                                       <Image
+                                          key={idx}
+                                          onClick={() => console.log("a")}
                                           src={`data:image/jpeg;base64,${p}`}
                                           alt="perfil"
-                                          width={333}
+                                          width={360}
                                           height={100}
-                                          className="object-cover"
+                                          className="hover:cursor-pointer"
                                       />
-                                  </button>
+                                  </figure>
                               ))
                             : null}
+                    </div>
+                    <div className="flex flex-col mt-1">
+                        {element.attachments
+                        ? element.attachments.map((p, idx) => {
+                            return (
+                            <a
+                                key={idx}
+                                href={`data:application/pdf;base64,${p[1]}`}
+                                download={p[0]}
+                                className="text-blue-500"
+                            >
+                                {p[0] ? p[0] : "Download"}
+                            </a>
+                        )}) : null}
                     </div>
                 </div>
             ))}

@@ -105,18 +105,13 @@ app.post(
                 [email]
             );
             const userId = user[0].id;
-
-            const attachment = req.files.attachments
-                ? req.files.attachments[0].buffer
-                : null;
             const id = uuidv4();
             await pool.execute(
-                "INSERT INTO post (id, user_id, message, attachments, locale, mood, date) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO post (id, user_id, message, locale, mood, date) VALUES (?, ?, ?, ?, ?, ?)",
                 [
                     id,
                     userId,
                     message,
-                    attachment,
                     locale || null,
                     mood || null,
                     Date.now(),
@@ -128,6 +123,16 @@ app.post(
                     await pool.execute(
                         "INSERT INTO post_picture (id, post_id, picture) VALUES (?, ?, ?)",
                         [uuidv4(), id, picture.buffer]
+                    );
+                });
+            }
+
+            if(req.files.attachments) {
+                req.files.attachments.forEach(async (attachment) => {
+                    console.log(attachment)
+                    await pool.execute(
+                        "INSERT INTO attachments (id, post_id, title, attachment) VALUES (?, ?, ?, ?)",
+                        [uuidv4(), id, attachment.originalname, attachment.buffer]
                     );
                 });
             }
@@ -167,6 +172,21 @@ app.post("/userPost", async (req, res) => {
                 const pictures = rawPictures[0].map((picture) => Buffer.from(picture.picture).toString('base64'))
                 
                 row.pictures = pictures;
+
+                const rawAttachments = await pool.execute(
+                    "SELECT title, attachment FROM attachments WHERE post_id = ?",
+                    [row.id]
+                );
+
+                if (rawAttachments[0].length === 0) {
+                    return row;
+                }
+
+                const attachments = rawAttachments[0].map((attachment) => {
+                    return [attachment.title, Buffer.from(attachment.attachment).toString('base64')]
+                })
+
+                row.attachments = attachments;
 
                 return row;
             })

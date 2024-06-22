@@ -19,7 +19,7 @@ export default function Post({ email, profile, name }: PostProps) {
     const [mapVisibility, setMapVisibility] = useState(false);
     const [moodVisibility, setMoodVisibility] = useState(false);
     const [content, setContent] = useState("");
-    const [attachment, setAttachment] = useState<File | null>(null);
+    const [attachments, setAttachment] = useState<File[] | null>(null);
     const [pictures, setPictures] = useState<File[] | null>(null);
     const [locale, setLocale] = useState("");
     const [mood, setMood] = useState("");
@@ -52,7 +52,8 @@ export default function Post({ email, profile, name }: PostProps) {
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         if (event.target.files) {
-            setAttachment(event.target.files[0]);
+            console.log(Array.from(event.target.files))
+            setAttachment(Array.from(event.target.files));
         }
     };
 
@@ -70,12 +71,16 @@ export default function Post({ email, profile, name }: PostProps) {
         formData.append("email", email);
         formData.append("message", content);
         if (pictures) {
+            console.log(pictures)
             pictures.forEach((picture) => {
                 formData.append('pictures', picture);
             });
         }
-        if (attachment) {
-            formData.append("attachments", attachment);
+        if (attachments) {
+            console.log(attachments)
+            attachments.forEach(attachment => {
+                formData.append("attachments", attachment);
+            })
         }
         if (locale) {
             formData.append("locale", locale);
@@ -154,20 +159,35 @@ export default function Post({ email, profile, name }: PostProps) {
                         }}
                     />
                     <div className="flex flex-row flex-wrap justify-between">
-                        {pictures ? (
-                            pictures.map((p, idx) => (
-                                <Image
-                                    key={idx}
-                                    src={URL.createObjectURL(p)}
-                                    alt="Pictures"
-                                    width={200}
-                                    height={100}
-                                    className="drop-shadow-[3px_3px_5px_rgba(0,0,0,0.5)]"
-                                />
-                            ))
-                        ) : (
-                            <></>
-                        )}
+                        {pictures
+                            ? pictures.map((p, idx) => (
+                                  <figure className="flex items-center m-1">
+                                      <Image
+                                          key={idx}
+                                          onClick={() => console.log("a")}
+                                          src={URL.createObjectURL(p)}
+                                          alt="perfil"
+                                          width={333}
+                                          height={100}
+                                          className="hover:cursor-pointer"
+                                      />
+                                  </figure>
+                              ))
+                            : null}
+                    </div>
+                    <div className="flex flex-col mt-1">
+                        {attachments
+                        ? attachments.map((p, idx) => {
+                            return (
+                            <a
+                                key={idx}
+                                href={URL.createObjectURL(p)}
+                                download={p.name}
+                                className="text-blue-500"
+                            >
+                                {p.name}
+                            </a>
+                        )}) : null}
                     </div>
                 </div>
             </div>
@@ -190,6 +210,7 @@ export default function Post({ email, profile, name }: PostProps) {
                             ref={attachmentInputRef}
                             onChange={handleAttachmentChange}
                             className="hidden"
+                            multiple
                         />
                         <PaperClipIcon className="hover:scale-105 h-6 w-6 text-gray-400 mr-1" />
                     </button>
