@@ -52,7 +52,6 @@ export default function Post({ email, profile, name }: PostProps) {
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         if (event.target.files) {
-            console.log(Array.from(event.target.files))
             setAttachment(Array.from(event.target.files));
         }
     };
@@ -71,16 +70,14 @@ export default function Post({ email, profile, name }: PostProps) {
         formData.append("email", email);
         formData.append("message", content);
         if (pictures) {
-            console.log(pictures)
             pictures.forEach((picture) => {
-                formData.append('pictures', picture);
+                formData.append("pictures", picture);
             });
         }
         if (attachments) {
-            console.log(attachments)
-            attachments.forEach(attachment => {
+            attachments.forEach((attachment) => {
                 formData.append("attachments", attachment);
-            })
+            });
         }
         if (locale) {
             formData.append("locale", locale);
@@ -161,9 +158,11 @@ export default function Post({ email, profile, name }: PostProps) {
                     <div className="flex flex-row flex-wrap justify-between">
                         {pictures
                             ? pictures.map((p, idx) => (
-                                  <figure className="flex items-center m-1">
+                                  <figure
+                                      key={idx}
+                                      className="flex items-center m-1"
+                                  >
                                       <Image
-                                          key={idx}
                                           onClick={() => console.log("a")}
                                           src={URL.createObjectURL(p)}
                                           alt="perfil"
@@ -177,17 +176,19 @@ export default function Post({ email, profile, name }: PostProps) {
                     </div>
                     <div className="flex flex-col mt-1">
                         {attachments
-                        ? attachments.map((p, idx) => {
-                            return (
-                            <a
-                                key={idx}
-                                href={URL.createObjectURL(p)}
-                                download={p.name}
-                                className="text-blue-500"
-                            >
-                                {p.name}
-                            </a>
-                        )}) : null}
+                            ? attachments.map((p, idx) => {
+                                  return (
+                                      <a
+                                          key={idx}
+                                          href={URL.createObjectURL(p)}
+                                          download={p.name}
+                                          className="text-blue-500"
+                                      >
+                                          {p.name}
+                                      </a>
+                                  );
+                              })
+                            : null}
                     </div>
                 </div>
             </div>

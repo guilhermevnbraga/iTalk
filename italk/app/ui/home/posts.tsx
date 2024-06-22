@@ -42,7 +42,6 @@ export default function Posts() {
 
                 posts.forEach((post: Post) => {
                     if (!ids.includes(post.id) && post.id !== 0) {
-                        console.log(post.attachments)
                         setElements((prevElements) => {
                             const newElement = {
                                 id: post.id,
@@ -149,9 +148,11 @@ export default function Posts() {
                     <div className="flex flex-row flex-wrap justify-between">
                         {element.pictures
                             ? element.pictures.map((p, idx) => (
-                                  <figure className="flex items-center m-1">
+                                  <figure
+                                      key={idx}
+                                      className="flex items-center m-1"
+                                  >
                                       <Image
-                                          key={idx}
                                           onClick={() => console.log("a")}
                                           src={`data:image/jpeg;base64,${p}`}
                                           alt="perfil"
@@ -165,17 +166,19 @@ export default function Posts() {
                     </div>
                     <div className="flex flex-col mt-1">
                         {element.attachments
-                        ? element.attachments.map((p, idx) => {
-                            return (
-                            <a
-                                key={idx}
-                                href={`data:application/pdf;base64,${p[1]}`}
-                                download={p[0]}
-                                className="text-blue-500"
-                            >
-                                {p[0] ? p[0] : "Download"}
-                            </a>
-                        )}) : null}
+                            ? element.attachments.map((p, idx) => {
+                                  return (
+                                      <a
+                                          key={idx}
+                                          href={`data:application/pdf;base64,${p[1]}`}
+                                          download={p[0]}
+                                          className="text-blue-500"
+                                      >
+                                          {p[0] ? p[0] : "Download"}
+                                      </a>
+                                  );
+                              })
+                            : null}
                     </div>
                 </div>
             ))}
