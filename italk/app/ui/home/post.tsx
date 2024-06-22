@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { use, useEffect, useRef } from "react";
 import { PaperClipIcon } from "@heroicons/react/24/solid";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
@@ -25,6 +25,24 @@ export default function Post({ email, profile, name }: PostProps) {
     const [mood, setMood] = useState("");
     const attachmentInputRef = useRef<HTMLInputElement>(null);
     const picturesInputRef = useRef<HTMLInputElement>(null);
+
+    const handleRemovePicture = (idx: number) => {
+        if (pictures) {
+            const newPictures = pictures.filter((p, x) => {
+                return x !== idx;
+            });
+            setPictures(newPictures);
+        }
+    };
+
+    const handleRemoveAttachment = (idx: number) => {
+        if (attachments) {
+            const newAttachments = attachments.filter((p, x) => {
+                return x !== idx;
+            });
+            setAttachment(newAttachments);
+        }
+    };
 
     const toogleMapVisibility = () => {
         setMapVisibility(!mapVisibility);
@@ -52,7 +70,12 @@ export default function Post({ email, profile, name }: PostProps) {
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         if (event.target.files) {
-            setAttachment(Array.from(event.target.files));
+            if (attachments)
+                setAttachment([
+                    ...attachments,
+                    ...Array.from(event.target.files),
+                ]);
+            else setAttachment(Array.from(event.target.files));
         }
     };
 
@@ -60,7 +83,9 @@ export default function Post({ email, profile, name }: PostProps) {
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         if (event.target.files) {
-            setPictures(Array.from(event.target.files));
+            if (pictures)
+                setPictures([...pictures, ...Array.from(event.target.files)]);
+            else setPictures(Array.from(event.target.files));
         }
     };
 
@@ -163,7 +188,7 @@ export default function Post({ email, profile, name }: PostProps) {
                                       className="flex items-center m-1"
                                   >
                                       <Image
-                                          onClick={() => console.log("a")}
+                                          onClick={() => handleRemovePicture(idx)}
                                           src={URL.createObjectURL(p)}
                                           alt="perfil"
                                           width={333}
@@ -180,9 +205,8 @@ export default function Post({ email, profile, name }: PostProps) {
                                   return (
                                       <a
                                           key={idx}
-                                          href={URL.createObjectURL(p)}
-                                          download={p.name}
-                                          className="text-blue-500"
+                                          onClick={() => handleRemoveAttachment(idx)}
+                                          className="text-blue-500 hover:cursor-pointer"
                                       >
                                           {p.name}
                                       </a>

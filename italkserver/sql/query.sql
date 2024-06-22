@@ -2,7 +2,7 @@ create database users;
 
 use users;
 
-create table user (
+create table if not exists user (
 	id int auto_increment,
     friend_list_id int,
     name varchar(60) not null,
@@ -13,9 +13,8 @@ create table user (
 );
 
 select * from user;
-truncate table post;
 
-create table friend_list (
+create table if not exists friend_list (
 	id int auto_increment primary key,
     user_id int not null,
     foreign key(user_id) references user(id)
@@ -24,7 +23,7 @@ create table friend_list (
 ALTER TABLE user
 ADD CONSTRAINT fk_friend_list FOREIGN KEY (friend_list_id) REFERENCES friend_list(id);
 
-create table friend_list_has_user (
+create table if not exists friend_list_has_user (
 	user_id int not null,
     friend_list_id int not null,
     primary key (user_id, friend_list_id)
@@ -36,7 +35,7 @@ add constraint fk_user foreign key (user_id) references user(id);
 alter table friend_list_has_user
 add constraint fk_friend_list_user foreign key (friend_list_id) references friend_list(id);
 
-create table chat_history (
+create table if not exists chat_history (
 	id int auto_increment primary key,
     user1_id int,
     user2_id int
@@ -48,15 +47,14 @@ add constraint fk_history_user1 foreign key (user1_id) references user(id);
 alter table chat_history
 add constraint fk_history_user2 foreign key (user2_id) references user(id);
 
-create table post (
-	id int primary key,
+create table if not exists post (
+	id varchar(36) primary key,
     user_id int,
-    post_id int,
+    post_id varchar(36),
     message text not null,
-    attachments longblob,
-    pictures longblob,
     locale text,
-    mood text
+    mood text,
+    date bigint
 );
 
 alter table post
@@ -66,11 +64,25 @@ alter table post
 add constraint fk_post_id foreign key (post_id) references post(id);
 
 select * from post;
-insert into post (id, user_id, message, pictures) values(2, 1, 'a', 'C:/WIN_20240205_20_03_21_Pro.jpg');
-delete from post where id > 0;
-SELECT id FROM post ORDER BY id DESC LIMIT 1;
 
-create table message (
+create table if not exists post_picture (
+	id varchar(36) primary key,
+    post_id varchar(36),
+    picture longblob,
+    foreign key (post_id) references post(id)
+);
+
+select * from post_picture;
+
+create table if not exists attachments (
+	id varchar(36)  primary key,
+    post_id varchar(36),
+    title text,
+    attachment longblob,
+    foreign key (post_id) references post(id)
+);
+
+create table if not exists message (
 	user_id int,
     chat_history_id int,
     content text,
