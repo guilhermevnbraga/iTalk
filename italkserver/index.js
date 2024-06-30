@@ -108,17 +108,10 @@ app.post(
             const id = uuidv4();
             await pool.execute(
                 "INSERT INTO post (id, user_id, message, locale, mood, date) VALUES (?, ?, ?, ?, ?, ?)",
-                [
-                    id,
-                    userId,
-                    message,
-                    locale || null,
-                    mood || null,
-                    Date.now(),
-                ]
+                [id, userId, message, locale || null, mood || null, Date.now()]
             );
-            
-            if(req.files.pictures) {
+
+            if (req.files.pictures) {
                 req.files.pictures.forEach(async (picture) => {
                     await pool.execute(
                         "INSERT INTO post_picture (id, post_id, picture) VALUES (?, ?, ?)",
@@ -127,12 +120,17 @@ app.post(
                 });
             }
 
-            if(req.files.attachments) {
+            if (req.files.attachments) {
                 req.files.attachments.forEach(async (attachment) => {
-                    console.log(attachment)
+                    console.log(attachment);
                     await pool.execute(
                         "INSERT INTO attachments (id, post_id, title, attachment) VALUES (?, ?, ?, ?)",
-                        [uuidv4(), id, attachment.originalname, attachment.buffer]
+                        [
+                            uuidv4(),
+                            id,
+                            attachment.originalname,
+                            attachment.buffer,
+                        ]
                     );
                 });
             }
@@ -145,11 +143,47 @@ app.post(
 
 app.post("/userPost", async (req, res) => {
     try {
-        const { ids } = req.body;
+        const { ids, username } = req.body;
+        let id;
+
+        if (username) {
+            id = await pool.execute(`SELECT id FROM user WHERE name = ?`, [
+                username,
+            ]);
+        }
+
+        console.log(
+            `SELECT * FROM post${
+                ids.length || username
+                    ? ids.length
+                        ? username
+                            ? ` WHERE id NOT IN (${ids
+                                  .map(() => "?")
+                                  .join(", ")}) and user_id = (${id[0][0].id})`
+                            : ` WHERE id NOT IN (${ids
+                                  .map(() => "?")
+                                  .join(", ")})`
+                        : username
+                        ? ` WHERE user_id = (${id[0][0].id})`
+                        : ""
+                    : ""
+            } ORDER BY DATE DESC LIMIT 5`
+        );
+
         const [rows] = await pool.execute(
             `SELECT * FROM post${
-                ids.length
-                    ? ` WHERE id NOT IN (${ids.map(() => "?").join(", ")})`
+                ids.length || username
+                    ? ids.length
+                        ? username
+                            ? ` WHERE id NOT IN (${ids
+                                  .map(() => "?")
+                                  .join(", ")}) and user_id = (${id[0][0].id})`
+                            : ` WHERE id NOT IN (${ids
+                                  .map(() => "?")
+                                  .join(", ")})`
+                        : username
+                        ? ` WHERE user_id = (${id[0][0].id})`
+                        : ""
                     : ""
             } ORDER BY DATE DESC LIMIT 5`,
             ids
@@ -169,8 +203,10 @@ app.post("/userPost", async (req, res) => {
                     [row.id]
                 );
 
-                const pictures = rawPictures[0].map((picture) => Buffer.from(picture.picture).toString('base64'))
-                
+                const pictures = rawPictures[0].map((picture) =>
+                    Buffer.from(picture.picture).toString("base64")
+                );
+
                 row.pictures = pictures;
 
                 const rawAttachments = await pool.execute(
@@ -183,8 +219,11 @@ app.post("/userPost", async (req, res) => {
                 }
 
                 const attachments = rawAttachments[0].map((attachment) => {
-                    return [attachment.title, Buffer.from(attachment.attachment).toString('base64')]
-                })
+                    return [
+                        attachment.title,
+                        Buffer.from(attachment.attachment).toString("base64"),
+                    ];
+                });
 
                 row.attachments = attachments;
 

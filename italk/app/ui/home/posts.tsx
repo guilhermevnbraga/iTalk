@@ -16,7 +16,11 @@ interface Post {
     date: Date;
 }
 
-export default function Posts() {
+interface HeaderProps {
+    username?: string;
+}
+
+export default function Posts({ username }: HeaderProps) {
     const [elements, setElements] = useState<Post[]>([]);
     const [ids, setIds] = useState<number[]>([]);
     const [loading, setLoading] = useState(false);
@@ -31,7 +35,7 @@ export default function Posts() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ ids }),
+                body: JSON.stringify({ ids, username }),
             });
 
             const data = await response.json();

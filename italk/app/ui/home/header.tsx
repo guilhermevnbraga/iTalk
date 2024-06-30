@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { UserIcon } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
@@ -10,7 +10,8 @@ import { WindowIcon } from "@heroicons/react/24/outline";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { signOut } from "next-auth/react"
+import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 interface HeaderProps {
     username: string;
@@ -25,8 +26,10 @@ export default function Header({ username }: HeaderProps) {
 
     return (
         <header className="w-full flex flex-row items-center py-3 px-6 shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)]">
-            <div className="w-1/6 font-bold text-2xl">
-                <h1>iTalk</h1>
+            <div className="flex w-1/6 font-bold text-2xl">
+                <Link href="/home">
+                    <h1>iTalk</h1>
+                </Link>
             </div>
             <div className="w-2/3">
                 <div className="w-2/3 flex flex-row rounded-3xl shadow p-3">
@@ -50,10 +53,7 @@ export default function Header({ username }: HeaderProps) {
                         </button>
                     </div>
                     <div className="flex flex-row justify-between items-center">
-                        <button
-                            className="mr-3"
-                            onClick={toggleDiv}
-                        >
+                        <button className="mr-3" onClick={toggleDiv}>
                             <span className="items-center flex hover:scale-105 hover:underline">
                                 {username}
                             </span>
@@ -66,11 +66,17 @@ export default function Header({ username }: HeaderProps) {
                         </button>
                     </div>
                 </div>
-                <div className={`${isHidden ? 'hidden' : 'absolute'} top-16 right-6`}>
+                <div
+                    className={`${
+                        isHidden ? "hidden" : "absolute"
+                    } top-16 right-6`}
+                >
                     <div className="flex flex-col p-6 bg-white shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] rounded">
                         <button className="flex flex-row shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] rounded-lg p-3 hover:scale-105 active:scale-95">
                             <UserIcon className="text-gray-900 w-6 h-6 mr-3"></UserIcon>
-                            <span>Your Profile</span>
+                            <Link href="/profile">
+                                <span>Your Profile</span>
+                            </Link>
                         </button>
                         <button className="flex flex-row shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] rounded-lg p-3 hover:scale-105 active:scale-95 mt-3">
                             <Cog6ToothIcon className="text-gray-900 w-6 h-6 mr-3"></Cog6ToothIcon>
@@ -78,7 +84,7 @@ export default function Header({ username }: HeaderProps) {
                         </button>
                         <button className="flex flex-row shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] rounded-lg p-3 hover:scale-105 active:scale-95 mt-3">
                             <QuestionMarkCircleIcon className="text-gray-900 w-6 h-6 mr-3"></QuestionMarkCircleIcon>
-                            <span>Help and Support</span>   
+                            <span>Help and Support</span>
                         </button>
                         <button className="flex flex-row shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] rounded-lg p-3 hover:scale-105 active:scale-95 mt-3">
                             <WindowIcon className="text-gray-900 w-6 h-6 mr-3"></WindowIcon>
