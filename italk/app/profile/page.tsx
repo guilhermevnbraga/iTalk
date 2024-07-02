@@ -11,7 +11,7 @@ export default async function Page() {
         <main className="flex items-center flex-col min-h-screen">
             <Header username={session?.user?.name || ""}></Header>
             <div className="flex flex-col w-4/6 grow shadow-[0_0_9px_0_rgba(0,0,0,0.15)]">
-                <div className="flex bg-gray-400 items-end h-[25vh] mb-6 grow-0">
+                <div className="flex bg-gray-300 items-end h-[30vh] mb-6 grow-0">
                     <div className="relative top-6 left-6 flex-row flex items-center">
                         {session?.user?.image ? (
                             <Image
@@ -21,7 +21,7 @@ export default async function Page() {
                                 height={100}
                             />
                         ) : (
-                            <UserIcon className="bg-black h-24 w-24 text-red-800 border-4 p-1 rounded-[999px]"></UserIcon>
+                            <UserIcon className="bg-white h-24 w-24 text-gray-400 border-4 p-1 rounded-[999px]"></UserIcon>
                         )}
 
                         <div className="ml-3 font-medium text-3xl">{`${session?.user?.name}`}</div>

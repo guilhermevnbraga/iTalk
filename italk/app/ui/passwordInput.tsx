@@ -4,7 +4,7 @@ import { useState } from "react";
 
 interface PasswordInputProps {
     label: string;
-    onChange: (value: string) => void;
+    onChange?: (value: string) => void;
 }
 
 export default function PasswordInput({ label, onChange }: PasswordInputProps) {
@@ -48,7 +48,9 @@ export default function PasswordInput({ label, onChange }: PasswordInputProps) {
                     id="password"
                     className="w-11/12 px-3 p-2 bg-transparent focus:outline-0 placeholder:text-sm landscape:placeholder:text-base"
                     placeholder="•••••••••••••••"
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => {
+                        if (onChange) return onChange(e.target.value)
+                    }}
                 />
                 <button
                     className={`bg-cover w-7 h-7 mr-1 ${closedEyeClass}`}
