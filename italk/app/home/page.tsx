@@ -18,7 +18,7 @@ export default async function Page() {
             <Header username={session?.user?.name || ""}></Header>
             <main className="flex grow min-h-screen">
                 <SideNav></SideNav>
-                <div className="w-[44%] p-6 items-center flex flex-col">
+                <div className="p-6 items-center flex flex-col grow">
                     <Post
                         email={session?.user?.email || ""}
                         profile={null}
@@ -26,11 +26,13 @@ export default async function Page() {
                     ></Post>
                     <Posts></Posts>
                 </div>
-                <div className="flex justify-center w-[22%] bg-yellow-400 p-6">
-                    Events
-                </div>
-                <div className="flex justify-center w-1/6 shadow-[-3px_0px_9px_0px_rgba(0,0,0,0.15)] p-6">
-                    Chats
+                <div className="flex align-center flex-col w-1/6 shadow-[-3px_0px_9px_0px_rgba(0,0,0,0.15)]">
+                    <div className="flex justify-center shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] h-fit w-full p-6">
+                        Chats
+                    </div>
+                    <div className="flex justify-center shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] h-fit w-full p-6">
+                        Groups
+                    </div>
                 </div>
             </main>
             <Footer></Footer>

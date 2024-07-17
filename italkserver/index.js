@@ -122,7 +122,6 @@ app.post(
 
             if (req.files.attachments) {
                 req.files.attachments.forEach(async (attachment) => {
-                    console.log(attachment);
                     await pool.execute(
                         "INSERT INTO attachments (id, post_id, title, attachment) VALUES (?, ?, ?, ?)",
                         [
@@ -151,24 +150,6 @@ app.post("/userPost", async (req, res) => {
                 username,
             ]);
         }
-
-        console.log(
-            `SELECT * FROM post${
-                ids.length || username
-                    ? ids.length
-                        ? username
-                            ? ` WHERE id NOT IN (${ids
-                                  .map(() => "?")
-                                  .join(", ")}) and user_id = (${id[0][0].id})`
-                            : ` WHERE id NOT IN (${ids
-                                  .map(() => "?")
-                                  .join(", ")})`
-                        : username
-                        ? ` WHERE user_id = (${id[0][0].id})`
-                        : ""
-                    : ""
-            } ORDER BY DATE DESC LIMIT 5`
-        );
 
         const [rows] = await pool.execute(
             `SELECT * FROM post${
@@ -232,6 +213,27 @@ app.post("/userPost", async (req, res) => {
         );
 
         res.status(200).json({ posts });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+app.post("/user", async (req, res) => {
+    try {
+        const { search } = req.body;
+
+        const [rows] = await pool.execute(
+            "SELECT * FROM user WHERE name LIKE ?",
+            [`%${search}%`]
+        );
+
+        console.log(rows);
+
+        if (rows.length === 0) {
+            res.status(400).json({ error: "User not found" });
+        } else {
+            res.status(200).json({ user: rows });
+        }
     } catch (err) {
         res.status(400).json({ error: err.message });
     }

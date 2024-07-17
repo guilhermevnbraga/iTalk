@@ -145,7 +145,7 @@ export default function Post({ email, profile, name }: PostProps) {
             encType="multipart/form-data"
         >
             <div className="w-full flex items-center justify-center p-6 pb-0">
-                <div className="flex w-full flex-col grow shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] rounded-2xl p-6">
+                <div className="flex w-full flex-col grow border-2 rounded-2xl p-6">
                     <div className="flex flex-row mb-2">
                         {profile ? (
                             <Image
