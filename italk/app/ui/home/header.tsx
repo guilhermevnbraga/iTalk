@@ -42,10 +42,10 @@ export default function Header({ username, email }: HeaderProps) {
     const searchBarRef = useRef(null);
 
     const logOut = async () => {
-        const response = await fetch('https://italk-server.vercel.app/logout', {
-            method: 'POST',
+        const response = await fetch("https://italk-server.vercel.app/logout", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({ email }),
         });
@@ -53,7 +53,7 @@ export default function Header({ username, email }: HeaderProps) {
         const data = await response.json();
         console.log(data);
         signOut();
-    }
+    };
 
     const searchFriends = async (search: string) => {
         const response = await fetch("https://italk-server.vercel.app/user", {
@@ -118,9 +118,13 @@ export default function Header({ username, email }: HeaderProps) {
                             {data.error
                                 ? data.error
                                 : data.user
-                                ? data.user.map((user: User) => {
+                                ? data.user.map((user: User, idx) => {
                                       return (
-                                          <Link className="flex mb-6" href={`/${user.username}`}>
+                                          <Link
+                                              key={idx}
+                                              className="flex mb-6"
+                                              href={`/${user.username}`}
+                                          >
                                               {user.profile_picture ? (
                                                   <Image
                                                       src={`data:image/jpeg;base64,${user.profile_picture}`}
