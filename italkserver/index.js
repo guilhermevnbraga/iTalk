@@ -41,9 +41,20 @@ app.post("/register", async (req, res) => {
     const hashedPassword = hash;
 
     try {
+        let newUserName = userName.replaceAll(" ", "").toLowerCase();
+
+        const userNameExists = await pool.execute(
+            "select * from user where username like ?",
+            [`${newUserName}`]
+        );
+
+        if (userNameExists[0].length > 0) {
+            newUserName = `${newUserName}${userNameExists[0].length + 1}`;
+        }
+
         await pool.execute(
-            "INSERT INTO user (name, email, password) VALUES (?, ?, ?)",
-            [userName, email, hashedPassword]
+            "INSERT INTO user (name, username, email, password) VALUES (?, ?, ?, ?)",
+            [userName, newUserName, email, hashedPassword]
         );
     } catch (err) {
         if (err.code === "ER_DUP_ENTRY") {
@@ -79,6 +90,15 @@ app.post("/login", async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
 
         if (match) {
+            const id = await pool.execute(
+                "SELECT id FROM user WHERE email = ?",
+                [email]
+            );
+
+            await pool.execute("update user set status = 1 where id = ?", [
+                id[0][0].id,
+            ]);
+
             res.status(200).json({
                 message: "User logged in successfully",
                 user: user,
@@ -88,6 +108,54 @@ app.post("/login", async (req, res) => {
         }
     } catch (err) {
         res.status(400).json({ error: err });
+    }
+});
+
+app.post("/logout", async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const id = await pool.execute("SELECT id FROM user WHERE email = ?", [
+            email,
+        ]);
+
+        await pool.execute("update user set status = 0 where id = ?", [
+            id[0][0].id,
+        ]);
+
+        res.status(200).json({ message: "User logged out successfully" });
+    } catch (err) {
+        res.status(400).json({ error: err });
+    }
+});
+
+app.post("/username", async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const [rows] = await pool.execute(
+            "SELECT username FROM user WHERE email = ?",
+            [email]
+        );
+
+        res.status(200).json({ username: rows[0].username });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+app.post("/profile", async (req, res) => {
+    try {
+        const { name } = req.body;
+
+        const [rows] = await pool.execute(
+            "SELECT * FROM user WHERE username = ?",
+            [name]
+        );
+        
+        res.status(200).json({ user: rows[0] });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
     }
 });
 

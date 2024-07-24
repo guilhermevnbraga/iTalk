@@ -76,11 +76,15 @@ CREATE TABLE user (
   id int NOT NULL AUTO_INCREMENT,
   friend_list_id int DEFAULT NULL,
   name varchar(60) NOT NULL,
+  username varchar(60) not null unique,
   email varchar(90) NOT NULL,
   password varchar(255) NOT NULL,
   profile_picture longblob,
+  status tinyint(1),
   PRIMARY KEY (id),
   UNIQUE KEY email (email),
   KEY fk_friend_list (friend_list_id),
   CONSTRAINT fk_friend_list FOREIGN KEY (friend_list_id) REFERENCES friend_list (id)
 );
+
+select * from user;

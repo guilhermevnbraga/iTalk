@@ -59,7 +59,7 @@ export default function Page() {
             return;
         }
 
-        const userName = firstName + " " + lastName;
+        const userName = firstName.trim() + " " + lastName.trim();
 
         const response = await fetch(
             "https://italk-server.vercel.app/register",

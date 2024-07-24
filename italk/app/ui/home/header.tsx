@@ -16,6 +16,7 @@ import Link from "next/link";
 
 interface HeaderProps {
     username: string;
+    email: string;
 }
 
 interface Data {
@@ -27,17 +28,32 @@ interface User {
     id: Number;
     friend_list_id?: Number;
     name: string;
+    username: string;
     email: string;
     password: string;
     profile_picture: string;
     status: Number;
 }
 
-export default function Header({ username }: HeaderProps) {
+export default function Header({ username, email }: HeaderProps) {
     const [isHidden, setIsHidden] = useState(true);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [data, setData] = useState<Data>({});
     const searchBarRef = useRef(null);
+
+    const logOut = async () => {
+        const response = await fetch('https://italk-server.vercel.app/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+        signOut();
+    }
 
     const searchFriends = async (search: string) => {
         const response = await fetch("https://italk-server.vercel.app/user", {
@@ -104,7 +120,7 @@ export default function Header({ username }: HeaderProps) {
                                 : data.user
                                 ? data.user.map((user: User) => {
                                       return (
-                                          <Link className="flex mb-6" href={'/'}>
+                                          <Link className="flex mb-6" href={`/${user.username}`}>
                                               {user.profile_picture ? (
                                                   <Image
                                                       src={`data:image/jpeg;base64,${user.profile_picture}`}
@@ -178,7 +194,7 @@ export default function Header({ username }: HeaderProps) {
                         </button>
                         <button
                             className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 mt-3"
-                            onClick={() => signOut()}
+                            onClick={() => logOut()}
                         >
                             <ArrowRightOnRectangleIcon className="text-gray-900 w-6 h-6 mr-3" />
                             <span>Logout</span>
