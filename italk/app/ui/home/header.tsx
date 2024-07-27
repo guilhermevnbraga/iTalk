@@ -42,7 +42,7 @@ export default function Header({ username, email }: HeaderProps) {
     const searchBarRef = useRef(null);
 
     const logOut = async () => {
-        const response = await fetch("https://italk-server.vercel.app/logout", {
+        const response = await fetch("http://localhost:3001/logout", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -51,12 +51,12 @@ export default function Header({ username, email }: HeaderProps) {
         });
 
         const data = await response.json();
-        console.log(data);
+        if (response.status === 400) console.log(data);
         signOut();
     };
 
     const searchFriends = async (search: string) => {
-        const response = await fetch("https://italk-server.vercel.app/user", {
+        const response = await fetch("http://localhost:3001/user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -64,11 +64,9 @@ export default function Header({ username, email }: HeaderProps) {
             body: JSON.stringify({ search }),
         });
 
-        const dataa = await response.json();
-
-        console.log(dataa);
-
-        setData(dataa);
+        const data = await response.json();
+        if (response.status === 400) console.log(data);
+        setData(data);
     };
 
     const toggleDiv = () => {
@@ -92,7 +90,7 @@ export default function Header({ username, email }: HeaderProps) {
     }, [searchBarRef]);
 
     return (
-        <header className="w-full flex flex-row items-center py-3 px-6 shadow-lg">
+        <header className="w-full flex flex-row items-center py-3 px-6 shadow-lg z-50">
             <div className="flex w-1/6 font-bold text-2xl">
                 <Link href="/home">
                     <h1>iTalk</h1>

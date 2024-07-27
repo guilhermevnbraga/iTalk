@@ -53,8 +53,8 @@ app.post("/register", async (req, res) => {
         }
 
         await pool.execute(
-            "INSERT INTO user (name, username, email, password) VALUES (?, ?, ?, ?)",
-            [userName, newUserName, email, hashedPassword]
+            "INSERT INTO user (name, username, email, password, status) VALUES (?, ?, ?, ?, ?)",
+            [userName, newUserName, email, hashedPassword, 0]
         );
     } catch (err) {
         if (err.code === "ER_DUP_ENTRY") {
@@ -152,7 +152,12 @@ app.post("/profile", async (req, res) => {
             "SELECT * FROM user WHERE username = ?",
             [name]
         );
-        
+
+        if (rows[0].profile_picture) rows[0].profile_picture = Buffer.from(rows[0].profile_picture).toString("base64")
+        if (rows[0].banner) rows[0].banner = Buffer.from(rows[0].banner).toString("base64")
+
+        console.log(rows[0])
+
         res.status(200).json({ user: rows[0] });
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -295,8 +300,6 @@ app.post("/user", async (req, res) => {
             [`%${search}%`]
         );
 
-        console.log(rows);
-
         if (rows.length === 0) {
             res.status(400).json({ error: "User not found" });
         } else {
@@ -306,6 +309,182 @@ app.post("/user", async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 });
+
+app.post("/hasFriend", async (req, res) => {
+    try {
+        const { userEmail, friendEmail } = req.body;
+
+        const userId = await pool.execute(
+            "SELECT id FROM user WHERE email = ?",
+            [userEmail]
+        );
+        const friendId = await pool.execute(
+            "SELECT id FROM user WHERE email = ?",
+            [friendEmail]
+        );
+
+        const [rows] = await pool.execute(
+            "SELECT * FROM friend WHERE user_id = ? AND friend_id = ?",
+            [userId[0][0].id, friendId[0][0].id]
+        );
+
+        if (rows.length === 0) {
+            res.status(200).json({ hasFriend: false });
+        } else {
+            res.status(200).json({ hasFriend: true });
+        }
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+app.post("/addFriend", async (req, res) => {
+    try {
+        const { userEmail, friendEmail } = req.body;
+
+        const userId = await pool.execute(
+            "SELECT id FROM user WHERE email = ?",
+            [userEmail]
+        );
+        const friendId = await pool.execute(
+            "SELECT id FROM user WHERE email = ?",
+            [friendEmail]
+        );
+
+        await pool.execute(
+            "INSERT INTO friend (user_id, friend_id) VALUES (?, ?)",
+            [userId[0][0].id, friendId[0][0].id]
+        );
+
+        res.status(200).json({ message: "Friend added successfully" });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+app.post("/friends", async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const userId = await pool.execute(
+            "SELECT id FROM user WHERE email = ?",
+            [email]
+        );
+
+        const [rows] = await pool.execute(
+            "SELECT * FROM friend WHERE user_id = ?",
+            [userId[0][0].id]
+        );
+
+        const friends = await Promise.all(
+            rows.map(async (row) => {
+                const friend = await pool.execute(
+                    "SELECT * FROM user WHERE id = ?",
+                    [row.friend_id]
+                );
+
+                return friend[0][0];
+            })
+        );
+
+        console.log(friends);
+        res.status(200).json({ friends });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+app.post("/about", async (req, res) => {
+    try {
+        const { email, about } = req.body;
+
+        const userId = await pool.execute(
+            "select id from user where email = ?",
+            [email]
+        );
+
+        await pool.execute("update user set about = ? where id = ?", [
+            about,
+            userId[0][0].id,
+        ]);
+
+        res.status(200).json({ message: "About updated successfully" });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+app.post(
+    "/updateProfile",
+    upload.fields([
+        { name: "profilePicture", maxCount: 1 },
+        { name: "banner", maxCount: 1 },
+    ]),
+    async (req, res) => {
+        try {
+            const { email, name, username, password, newPassword } = req.body;
+            console.log(req.body)
+
+            const userId = await pool.execute(
+                "select id from user where email = ?",
+                [email]
+            );
+
+            if (password && newPassword) {
+                const [user] = await pool.execute(
+                    "select * from user where id = ?",
+                    [userId[0][0].id]
+                );
+                const match = await bcrypt.compare(password, user[0].password);
+
+                if (match) {
+                    const salt = await bcrypt.genSalt(10);
+                    const hash = await bcrypt.hash(newPassword, salt);
+                    const hashedPassword = hash;
+
+                    await pool.execute(
+                        "update user set password = ? where id = ?",
+                        [hashedPassword, userId[0][0].id]
+                    );
+                } else {
+                    res.status(400).json({ error: "Invalid credentials" });
+                }
+            }
+
+            if (name)
+                await pool.execute("update user set name = ? where id = ?", [
+                    name,
+                    userId[0][0].id,
+                ]);
+
+            if (username)
+                await pool.execute(
+                    "update user set username = ? where id = ?",
+                    [username, userId[0][0].id]
+                );
+
+            if (req.files.profilePicture) {
+                const profilePicture = req.files.profilePicture[0].buffer;
+                await pool.execute(
+                    "update user set profile_picture = ? where id = ?",
+                    [profilePicture, userId[0][0].id]
+                );
+            }
+
+            if (req.files.banner) {
+                const banner = req.files.banner[0].buffer;
+                await pool.execute("update user set banner = ? where id = ?", [
+                    banner,
+                    userId[0][0].id,
+                ]);
+            }
+
+            res.status(200).json({ message: "Profile updated successfully" });
+        } catch (err) {
+            res.status(400).json({ error: err.message });
+        }
+    }
+);
 
 app.listen(3001, () => {
     console.log("Server is running on port 3001");

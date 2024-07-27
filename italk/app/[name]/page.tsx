@@ -1,7 +1,6 @@
 import { getServerSession } from "next-auth";
-import { UserIcon } from "@heroicons/react/24/solid";
+import Banner from "../ui/profile/banner";
 import Header from "../ui/home/header";
-import Image from "next/image";
 import Option from "../ui/profile/options";
 
 export default async function Page({ params }: { params: { name: string } }) {
@@ -10,7 +9,7 @@ export default async function Page({ params }: { params: { name: string } }) {
 
     const { name } = params;
 
-    const response = await fetch("https://italk-server.vercel.app/profile", {
+    const fetchUser = await fetch("http://localhost:3001/profile", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -18,11 +17,29 @@ export default async function Page({ params }: { params: { name: string } }) {
         body: JSON.stringify({ name }),
     });
 
-    const data = await response.json();
-    if (response.status === 400) {
-        console.log(data);
+    const userData = await fetchUser.json();
+    if (fetchUser.status === 400) {
+        console.log(userData);
     } else {
-        user = data.user;
+        user = userData.user;
+    }
+
+    const hasFriend = await fetch("http://localhost:3001/hasFriend", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            userEmail: session?.user?.email,
+            friendEmail: user.email,
+        }),
+    });
+
+    const friendData = await hasFriend.json();
+    if (hasFriend.status === 400) {
+        console.log(friendData);
+    } else {
+        user.hasFriend = friendData.hasFriend;
     }
 
     return (
@@ -32,23 +49,8 @@ export default async function Page({ params }: { params: { name: string } }) {
                 email={session?.user?.email || ""}
             ></Header>
             <div className="flex flex-col w-4/6 grow shadow-[0_0_9px_0_rgba(0,0,0,0.15)]">
-                <div className="flex bg-gray-300 items-end h-[30vh] mb-6 grow-0">
-                    <div className="relative top-6 left-6 flex-row flex items-center">
-                        {user.profile_picture ? (
-                            <Image
-                                src={user.profile_picture}
-                                alt="Profile Picture"
-                                width={100}
-                                height={100}
-                            />
-                        ) : (
-                            <UserIcon className="bg-white h-24 w-24 text-gray-400 border-4 p-1 rounded-[999px]"></UserIcon>
-                        )}
-
-                        <div className="ml-3 font-medium text-3xl">{user.name}</div>
-                    </div>
-                </div>
-                <Option username={user.name}></Option>
+                <Banner banner={user.banner} profile_picture={user.profile_picture} name={user.name} username={session?.user?.name} hasFriend={user.hasFriend} email={user.email} userEmail={session?.user?.email}></Banner>
+                <Option user={user} acessUser={session?.user?.name}></Option>
             </div>
         </main>
     );

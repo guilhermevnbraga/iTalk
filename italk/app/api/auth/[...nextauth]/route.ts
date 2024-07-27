@@ -27,7 +27,7 @@ const handler = NextAuth({
             async authorize(credentials) {
                 try {
                     const response = await fetch(
-                        "https://italk-server.vercel.app/login",
+                        "http://localhost:3001/login",
                         {
                             method: "POST",
                             headers: {

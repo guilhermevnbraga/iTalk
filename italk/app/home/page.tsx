@@ -16,7 +16,7 @@ export default async function Page() {
     }
 
     let username = "";
-    const response = await fetch("https://italk-server.vercel.app/username", {
+    const response = await fetch("http://localhost:3001/username", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export default async function Page() {
     return (
         <div className="min-h-screen flex flex-col">
             <Header
-                username={session?.user?.email || ""}
+                username={session?.user?.name || ""}
                 email={session?.user?.email || ""}
             ></Header>
             <main className="flex grow min-h-screen">

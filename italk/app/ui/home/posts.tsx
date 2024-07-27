@@ -30,7 +30,7 @@ export default function Posts({ username }: HeaderProps) {
 
         setLoading(true);
         try {
-            const response = await fetch("https://italk-server.vercel.app/userPost", {
+            const response = await fetch("http://localhost:3001/userPost", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
