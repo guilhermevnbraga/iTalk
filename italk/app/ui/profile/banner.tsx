@@ -2,28 +2,35 @@
 
 import { useRouter } from "next/navigation";
 import { UserIcon } from "@heroicons/react/24/solid";
+import { useRef, useEffect } from "react";
 import Image from "next/image";
 
 interface BannerProps {
-    banner: string;
-    profile_picture: string;
+    user: User;
+    acessUsername: string;
+    acessUserEmail: string;
+}
+
+interface User {
+    id: Number;
     name: string;
-    username: string | null | undefined;
-    hasFriend: boolean;
+    username: string;
     email: string;
-    userEmail: string | null | undefined;
+    password: string;
+    profile_picture: string;
+    banner: string;
+    status: Number;
+    about?: string;
+    hasFriend: boolean;
 }
 
 export default function Banner({
-    banner,
-    profile_picture,
-    name,
-    username,
-    hasFriend,
-    email,
-    userEmail,
+    user,
+    acessUsername,
+    acessUserEmail,
 }: BannerProps) {
     const router = useRouter();
+    const profilePictureRef = useRef(null);
 
     const addFriend = async () => {
         await fetch("http://localhost:3001/addFriend", {
@@ -32,43 +39,83 @@ export default function Banner({
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                userEmail: userEmail,
-                friendEmail: email,
+                userEmail: acessUserEmail,
+                friendEmail: user.email,
             }),
         });
         router.refresh();
     };
 
+    const handleRemoveFriend = async () => {
+        const response = await fetch("http://localhost:3001/deleteFriend", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: user.username,
+                acessUsername: acessUsername,
+            }),
+        });
+
+        const data = await response.json();
+        if (response.status === 400) {
+            console.log(data.error);
+        } else {
+            console.log(data);
+        }
+
+        router.refresh();
+    };
+
     return (
-        <div className="flex relative bg-gray-300 items-end h-[30vh] mb-16 grow-0">
-            {banner ? (
+        <div className="flex relative bg-gray-300 items-end h-[40vh] mb-20 grow-0">
+            {user.banner ? (
                 <Image
-                    src={`data:image/jpeg;base64,${banner}`}
+                    src={`data:image/jpeg;base64,${user.banner}`}
                     layout="fill"
                     objectFit="cover"
                     alt="banner"
                 ></Image>
             ) : null}
-            <div className="relative top-16 left-6 flex-row flex items-center justify-between w-[96%]">
+            <div className="relative top-20 left-6 flex-row flex items-center justify-between w-[96%]">
                 <div className="flex items-center">
-                    {profile_picture ? (
+                    {user.profile_picture ? (
                         <Image
-                            src={`data:image/jpeg;base64,${profile_picture}`}
+                            ref={profilePictureRef}
+                            src={`data:image/jpeg;base64,${user.profile_picture}`}
                             alt="Profile Picture"
                             width={100}
                             height={100}
-                            className="rounded-[999px]"
+                            className="rounded-[100%] w-32 h-32 border-4 border-white"
                         />
                     ) : (
-                        <UserIcon className="bg-white h-24 w-24 text-gray-400 border-4 p-1 rounded-[999px]"></UserIcon>
+                        <UserIcon className="bg-white h-32 w-32 text-gray-400 border-4 p-1 rounded-[999px]"></UserIcon>
                     )}
 
-                    <div className="ml-3 font-medium text-3xl">{name}</div>
+                    <div className="relative ml-3 top-3 font-medium text-3xl">
+                        {user.name}
+                    </div>
                 </div>
-                {name === username ? null : hasFriend ? null : (
+                {user.username === acessUsername ? null : user.hasFriend ? (
+                    <div className="mt-3 text-white text-sm">
+                        <button
+                            onClick={() =>  router.push(`/${user.username}/chat`)}
+                            className="bg-green-500 rounded-md px-1 py-1"
+                        >
+                            Send Message
+                        </button>
+                        <button
+                            onClick={handleRemoveFriend}
+                            className="ml-3 bg-red-500 rounded-md px-1 py-1"
+                        >
+                            Remove Friend
+                        </button>
+                    </div>
+                ) : (
                     <button
                         onClick={addFriend}
-                        className="ml-3 bg-green-500 text-white rounded-md px-3 py-1"
+                        className="ml-3 bg-green-500 text-white rounded-md px-3 py-1 mt-3"
                     >
                         Add Friend
                     </button>

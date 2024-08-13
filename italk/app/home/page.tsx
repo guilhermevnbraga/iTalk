@@ -16,7 +16,7 @@ export default async function Page() {
     }
 
     let username = "";
-    const response = await fetch("http://localhost:3001/username", {
+    const fetchUsername = await fetch("http://localhost:3001/username", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -24,17 +24,34 @@ export default async function Page() {
         body: JSON.stringify({ email: session?.user?.email }),
     });
 
-    const data = await response.json();
-    if (response.status === 400) {
-        console.log(data);
+    const usernameData = await fetchUsername.json();
+    if (fetchUsername.status === 400) {
+        console.log(usernameData);
     } else {
-        username = data.username;
+        username = usernameData.username;
+    }
+
+    let profilePicture = '';
+    const fetchProfile = await fetch("http://localhost:3001/profile", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: username }),
+    });
+
+    const profileData = await fetchProfile.json();
+    if (fetchProfile.status === 400) {
+        console.log(profileData);
+    } else {
+        profilePicture = profileData.user.profile_picture;
     }
 
     return (
         <div className="min-h-screen flex flex-col">
             <Header
-                username={session?.user?.name || ""}
+                name={session?.user?.name || ""}
+                username={username}
                 email={session?.user?.email || ""}
             ></Header>
             <main className="flex grow min-h-screen">
@@ -59,7 +76,7 @@ export default async function Page() {
                 <div className="p-6 items-center flex flex-col grow">
                     <Post
                         email={session?.user?.email || ""}
-                        profile={null}
+                        profile={profilePicture}
                         name={session?.user?.name || ""}
                     ></Post>
                     <Posts></Posts>

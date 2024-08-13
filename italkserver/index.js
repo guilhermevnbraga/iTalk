@@ -4,6 +4,9 @@ const cors = require("cors");
 const express = require("express");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
+const {
+    waitUntilSymbol,
+} = require("next/dist/server/web/spec-extension/fetch-event");
 const app = express();
 
 const storage = multer.memoryStorage();
@@ -153,10 +156,12 @@ app.post("/profile", async (req, res) => {
             [name]
         );
 
-        if (rows[0].profile_picture) rows[0].profile_picture = Buffer.from(rows[0].profile_picture).toString("base64")
-        if (rows[0].banner) rows[0].banner = Buffer.from(rows[0].banner).toString("base64")
-
-        console.log(rows[0])
+        if (rows[0].profile_picture)
+            rows[0].profile_picture = Buffer.from(
+                rows[0].profile_picture
+            ).toString("base64");
+        if (rows[0].banner)
+            rows[0].banner = Buffer.from(rows[0].banner).toString("base64");
 
         res.status(200).json({ user: rows[0] });
     } catch (err) {
@@ -245,12 +250,22 @@ app.post("/userPost", async (req, res) => {
 
         const posts = await Promise.all(
             rows.map(async (row) => {
+                const userName = await pool.execute(
+                    "select username from user where id = ?",
+                    [row.user_id]
+                );
+
+                row.username = userName[0][0].username;
+
                 const user = await pool.execute(
-                    "SELECT name FROM user WHERE id = ?",
+                    "SELECT * FROM user WHERE id = ?",
                     [row.user_id]
                 );
 
                 row.name = user[0][0].name;
+                row.profilePicture = Buffer.from(
+                    user[0][0].profile_picture
+                ).toString("base64");
 
                 const rawPictures = await pool.execute(
                     "SELECT picture FROM post_picture WHERE post_id = ?",
@@ -299,6 +314,17 @@ app.post("/user", async (req, res) => {
             "SELECT * FROM user WHERE name LIKE ?",
             [`%${search}%`]
         );
+
+        const newRows = rows.map((row) => {
+            if (row.profile_picture)
+                row.profile_picture = Buffer.from(row.profile_picture).toString(
+                    "base64"
+                );
+            if (row.banner)
+                row.banner = Buffer.from(row.banner).toString("base64");
+
+            return row;
+        });
 
         if (rows.length === 0) {
             res.status(400).json({ error: "User not found" });
@@ -382,13 +408,25 @@ app.post("/friends", async (req, res) => {
                     "SELECT * FROM user WHERE id = ?",
                     [row.friend_id]
                 );
-
+9
                 return friend[0][0];
             })
         );
 
-        console.log(friends);
-        res.status(200).json({ friends });
+        const newFriends = friends.map((friend) => {
+            if (friend.profile_picture)
+                friend.profile_picture = Buffer.from(
+                    friend.profile_picture
+                ).toString("base64");
+            if (friend.banner)
+                friend.banner = Buffer.from(friend.banner).toString("base64");
+
+            return friend;
+        });
+
+        newFriends.sort((a, b) => a.name.localeCompare(b.name));    
+
+        res.status(200).json({ newFriends });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -423,7 +461,6 @@ app.post(
     async (req, res) => {
         try {
             const { email, name, username, password, newPassword } = req.body;
-            console.log(req.body)
 
             const userId = await pool.execute(
                 "select id from user where email = ?",
@@ -485,6 +522,32 @@ app.post(
         }
     }
 );
+
+app.post("/deleteFriend", async (req, res) => {
+    try {
+        const { username, acessUsername } = req.body;
+
+        const userId = await pool.execute(
+            "select id from user where username = ?",
+            [username]
+        );
+        const acessUserId = await pool.execute(
+            "select id from user where username = ?",
+            [acessUsername]
+        );
+
+        console.log(userId[0][0].id, acessUserId[0][0].id);
+
+        await pool.execute(
+            "delete from friend where (user_id, friend_id) = (?, ?)",
+            [acessUserId[0][0].id, userId[0][0].id]
+        );
+
+        res.status(200).json({ message: "Friend deleted successfully" });
+    } catch (e) {
+        res.status(400).json({ error: e.message });
+    }
+});
 
 app.listen(3001, () => {
     console.log("Server is running on port 3001");

@@ -2,18 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { UserIcon, MapPinIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
 import Image from "next/image";
 
 interface Post {
     id: number;
     name: string;
     message: string;
-    picture?: File | null;
+    profilePicture?: string | null;
     locale?: string | null;
     mood?: string | null;
     pictures?: Array<string> | null;
     attachments?: Array<any> | null;
     date: Date;
+    username: string;
 }
 
 interface HeaderProps {
@@ -51,12 +53,13 @@ export default function Posts({ username }: HeaderProps) {
                                 id: post.id,
                                 name: post.name,
                                 message: post.message,
-                                picture: post.picture || null,
+                                profilePicture: post.profilePicture || null,
                                 locale: post.locale || null,
                                 mood: post.mood || null,
                                 pictures: post.pictures || null,
                                 attachments: post.attachments || null,
                                 date: new Date(post.date),
+                                username: post.username
                             };
                             const updatedElements = [
                                 ...prevElements,
@@ -100,12 +103,14 @@ export default function Posts({ username }: HeaderProps) {
                     className="flex flex-col w-full bg-white rounded-2xl shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] p-6 mb-6"
                 >
                     <div className="flex justify-between items-center">
-                        <div className="flex flex-row mb-2">
-                            {element.picture ? (
+                        <Link href={`/${element.username}`} className="flex flex-row mb-2">
+                            {element.profilePicture ? (
                                 <Image
-                                    src={""}
+                                    src={`data:image/jpeg;base64,${element.profilePicture}`}
                                     alt="perfil"
-                                    className="w-12 h-12 mr-2 rounded-[50%] p-1"
+                                    className="w-16 h-16 mr-2 rounded-[50%] p-1"
+                                    width={100}
+                                    height={100}
                                 />
                             ) : (
                                 <UserIcon className="bg-gray-300 text-gray-500 w-12 h-12 mr-2 rounded-[50%] p-1" />
@@ -123,7 +128,7 @@ export default function Posts({ username }: HeaderProps) {
                                     </div>
                                 ) : null}
                             </div>
-                        </div>
+                        </Link>
                         <aside className="font-thin">
                             <span>{`${
                                 element.date.getMonth() + 1 >= 10

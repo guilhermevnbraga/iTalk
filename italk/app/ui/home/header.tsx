@@ -15,6 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface HeaderProps {
+    name: string;
     username: string;
     email: string;
 }
@@ -35,7 +36,7 @@ interface User {
     status: Number;
 }
 
-export default function Header({ username, email }: HeaderProps) {
+export default function Header({ name, username, email }: HeaderProps) {
     const [isHidden, setIsHidden] = useState(true);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [data, setData] = useState<Data>({});
@@ -65,6 +66,7 @@ export default function Header({ username, email }: HeaderProps) {
         });
 
         const data = await response.json();
+        console.log(data);
         if (response.status === 400) console.log(data);
         setData(data);
     };
@@ -98,7 +100,6 @@ export default function Header({ username, email }: HeaderProps) {
             </div>
             <div className="w-2/3 relative" ref={searchBarRef}>
                 <div
-                    id="aqui"
                     className="flex flex-row rounded-3xl shadow p-3 cursor-pointer"
                     onClick={() => setIsSearchActive(true)}
                 >
@@ -120,17 +121,19 @@ export default function Header({ username, email }: HeaderProps) {
                                       return (
                                           <Link
                                               key={idx}
-                                              className="flex mb-6"
+                                              className="flex mb-6 items-center"
                                               href={`/${user.username}`}
                                           >
                                               {user.profile_picture ? (
                                                   <Image
                                                       src={`data:image/jpeg;base64,${user.profile_picture}`}
                                                       alt="perfil"
-                                                      className="w-6 h-6 mr-2 rounded-[50%] p-1"
+                                                      className="w-12 h-12 mr-2 rounded-[50%] p-1"
+                                                      width={30}
+                                                      height={30}
                                                   />
                                               ) : (
-                                                  <UserIcon className="w-6 h-6 mr-3"></UserIcon>
+                                                  <UserIcon className="w-12 h-12 mr-3"></UserIcon>
                                               )}
                                               <p>{user.name}</p>
                                           </Link>
@@ -155,7 +158,7 @@ export default function Header({ username, email }: HeaderProps) {
                     <div className="flex flex-row justify-between items-center">
                         <button className="mr-3" onClick={toggleDiv}>
                             <span className="items-center flex hover:scale-105 hover:underline">
-                                {username}
+                                {name}
                             </span>
                         </button>
                         <button
@@ -174,7 +177,7 @@ export default function Header({ username, email }: HeaderProps) {
                     <div className="flex flex-col p-6 bg-white shadow-lg rounded">
                         <button className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95">
                             <UserIcon className="text-gray-900 w-6 h-6 mr-3" />
-                            <Link href="/profile">
+                            <Link href={username}>
                                 <span>Your Profile</span>
                             </Link>
                         </button>

@@ -149,9 +149,11 @@ export default function Post({ email, profile, name }: PostProps) {
                     <div className="flex flex-row mb-2">
                         {profile ? (
                             <Image
-                                src={profile}
+                                src={`data:image/jpeg;base64,${profile}`}
                                 alt="perfil"
-                                className="w-12 h-12 mr-2 rounded-[50%] p-1"
+                                className="w-16 h-16 mr-2 rounded-[50%] p-1"
+                                width={100}
+                                height={100}
                             />
                         ) : (
                             <UserIcon className="bg-gray-300 text-gray-500 w-12 h-12 mr-2 rounded-[50%] p-1" />

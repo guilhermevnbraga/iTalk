@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { UserIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import Posts from "../home/posts";
@@ -9,11 +10,6 @@ import Image from "next/image";
 interface HeaderProps {
     user: User;
     acessUser: string | null | undefined;
-}
-
-interface Data {
-    error?: string;
-    friends?: Array<User>;
 }
 
 interface User {
@@ -26,6 +22,11 @@ interface User {
     banner: string;
     status: Number;
     about?: string;
+}
+
+interface Data {
+    error?: string;
+    newFriends?: Array<User>;
 }
 
 export default function Option({ user, acessUser }: HeaderProps) {
@@ -51,6 +52,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
     const profilePictureRef = useRef<HTMLInputElement>(null);
     const bannerRef = useRef<HTMLInputElement>(null);
     const formRef = useRef<HTMLFormElement>(null);
+    const router = useRouter();
 
     useEffect(() => {
         const textarea = textareaRef.current;
@@ -71,8 +73,6 @@ export default function Option({ user, acessUser }: HeaderProps) {
 
         const data = await response.json();
         if (response.status === 400) {
-            console.log(data);
-        } else {
             console.log(data);
         }
         setData(data);
@@ -97,7 +97,6 @@ export default function Option({ user, acessUser }: HeaderProps) {
     };
 
     const handleProfileUpdate = async (e: React.FormEvent) => {
-        e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
 
         formData.append("email", user.email);
@@ -132,6 +131,29 @@ export default function Option({ user, acessUser }: HeaderProps) {
         } else {
             console.log(data);
         }
+    };
+
+    const handleRemoveFriend = async (friendUsername: string) => {
+        const response = await fetch("http://localhost:3001/deleteFriend", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: friendUsername,
+                acessUsername: user.username,
+            }),
+        });
+
+        const data = await response.json();
+        if (response.status === 400) {
+            console.log(data.error);
+        } else {
+            console.log(data);
+        }
+
+        fetchFriends();
+        router.refresh();
     };
 
     return (
@@ -172,7 +194,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
                 >
                     About
                 </button>
-                {user.name === acessUser ? (
+                {user.username === acessUser ? (
                     <button
                         className={`hover:text-blue-600 active:scale-95 font-medium text-lg ${
                             option === 3
@@ -191,25 +213,41 @@ export default function Option({ user, acessUser }: HeaderProps) {
             <div className={`p-6 ${option === 1 ? "" : " hidden"}`}>
                 {data.error
                     ? data.error
-                    : data.friends
-                    ? data.friends.map((user: User, idx) => {
+                    : data.newFriends
+                    ? data.newFriends.map((user: User, idx) => {
                           return (
-                              <Link
+                              <div
                                   key={idx}
-                                  className="flex mb-6 items-center"
-                                  href={`/${user.username}`}
+                                  className="flex justify-between items-center"
                               >
-                                  {user.profile_picture ? (
-                                      <Image
-                                          src={`data:image/jpeg;base64,${user.profile_picture}`}
-                                          alt="perfil"
-                                          className="w-6 h-6 mr-2 rounded-[50%] p-1"
-                                      />
-                                  ) : (
-                                      <UserIcon className="w-12 h-12 mr-3 text-gray-400 border-2 rounded-2xl"></UserIcon>
+                                  <Link
+                                      className="flex mb-6 items-center"
+                                      href={`/${user.username}`}
+                                  >
+                                      {user.profile_picture ? (
+                                          <Image
+                                              src={`data:image/jpeg;base64,${user.profile_picture}`}
+                                              alt="perfil"
+                                              width={100}
+                                              height={100}
+                                              className="w-24 h-24 mr-2 rounded-[50%] p-1"
+                                          />
+                                      ) : (
+                                          <UserIcon className="w-24 h-24 mr-3 text-gray-400 border-2 rounded-2xl"></UserIcon>
+                                      )}
+                                      <p>{user.name}</p>
+                                  </Link>
+                                  {user.username === acessUser ? null : (
+                                      <button
+                                          onClick={() =>
+                                              handleRemoveFriend(user.username)
+                                          }
+                                          className="bg-red-400 text-white p-2 w-fit h-fit rounded-2xl text-sm"
+                                      >
+                                          Remove Friend
+                                      </button>
                                   )}
-                                  <p>{user.name}</p>
-                              </Link>
+                              </div>
                           );
                       })
                     : null}
@@ -231,10 +269,9 @@ export default function Option({ user, acessUser }: HeaderProps) {
                             setContent(e.target.value);
                         }}
                         disabled={aboutEditMode ? false : true}
-                    >
-                        {user.about ? user.about : ""}
-                    </textarea>
-                    {user.name === acessUser ? (
+                        value={content ? content : user.about ? user.about : ""}
+                    ></textarea>
+                    {user.username === acessUser ? (
                         <>
                             <div
                                 className={`w-full flex justify-end ${
@@ -258,7 +295,6 @@ export default function Option({ user, acessUser }: HeaderProps) {
                             >
                                 <button
                                     type="submit"
-                                    onClick={(e) => e.preventDefault()}
                                     className="px-3 py-0.5 bg-green-400 rounded-md mr-3"
                                 >
                                     Save
@@ -266,6 +302,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
                                 <button
                                     onClick={(e) => {
                                         e.preventDefault();
+                                        setContent("");
                                         setAboutEditMode(false);
                                         if (textareaRef.current) {
                                             if (user.about)
@@ -452,14 +489,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
                                     <span className="mb-1">
                                         Profile Picture
                                     </span>
-                                    {user.profile_picture ? (
-                                        <Image
-                                            src={`data:image/jpeg;base64,${user.profile_picture}`}
-                                            alt="Profile Picture"
-                                            width={100}
-                                            height={100}
-                                        />
-                                    ) : profilePicture ? (
+                                    {profilePicture ? (
                                         <Image
                                             src={URL.createObjectURL(
                                                 profilePicture
@@ -467,7 +497,13 @@ export default function Option({ user, acessUser }: HeaderProps) {
                                             alt="Profile Picture"
                                             width={100}
                                             height={100}
-                                            className="rounded-[999px]"
+                                        />
+                                    ) : user.profile_picture ? (
+                                        <Image
+                                            src={`data:image/jpeg;base64,${user.profile_picture}`}
+                                            alt="Profile Picture"
+                                            width={100}
+                                            height={100}
                                         />
                                     ) : (
                                         <UserIcon className="bg-white h-24 text-gray-400 border-4 p-1 rounded-[999px]"></UserIcon>
@@ -497,16 +533,16 @@ export default function Option({ user, acessUser }: HeaderProps) {
                                 </div>
                                 <div className="w-full h-full flex flex-col justify-around items-center">
                                     <span className="mb-1">Banner</span>
-                                    {user.banner ? (
+                                    {banner ? (
                                         <Image
-                                            src={`data:image/jpeg;base64,${user.banner}`}
+                                            src={URL.createObjectURL(banner)}
                                             alt="Banner"
                                             width={200}
                                             height={100}
                                         />
-                                    ) : banner ? (
+                                    ) : user.banner ? (
                                         <Image
-                                            src={URL.createObjectURL(banner)}
+                                            src={`data:image/jpeg;base64,${user.banner}`}
                                             alt="Banner"
                                             width={200}
                                             height={100}
