@@ -408,7 +408,7 @@ app.post("/friends", async (req, res) => {
                     "SELECT * FROM user WHERE id = ?",
                     [row.friend_id]
                 );
-9
+                9;
                 return friend[0][0];
             })
         );
@@ -424,7 +424,7 @@ app.post("/friends", async (req, res) => {
             return friend;
         });
 
-        newFriends.sort((a, b) => a.name.localeCompare(b.name));    
+        newFriends.sort((a, b) => a.name.localeCompare(b.name));
 
         res.status(200).json({ newFriends });
     } catch (err) {
@@ -546,6 +546,78 @@ app.post("/deleteFriend", async (req, res) => {
         res.status(200).json({ message: "Friend deleted successfully" });
     } catch (e) {
         res.status(400).json({ error: e.message });
+    }
+});
+
+app.post("/sendMessage", async (req, res) => {
+    try {
+        const { username, recieverName, message } = req.body;
+
+        const userId = await pool.execute(
+            "SELECT id FROM user WHERE username = ?",
+            [username]
+        );
+
+        const recieverId = await pool.execute(
+            "SELECT id FROM user WHERE username = ?",
+            [recieverName]
+        );
+
+        await pool.execute(
+            "INSERT INTO message (sender_id, reciever_id, content, date) VALUES (?, ?, ?, ?)",
+            [
+                userId[0][0].id,
+                recieverId[0][0].id,
+                message,
+                Date.now(),
+            ]
+        );
+
+        res.status(200).json({ message: "Message sent successfully" });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+app.post("/messages", async (req, res) => {
+    try {
+        const { email, friendEmail } = req.body;
+
+        const userId = await pool.execute(
+            "SELECT id FROM user WHERE email = ?",
+            [email]
+        );
+        const friendId = await pool.execute(
+            "SELECT id FROM user WHERE email = ?",
+            [friendEmail]
+        );
+
+        const [rows] = await pool.execute(
+            "SELECT * FROM message WHERE user_id = ? AND friend_id = ? OR user_id = ? AND friend_id = ? ORDER BY date",
+            [
+                userId[0][0].id,
+                friendId[0][0].id,
+                friendId[0][0].id,
+                userId[0][0].id,
+            ]
+        );
+
+        const messages = await Promise.all(
+            rows.map(async (row) => {
+                const user = await pool.execute(
+                    "SELECT * FROM user WHERE id = ?",
+                    [row.user_id]
+                );
+
+                row.username = user[0][0].username;
+
+                return row;
+            })
+        );
+
+        res.status(200).json({ messages });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
     }
 });
 

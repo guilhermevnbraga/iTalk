@@ -92,7 +92,7 @@ export default function Header({ name, username, email }: HeaderProps) {
     }, [searchBarRef]);
 
     return (
-        <header className="w-full flex flex-row items-center py-3 px-6 shadow-lg z-50">
+        <header className="w-full flex flex-row items-center py-3 px-6 shadow-lg z-50 h-[8vh]">
             <div className="flex w-1/6 font-bold text-2xl">
                 <Link href="/home">
                     <h1>iTalk</h1>

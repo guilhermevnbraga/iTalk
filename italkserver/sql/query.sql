@@ -8,6 +8,12 @@ CREATE TABLE attachments (
   CONSTRAINT attachments_ibfk_1 FOREIGN KEY (post_id) REFERENCES post (id)
 );
 
+CREATE TABLE friend (
+  user_id int,
+  friend_id int,
+  primary key (user_id, friend_id)
+);
+
 CREATE TABLE chat_history (
   id int NOT NULL AUTO_INCREMENT,
   user1_id int DEFAULT NULL,
@@ -19,29 +25,12 @@ CREATE TABLE chat_history (
   CONSTRAINT fk_history_user2 FOREIGN KEY (user2_id) REFERENCES user (id)
 );
 
-CREATE TABLE friend_list (
-  id int NOT NULL AUTO_INCREMENT,
-  user_id int NOT NULL,
-  PRIMARY KEY (id),
-  KEY user_id (user_id),
-  CONSTRAINT friend_list_ibfk_1 FOREIGN KEY (user_id) REFERENCES user (id)
-);
-
-CREATE TABLE friend_list_has_user (
-  user_id int NOT NULL,
-  friend_list_id int NOT NULL,
-  PRIMARY KEY (user_id,friend_list_id),
-  KEY fk_friend_list_user (friend_list_id),
-  CONSTRAINT fk_friend_list_user FOREIGN KEY (friend_list_id) REFERENCES friend_list (id),
-  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES user (id)
-);
-
 CREATE TABLE message (
-  user_id int NOT NULL,
   chat_history_id int NOT NULL,
   content text,
   attachment longblob,
   reaction int unsigned DEFAULT NULL,
+  date time,
   PRIMARY KEY (user_id,chat_history_id),
   KEY fk_message_history (chat_history_id),
   CONSTRAINT fk_message_history FOREIGN KEY (chat_history_id) REFERENCES chat_history (id),
@@ -80,7 +69,9 @@ CREATE TABLE user (
   email varchar(90) NOT NULL,
   password varchar(255) NOT NULL,
   profile_picture longblob,
+  banner longblob,
   status tinyint(1),
+  about text,
   PRIMARY KEY (id),
   UNIQUE KEY email (email),
   KEY fk_friend_list (friend_list_id),
@@ -88,3 +79,5 @@ CREATE TABLE user (
 );
 
 select * from user;
+select * from friend;
+delete from friend where (user_id, friend_id) = (1, 7)
