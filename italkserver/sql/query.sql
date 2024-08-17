@@ -64,3 +64,7 @@ CREATE TABLE post_picture (
   KEY post_id (post_id),
   CONSTRAINT post_picture_ibfk_1 FOREIGN KEY (post_id) REFERENCES post (id)
 );
+
+select * from user;
+select * from post;
+select * from message;

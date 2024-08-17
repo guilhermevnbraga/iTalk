@@ -109,10 +109,20 @@ export default function Chat({ username, email }: { username: string, email: str
         fetchMessages();
     }, [userName]);
 
+    useEffect(() => {
+        if (userName === "") return;
+
+        const intervalId = setInterval(() => {
+            fetchMessages();
+        }, 1000);
+
+        return () => clearInterval(intervalId); // Limpa o intervalo quando o componente for desmontado
+    }, []);
+
     const handleSendMessage = async () => {
         if (messageRef.current) {
             messageRef.current.value = "";
-        }
+        }   
         const response = await fetch("https://italk-server.vercel.app/sendMessage", {
             method: "POST",
             headers: {

@@ -6,11 +6,32 @@ const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const app = express();
 
-app.use(cors({
-    origin: 'https://italk-zeta.vercel.app',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+const allowedOrigins = [
+    "https://italk-zeta.vercel.app",
+    "http://localhost:3000",
+];
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
 
 const storage = multer.memoryStorage();
 
@@ -581,8 +602,6 @@ app.post("/messages", async (req, res) => {
     try {
         const { username, recieverName } = req.body;
 
-        console.log(username, recieverName);
-
         const userId = await pool.execute(
             "SELECT id FROM user WHERE username = ?",
             [username]
@@ -591,8 +610,6 @@ app.post("/messages", async (req, res) => {
             "SELECT id FROM user WHERE username = ?",
             [recieverName]
         );
-
-        console.log(userId[0][0], friendId[0][0]);
 
         const [senderMessages] = await pool.execute(
             "SELECT * FROM message WHERE sender_id = ? AND reciever_id = ? ORDER BY date",
