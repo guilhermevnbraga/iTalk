@@ -7,7 +7,7 @@ export default async function Page({ params }: { params: { name: string } }) {
     const session = await getServerSession();
     const { name } = params;
 
-    const fetchUsername = await fetch("http://localhost:3001/username", {
+    const fetchUsername = await fetch("https://italk-server.vercel.app/username", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

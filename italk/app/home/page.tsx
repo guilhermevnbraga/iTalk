@@ -16,7 +16,7 @@ export default async function Page() {
     }
 
     let username = "";
-    const fetchUsername = await fetch("http://localhost:3001/username", {
+    const fetchUsername = await fetch("https://italk-server.vercel.app/username", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -32,7 +32,7 @@ export default async function Page() {
     }
 
     let profilePicture = '';
-    const fetchProfile = await fetch("http://localhost:3001/profile", {
+    const fetchProfile = await fetch("https://italk-server.vercel.app/profile", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

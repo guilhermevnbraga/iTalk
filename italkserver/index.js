@@ -581,39 +581,40 @@ app.post("/sendMessage", async (req, res) => {
 
 app.post("/messages", async (req, res) => {
     try {
-        const { email, friendEmail } = req.body;
+        const { username, recieverName } = req.body;
+
+        console.log(username, recieverName);
 
         const userId = await pool.execute(
-            "SELECT id FROM user WHERE email = ?",
-            [email]
+            "SELECT id FROM user WHERE username = ?",
+            [username]
         );
         const friendId = await pool.execute(
-            "SELECT id FROM user WHERE email = ?",
-            [friendEmail]
+            "SELECT id FROM user WHERE username = ?",
+            [recieverName]
         );
 
-        const [rows] = await pool.execute(
-            "SELECT * FROM message WHERE user_id = ? AND friend_id = ? OR user_id = ? AND friend_id = ? ORDER BY date",
+        console.log(userId[0][0], friendId[0][0]);
+
+        const [senderMessages] = await pool.execute(
+            "SELECT * FROM message WHERE sender_id = ? AND reciever_id = ? ORDER BY date",
             [
                 userId[0][0].id,
                 friendId[0][0].id,
+            ]
+        );
+        
+        const [recieverMessages] = await pool.execute(
+            "SELECT * FROM message WHERE sender_id = ? AND reciever_id = ? ORDER BY date",
+            [
                 friendId[0][0].id,
                 userId[0][0].id,
             ]
         );
 
-        const messages = await Promise.all(
-            rows.map(async (row) => {
-                const user = await pool.execute(
-                    "SELECT * FROM user WHERE id = ?",
-                    [row.user_id]
-                );
+        const messages = [...senderMessages, ...recieverMessages];
 
-                row.username = user[0][0].username;
-
-                return row;
-            })
-        );
+        messages.sort((a, b) => new Date(a.date) - new Date(b.date));
 
         res.status(200).json({ messages });
     } catch (err) {

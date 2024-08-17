@@ -14,28 +14,20 @@ CREATE TABLE friend (
   primary key (user_id, friend_id)
 );
 
-CREATE TABLE chat_history (
-  id int NOT NULL AUTO_INCREMENT,
-  user1_id int DEFAULT NULL,
-  user2_id int DEFAULT NULL,
-  PRIMARY KEY (id),
-  KEY fk_history_user1 (user1_id),
-  KEY fk_history_user2 (user2_id),
-  CONSTRAINT fk_history_user1 FOREIGN KEY (user1_id) REFERENCES user (id),
-  CONSTRAINT fk_history_user2 FOREIGN KEY (user2_id) REFERENCES user (id)
-);
-
 CREATE TABLE message (
-  chat_history_id int NOT NULL,
+  id int NOT NULL AUTO_INCREMENT,
+  sender_id int NOT NULL,
+  reciever_id int NOT NULL,
   content text,
   attachment longblob,
   reaction int unsigned DEFAULT NULL,
-  date time,
-  PRIMARY KEY (user_id,chat_history_id),
-  KEY fk_message_history (chat_history_id),
-  CONSTRAINT fk_message_history FOREIGN KEY (chat_history_id) REFERENCES chat_history (id),
-  CONSTRAINT fk_message_user FOREIGN KEY (user_id) REFERENCES user (id)
+  date bigint not null,
+  PRIMARY KEY (id),
+  FOREIGN KEY (sender_id) REFERENCES user (id),
+  FOREIGN KEY (reciever_id) REFERENCES user (id) ON DELETE CASCADE
 );
+
+select * from message;
 
 CREATE TABLE post (
   id varchar(36) NOT NULL,
@@ -65,7 +57,7 @@ CREATE TABLE user (
   id int NOT NULL AUTO_INCREMENT,
   friend_list_id int DEFAULT NULL,
   name varchar(60) NOT NULL,
-  username varchar(60) not null unique,
+  username varchar(60) NOT NULL UNIQUE,
   email varchar(90) NOT NULL,
   password varchar(255) NOT NULL,
   profile_picture longblob,
@@ -80,4 +72,3 @@ CREATE TABLE user (
 
 select * from user;
 select * from friend;
-delete from friend where (user_id, friend_id) = (1, 7)
