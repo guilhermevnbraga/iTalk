@@ -4,10 +4,13 @@ const cors = require("cors");
 const express = require("express");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
-const {
-    waitUntilSymbol,
-} = require("next/dist/server/web/spec-extension/fetch-event");
 const app = express();
+
+app.use(cors({
+    origin: 'https://italk-zeta.vercel.app',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 const storage = multer.memoryStorage();
 
@@ -565,12 +568,7 @@ app.post("/sendMessage", async (req, res) => {
 
         await pool.execute(
             "INSERT INTO message (sender_id, reciever_id, content, date) VALUES (?, ?, ?, ?)",
-            [
-                userId[0][0].id,
-                recieverId[0][0].id,
-                message,
-                Date.now(),
-            ]
+            [userId[0][0].id, recieverId[0][0].id, message, Date.now()]
         );
 
         res.status(200).json({ message: "Message sent successfully" });
@@ -598,18 +596,12 @@ app.post("/messages", async (req, res) => {
 
         const [senderMessages] = await pool.execute(
             "SELECT * FROM message WHERE sender_id = ? AND reciever_id = ? ORDER BY date",
-            [
-                userId[0][0].id,
-                friendId[0][0].id,
-            ]
+            [userId[0][0].id, friendId[0][0].id]
         );
-        
+
         const [recieverMessages] = await pool.execute(
             "SELECT * FROM message WHERE sender_id = ? AND reciever_id = ? ORDER BY date",
-            [
-                friendId[0][0].id,
-                userId[0][0].id,
-            ]
+            [friendId[0][0].id, userId[0][0].id]
         );
 
         const messages = [...senderMessages, ...recieverMessages];
