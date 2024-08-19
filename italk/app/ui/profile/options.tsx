@@ -63,7 +63,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
     }, []);
 
     const fetchFriends = async () => {
-        const response = await fetch("https://italk-server.vercel.app/friends", {
+        const response = await fetch("http://localhost:3001/friends", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
     };
 
     const handleAboutSubmit = async () => {
-        const response = await fetch("https://italk-server.vercel.app/about", {
+        const response = await fetch("http://localhost:3001/about", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -97,6 +97,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
     };
 
     const handleProfileUpdate = async (e: React.FormEvent) => {
+        e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
 
         formData.append("email", user.email);
@@ -119,7 +120,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
             formData.append("banner", banner);
         }
 
-        const response = await fetch("https://italk-server.vercel.app/updateProfile", {
+        const response = await fetch("http://localhost:3001/updateProfile", {
             method: "POST",
             body: formData,
         });
@@ -128,13 +129,28 @@ export default function Option({ user, acessUser }: HeaderProps) {
         const data = await response.json();
         if (response.status === 400) {
             setCredentialError(data.error);
-        } else {
+        } else if (passwordError == "" && confirmPasswordError == "") {
             console.log(data);
+            setFirstName("");
+            setLastName("");
+            setUsername("");
+            setPassword("");
+            setNPassword("");
+            setCPassword("");
+            setProfilePicture(undefined);
+            setBanner(undefined);
+            setPasswordError("");
+            setConfirmPasswordError("");
+            setCredentialError("");
+            formRef.current?.reset();
         }
+
+        if (username) router.push(`/${username}`);
+        else router.refresh();
     };
 
     const handleRemoveFriend = async (friendUsername: string) => {
-        const response = await fetch("https://italk-server.vercel.app/deleteFriend", {
+        const response = await fetch("http://localhost:3001/deleteFriend", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -233,7 +249,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
                                               className="w-24 h-24 mr-2 rounded-[50%] p-1"
                                           />
                                       ) : (
-                                          <UserIcon className="w-24 h-24 mr-3 text-gray-400 border-2 rounded-2xl"></UserIcon>
+                                          <UserIcon className="w-24 h-24 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
                                       )}
                                       <p>{user.name}</p>
                                   </Link>

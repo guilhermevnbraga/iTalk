@@ -43,7 +43,7 @@ export default function Header({ name, username, email }: HeaderProps) {
     const searchBarRef = useRef(null);
 
     const logOut = async () => {
-        const response = await fetch("https://italk-server.vercel.app/logout", {
+        const response = await fetch("http://localhost:3001/logout", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export default function Header({ name, username, email }: HeaderProps) {
     };
 
     const searchFriends = async (search: string) => {
-        const response = await fetch("https://italk-server.vercel.app/user", {
+        const response = await fetch("http://localhost:3001/user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -84,7 +84,7 @@ export default function Header({ name, username, email }: HeaderProps) {
                 setIsSearchActive(false);
             }
         };
-
+        
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
@@ -148,9 +148,9 @@ export default function Header({ name, username, email }: HeaderProps) {
                 <div className="w-1/5"></div>
                 <div className="w-4/5 flex flex-row justify-between">
                     <div className="flex flex-row justify-between">
-                        <button className="mr-2 w-10 p-2 shadow rounded-3xl hover:scale-110">
+                        <Link href={`/home/chat`} className="mr-2 w-10 p-2 shadow rounded-3xl hover:scale-110">
                             <ChatBubbleOvalLeftIcon className="h-6 w-6 text-gray-900" />
-                        </button>
+                        </Link>
                         <button className="w-10 p-2 shadow rounded-3xl hover:scale-110">
                             <BellIcon className="h-6 w-6 text-gray-900" />
                         </button>

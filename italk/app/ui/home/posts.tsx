@@ -32,7 +32,7 @@ export default function Posts({ username }: HeaderProps) {
 
         setLoading(true);
         try {
-            const response = await fetch("https://italk-server.vercel.app/userPost", {
+            const response = await fetch("http://localhost:3001/userPost", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export default function Posts({ username }: HeaderProps) {
                                 pictures: post.pictures || null,
                                 attachments: post.attachments || null,
                                 date: new Date(post.date),
-                                username: post.username
+                                username: post.username,
                             };
                             const updatedElements = [
                                 ...prevElements,
@@ -103,7 +103,10 @@ export default function Posts({ username }: HeaderProps) {
                     className="flex flex-col w-full bg-white rounded-2xl shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] p-6 mb-6"
                 >
                     <div className="flex justify-between items-center">
-                        <Link href={`/${element.username}`} className="flex flex-row mb-2">
+                        <Link
+                            href={`/${element.username}`}
+                            className="flex flex-row mb-2"
+                        >
                             {element.profilePicture ? (
                                 <Image
                                     src={`data:image/jpeg;base64,${element.profilePicture}`}

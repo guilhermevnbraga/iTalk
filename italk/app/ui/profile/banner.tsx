@@ -33,7 +33,7 @@ export default function Banner({
     const profilePictureRef = useRef(null);
 
     const addFriend = async () => {
-        await fetch("https://italk-server.vercel.app/addFriend", {
+        await fetch("http://localhost:3001/addFriend", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -47,7 +47,7 @@ export default function Banner({
     };
 
     const handleRemoveFriend = async () => {
-        const response = await fetch("https://italk-server.vercel.app/deleteFriend", {
+        const response = await fetch("http://localhost:3001/deleteFriend", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

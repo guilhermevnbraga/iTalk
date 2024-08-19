@@ -37,16 +37,33 @@ interface Message {
     date: Date;
 }
 
-export default function Chat({ username, email }: { username: string, email: string }) {
+export default function Chat({
+    username,
+    email,
+}: {
+    username: string;
+    email: string;
+}) {
     const [userName, setUsername] = useState("");
-    const [friend, setFriend] = useState<User>({ id: 0, name: "", username: "", email: "", password: "", profile_picture: "", banner: "", status: 0 });
+    const [friend, setFriend] = useState<User>({
+        id: 0,
+        name: "",
+        username: "",
+        email: "",
+        password: "",
+        profile_picture: "",
+        banner: "",
+        status: 0,
+    });
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState<Message[]>([]);
+    const [messageCount, setMessageCount] = useState(0);
     const [disableSend, setDisableSend] = useState(true);
     const messageRef = useRef<HTMLInputElement>(null);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const fetchFriend = async () => {
-        const response = await fetch("https://italk-server.vercel.app/profile", {
+        const response = await fetch("http://localhost:3001/profile", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -63,7 +80,7 @@ export default function Chat({ username, email }: { username: string, email: str
     };
 
     const fetchUser = async () => {
-        const response = await fetch("https://italk-server.vercel.app/username", {
+        const response = await fetch("http://localhost:3001/username", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -77,10 +94,10 @@ export default function Chat({ username, email }: { username: string, email: str
         } else {
             setUsername(data.username);
         }
-    }
+    };
 
     const fetchMessages = async () => {
-        const response = await fetch("https://italk-server.vercel.app/messages", {
+        const response = await fetch("http://localhost:3001/messages", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -98,7 +115,18 @@ export default function Chat({ username, email }: { username: string, email: str
             setMessages(data.messages);
             console.log(data);
         }
-    }
+    };
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        if (messages.length > messageCount) {
+            scrollToBottom();
+            setMessageCount(messages.length);
+        }
+    }, [messages]);
 
     useEffect(() => {
         fetchUser();
@@ -120,10 +148,12 @@ export default function Chat({ username, email }: { username: string, email: str
     }, []);
 
     const handleSendMessage = async () => {
+        setDisableSend(true);
+
         if (messageRef.current) {
             messageRef.current.value = "";
-        }   
-        const response = await fetch("https://italk-server.vercel.app/sendMessage", {
+        }
+        const response = await fetch("http://localhost:3001/sendMessage", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -161,7 +191,7 @@ export default function Chat({ username, email }: { username: string, email: str
                                     className="w-16 h-16 mr-2 rounded-[50%] p-1"
                                 />
                             ) : (
-                                <UserIcon className="w-16 h-16 mr-3 text-gray-400 border-2 rounded-2xl"></UserIcon>
+                                <UserIcon className="w-16 h-16 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
                             )
                         ) : null}
                         <p>{friend ? friend.name : ""}</p>
@@ -176,7 +206,7 @@ export default function Chat({ username, email }: { username: string, email: str
                     </div>
                 </div>
             </section>
-            <section className="w-full grow bg-gray-100">
+            <section className="w-full grow bg-gray-100 flex flex-col h-full overflow-y-auto">
                 {messages.map((message, idx) => (
                     <div
                         key={idx}
@@ -187,16 +217,26 @@ export default function Chat({ username, email }: { username: string, email: str
                         }`}
                     >
                         <div
-                            className={`flex items-center p-3 m-3 shadow-[1px_1px_0_0_rgba(200,200,200,0.5)] bg-white rounded-2xl ${
+                            className={`flex items-center p-2 m-3 shadow-[1px_1px_0_0_rgba(200,200,200,0.5)] bg-white rounded-2xl max-w-[69%] ${
                                 message.sender_id === friend.id
                                     ? "rounded-bl-none"
                                     : "rounded-br-none"
                             }`}
                         >
-                            <p>{message.content}</p>
+                            <p className="flex w-full text-start mr-2 break-all">
+                                {message.content}
+                            </p>
+                            <p className="flex text-end text-xs h-full items-end">
+                                {new Date(message.date).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: false,
+                                })}
+                            </p>
                         </div>
                     </div>
                 ))}
+                <div ref={messagesEndRef} />
             </section>
             <section>
                 <div className="flex justify-between items-center py-3 px-6 shadow-[1px_1px_0_0_rgba(200,200,200,0.5)] w-full h-fit">
