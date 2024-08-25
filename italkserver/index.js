@@ -432,7 +432,6 @@ app.post("/friends", async (req, res) => {
                     "SELECT * FROM user WHERE id = ?",
                     [row.friend_id]
                 );
-                9;
                 return friend[0][0];
             })
         );

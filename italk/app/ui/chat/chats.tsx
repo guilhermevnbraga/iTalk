@@ -25,6 +25,7 @@ interface User {
 
 export default function Chats({ email }: { email: string }) {
     const [data, setData] = useState<Data>({});
+    const [search, setSearch] = useState("");
 
     const fetchFriends = async () => {
         const response = await fetch("http://localhost:3001/friends", {
@@ -54,6 +55,7 @@ export default function Chats({ email }: { email: string }) {
                     type="text"
                     placeholder="Search"
                     className="focus:outline-0 bg-gray-100"
+                    onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
             <div className="w-full p-3 mt-6">
@@ -61,6 +63,7 @@ export default function Chats({ email }: { email: string }) {
                     ? data.error
                     : data.newFriends
                     ? data.newFriends.map((user: User, idx) => {
+                        if (!user.name.toLowerCase().includes(search)) return null;
                           return (
                               <div key={idx} className="flex">
                                   <Link
