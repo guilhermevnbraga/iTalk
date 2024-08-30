@@ -1,6 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
-const cors = require("cors");
 const express = require("express");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
