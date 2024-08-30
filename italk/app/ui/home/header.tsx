@@ -32,7 +32,7 @@ interface User {
     username: string;
     email: string;
     password: string;
-    profile_picture: string;
+    profilePicture: string;
     status: Number;
 }
 
@@ -84,7 +84,7 @@ export default function Header({ name, username, email }: HeaderProps) {
                 setIsSearchActive(false);
             }
         };
-        
+
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
@@ -117,28 +117,26 @@ export default function Header({ name, username, email }: HeaderProps) {
                             {data.error
                                 ? data.error
                                 : data.user
-                                ? data.user.map((user: User, idx) => {
-                                      return (
-                                          <Link
-                                              key={idx}
-                                              className="flex mb-6 items-center"
-                                              href={`/${user.username}`}
-                                          >
-                                              {user.profile_picture ? (
-                                                  <Image
-                                                      src={`data:image/jpeg;base64,${user.profile_picture}`}
-                                                      alt="perfil"
-                                                      className="w-12 h-12 mr-2 rounded-[50%] p-1"
-                                                      width={30}
-                                                      height={30}
-                                                  />
-                                              ) : (
-                                                  <UserIcon className="w-12 h-12 mr-3"></UserIcon>
-                                              )}
-                                              <p>{user.name}</p>
-                                          </Link>
-                                      );
-                                  })
+                                ? data.user.map((user: User, idx) => (
+                                      <Link
+                                          key={idx}
+                                          className="flex mb-6 items-center"
+                                          href={`/${user.username}`}
+                                      >
+                                          {user.profilePicture ? (
+                                              <Image
+                                                  src={`data:image/jpeg;base64,${user.profilePicture}`}
+                                                  alt="perfil"
+                                                  className="w-12 h-12 mr-2 rounded-[50%] p-1"
+                                                  width={30}
+                                                  height={30}
+                                              />
+                                          ) : (
+                                              <UserIcon className="w-12 h-12 mr-3"></UserIcon>
+                                          )}
+                                          <p>{user.name}</p>
+                                      </Link>
+                                  ))
                                 : null}
                         </div>
                     </div>
@@ -148,7 +146,10 @@ export default function Header({ name, username, email }: HeaderProps) {
                 <div className="w-1/5"></div>
                 <div className="w-4/5 flex flex-row justify-between">
                     <div className="flex flex-row justify-between">
-                        <Link href={`/home/chat`} className="mr-2 w-10 p-2 shadow rounded-3xl hover:scale-110">
+                        <Link
+                            href={`/home/chat`}
+                            className="mr-2 w-10 p-2 shadow rounded-3xl hover:scale-110"
+                        >
                             <ChatBubbleOvalLeftIcon className="h-6 w-6 text-gray-900" />
                         </Link>
                         <button className="w-10 p-2 shadow rounded-3xl hover:scale-110">

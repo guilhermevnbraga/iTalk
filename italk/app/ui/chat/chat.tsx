@@ -21,7 +21,7 @@ interface User {
     username: string;
     email: string;
     password: string;
-    profile_picture: string;
+    profilePicture: string;
     banner: string;
     status: Number;
     about?: string;
@@ -29,12 +29,12 @@ interface User {
 
 interface Message {
     id: Number;
-    sender_id: Number;
-    reciever_id: Number;
+    senderId: Number;
+    receiverId: Number;
     content: string;
     attachment: string;
     reaction: string;
-    date: Date;
+    date: string;
 }
 
 export default function Chat({
@@ -51,7 +51,7 @@ export default function Chat({
         username: "",
         email: "",
         password: "",
-        profile_picture: "",
+        profilePicture: "",
         banner: "",
         status: 0,
     });
@@ -103,8 +103,8 @@ export default function Chat({
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                username: userName,
-                recieverName: username,
+                senderName: userName,
+                receiverName: username,
             }),
         });
 
@@ -113,7 +113,6 @@ export default function Chat({
             console.log(data);
         } else {
             setMessages(data.messages);
-            console.log(data);
         }
     };
 
@@ -140,12 +139,9 @@ export default function Chat({
     useEffect(() => {
         if (userName === "") return;
 
-        const intervalId = setInterval(() => {
-            fetchMessages();
-        }, 1000);
-
-        return () => clearInterval(intervalId); // Limpa o intervalo quando o componente for desmontado
-    }, []);
+        fetchMessages();
+        
+    }, [Date.now()]);
 
     const handleSendMessage = async () => {
         setDisableSend(true);
@@ -159,9 +155,9 @@ export default function Chat({
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                username: userName,
-                recieverName: username,
-                message,
+                senderName: userName,
+                receiverName: username,
+                content: message,
             }),
         });
 
@@ -182,9 +178,9 @@ export default function Chat({
                 <div className="flex justify-between items-center">
                     <Link className="flex items-center" href={`/${username}`}>
                         {friend ? (
-                            friend.profile_picture ? (
+                            friend.profilePicture ? (
                                 <Image
-                                    src={`data:image/jpeg;base64,${friend.profile_picture}`}
+                                    src={`data:image/jpeg;base64,${friend.profilePicture}`}
                                     alt="perfil"
                                     width={100}
                                     height={100}
@@ -211,14 +207,14 @@ export default function Chat({
                     <div
                         key={idx}
                         className={`flex ${
-                            message.sender_id === friend.id
+                            message.senderId === friend.id
                                 ? "justify-start"
                                 : "justify-end"
                         }`}
                     >
                         <div
                             className={`flex items-center p-2 m-3 shadow-[1px_1px_0_0_rgba(200,200,200,0.5)] bg-white rounded-2xl max-w-[69%] ${
-                                message.sender_id === friend.id
+                                message.senderId === friend.id
                                     ? "rounded-bl-none"
                                     : "rounded-br-none"
                             }`}
@@ -227,7 +223,7 @@ export default function Chat({
                                 {message.content}
                             </p>
                             <p className="flex text-end text-xs h-full items-end">
-                                {new Date(message.date).toLocaleTimeString([], {
+                                {new Date(parseInt(message.date)).toLocaleTimeString([], {
                                     hour: "2-digit",
                                     minute: "2-digit",
                                     hour12: false,

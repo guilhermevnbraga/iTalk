@@ -4,7 +4,7 @@ CREATE TABLE user (
   username varchar(60) NOT NULL UNIQUE,
   email varchar(90) NOT NULL,
   password varchar(255) NOT NULL,
-  profile_picture longblob,
+  profilePicture longblob,
   banner longblob,
   status tinyint(1),
   about text,
@@ -45,15 +45,15 @@ CREATE TABLE friend (
 
 CREATE TABLE message (
   id int NOT NULL AUTO_INCREMENT,
-  sender_id int NOT NULL,
-  reciever_id int NOT NULL,
+  senderId int NOT NULL,
+  receiverId int NOT NULL,
   content text,
   attachment longblob,
   reaction int unsigned DEFAULT NULL,
   date bigint not null,
   PRIMARY KEY (id),
-  FOREIGN KEY (sender_id) REFERENCES user (id),
-  FOREIGN KEY (reciever_id) REFERENCES user (id) ON DELETE CASCADE
+  FOREIGN KEY (senderId) REFERENCES user (id),
+  FOREIGN KEY (receiverId) REFERENCES user (id) ON DELETE CASCADE
 );
 
 CREATE TABLE post_picture (
@@ -64,7 +64,3 @@ CREATE TABLE post_picture (
   KEY post_id (post_id),
   CONSTRAINT post_picture_ibfk_1 FOREIGN KEY (post_id) REFERENCES post (id)
 );
-
-select * from user;
-select * from post;
-select * from message;

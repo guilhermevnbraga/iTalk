@@ -17,7 +17,7 @@ interface User {
     username: string;
     email: string;
     password: string;
-    profile_picture: string;
+    profilePicture: string;
     banner: string;
     status: Number;
     about?: string;
@@ -80,10 +80,10 @@ export default function Banner({
             ) : null}
             <div className="relative top-20 left-6 flex-row flex items-center justify-between w-[96%]">
                 <div className="flex items-center">
-                    {user.profile_picture ? (
+                    {user.profilePicture ? (
                         <Image
                             ref={profilePictureRef}
-                            src={`data:image/jpeg;base64,${user.profile_picture}`}
+                            src={`data:image/jpeg;base64,${user.profilePicture}`}
                             alt="Profile Picture"
                             width={100}
                             height={100}

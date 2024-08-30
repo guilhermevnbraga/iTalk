@@ -6,6 +6,7 @@ import Header from "../ui/home/header";
 import Footer from "../ui/footer";
 import Post from "../ui/home/post";
 import Posts from "../ui/home/posts";
+import Chats from "../ui/home/chats";
 import Link from "next/link";
 
 export default async function Page() {
@@ -31,7 +32,7 @@ export default async function Page() {
         username = usernameData.username;
     }
 
-    let profilePicture = '';
+    let profilePicture = "";
     const fetchProfile = await fetch("http://localhost:3001/profile", {
         method: "POST",
         headers: {
@@ -44,7 +45,7 @@ export default async function Page() {
     if (fetchProfile.status === 400) {
         console.log(profileData);
     } else {
-        profilePicture = profileData.user.profile_picture;
+        profilePicture = profileData.user.profilePicture;
     }
 
     return (
@@ -82,8 +83,11 @@ export default async function Page() {
                     <Posts></Posts>
                 </div>
                 <div className="flex align-center flex-col w-1/6 shadow-[-3px_0px_9px_0px_rgba(0,0,0,0.15)]">
-                    <div className="flex justify-center shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] h-fit w-full p-6">
-                        Chats
+                    <div className="flex flex-col shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] h-fit w-full">
+                        <Link href={`/${username}/chat`} className="shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] w-full p-6 flex justify-center">
+                            Chats
+                        </Link>
+                        <Chats email={session?.user?.email || ""} username={username}></Chats>
                     </div>
                     <div className="flex justify-center shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] h-fit w-full p-6">
                         Groups

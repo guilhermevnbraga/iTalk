@@ -41,7 +41,6 @@ const handler = NextAuth({
                     );
 
                     const data = await response.json();
-
                     if (response.status == 200) {
                         return {
                             id: data.user.id,

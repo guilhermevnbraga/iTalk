@@ -1,0 +1,75 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(60)
+  username       String   @unique @db.VarChar(60)
+  email          String   @unique @db.VarChar(90)
+  password       String   @db.VarChar(255)
+  profilePicture Bytes?
+  banner         Bytes?
+  status         Boolean?
+  about          String?
+  posts          Post[]
+  messagesSent   Message[] @relation("MessageSender")
+  messagesReceived Message[] @relation("MessageReceiver")
+  friends        Friend[] @relation("UserFriends")
+  friendOf       Friend[] @relation("FriendOf")
+}
+
+model Post {
+  id        String       @id @default(uuid()) @db.VarChar(36)
+  userId    Int?
+  postId    String?      @db.VarChar(36)
+  message   String
+  locale    String?
+  mood      String?
+  date      BigInt?
+  user      User?        @relation(fields: [userId], references: [id])
+  parentPost Post?       @relation("PostParent", fields: [postId], references: [id])
+  childPosts Post[]      @relation("PostParent")
+  attachments Attachment[]
+  postPictures PostPicture[]
+}
+
+model Attachment {
+  id        String @id @default(uuid()) @db.VarChar(36)
+  postId    String? @db.VarChar(36)
+  title     String?
+  attachment Bytes?
+  post      Post? @relation(fields: [postId], references: [id])
+}
+
+model Friend {
+  userId    Int
+  friendId  Int
+  user      User @relation("UserFriends", fields: [userId], references: [id])
+  friend    User @relation("FriendOf", fields: [friendId], references: [id])
+  @@id([userId, friendId])
+}
+
+model Message {
+  id         Int    @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  content    String?
+  attachment Bytes?
+  reaction   Int?
+  date       BigInt
+  sender     User @relation("MessageSender", fields: [senderId], references: [id])
+  receiver   User @relation("MessageReceiver", fields: [receiverId], references: [id])
+}
+
+model PostPicture {
+  id        String @id @default(uuid()) @db.VarChar(36)
+  postId    String? @db.VarChar(36)
+  picture   Bytes?
+  post      Post? @relation(fields: [postId], references: [id])
+}

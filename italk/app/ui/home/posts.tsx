@@ -14,6 +14,19 @@ interface Post {
     mood?: string | null;
     pictures?: Array<string> | null;
     attachments?: Array<any> | null;
+    date: string;
+    username: string;
+}
+
+interface Post2 {
+    id: number;
+    name: string;
+    message: string;
+    profilePicture?: string | null;
+    locale?: string | null;
+    mood?: string | null;
+    pictures?: Array<string> | null;
+    attachments?: Array<any> | null;
     date: Date;
     username: string;
 }
@@ -23,7 +36,7 @@ interface HeaderProps {
 }
 
 export default function Posts({ username }: HeaderProps) {
-    const [elements, setElements] = useState<Post[]>([]);
+    const [elements, setElements] = useState<Post2[]>([]);
     const [ids, setIds] = useState<number[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -58,7 +71,7 @@ export default function Posts({ username }: HeaderProps) {
                                 mood: post.mood || null,
                                 pictures: post.pictures || null,
                                 attachments: post.attachments || null,
-                                date: new Date(post.date),
+                                date: new Date(parseInt(post.date)),
                                 username: post.username,
                             };
                             const updatedElements = [

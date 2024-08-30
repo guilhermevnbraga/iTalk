@@ -18,7 +18,7 @@ interface User {
     username: string;
     email: string;
     password: string;
-    profile_picture: string;
+    profilePicture: string;
     banner: string;
     status: Number;
     about?: string;
@@ -26,7 +26,7 @@ interface User {
 
 interface Data {
     error?: string;
-    newFriends?: Array<User>;
+    friends?: Array<User>;
 }
 
 export default function Option({ user, acessUser }: HeaderProps) {
@@ -224,13 +224,13 @@ export default function Option({ user, acessUser }: HeaderProps) {
                 ) : null}
             </div>
             <div className={`px-6 ${option === 0 ? "" : " hidden"}`}>
-                <Posts username={user.name || undefined}></Posts>
+                <Posts username={user.username || undefined}></Posts>
             </div>
             <div className={`p-6 ${option === 1 ? "" : " hidden"}`}>
                 {data.error
                     ? data.error
-                    : data.newFriends
-                    ? data.newFriends.map((user: User, idx) => {
+                    : data.friends
+                    ? data.friends.map((user: User, idx) => {
                           return (
                               <div
                                   key={idx}
@@ -240,9 +240,9 @@ export default function Option({ user, acessUser }: HeaderProps) {
                                       className="flex mb-6 items-center"
                                       href={`/${user.username}`}
                                   >
-                                      {user.profile_picture ? (
+                                      {user.profilePicture ? (
                                           <Image
-                                              src={`data:image/jpeg;base64,${user.profile_picture}`}
+                                              src={`data:image/jpeg;base64,${user.profilePicture}`}
                                               alt="perfil"
                                               width={100}
                                               height={100}
@@ -514,9 +514,9 @@ export default function Option({ user, acessUser }: HeaderProps) {
                                             width={100}
                                             height={100}
                                         />
-                                    ) : user.profile_picture ? (
+                                    ) : user.profilePicture ? (
                                         <Image
-                                            src={`data:image/jpeg;base64,${user.profile_picture}`}
+                                            src={`data:image/jpeg;base64,${user.profilePicture}`}
                                             alt="Profile Picture"
                                             width={100}
                                             height={100}
