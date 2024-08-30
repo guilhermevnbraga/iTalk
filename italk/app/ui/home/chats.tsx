@@ -34,7 +34,7 @@ export default function Chats({
     const [friends, setFriends] = useState<User[]>([]);
 
     const fetchFriends = async () => {
-        const response = await fetch("https://italk-server.vercel.app//friends", {
+        const response = await fetch("https://italk-server.vercel.app/friends", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export default function Chats({
             data.friends.forEach(async (friend: User) => {
                 console.log(username, friend.username)
                 const response = await fetch(
-                    "https://italk-server.vercel.app//lastMessage",
+                    "https://italk-server.vercel.app/lastMessage",
                     {
                         method: "POST",
                         headers: {
