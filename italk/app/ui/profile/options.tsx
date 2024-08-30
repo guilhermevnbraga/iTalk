@@ -63,7 +63,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
     }, []);
 
     const fetchFriends = async () => {
-        const response = await fetch("http://localhost:3001/friends", {
+        const response = await fetch("https://italk-server.vercel.app//friends", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
     };
 
     const handleAboutSubmit = async () => {
-        const response = await fetch("http://localhost:3001/about", {
+        const response = await fetch("https://italk-server.vercel.app//about", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -120,7 +120,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
             formData.append("banner", banner);
         }
 
-        const response = await fetch("http://localhost:3001/updateProfile", {
+        const response = await fetch("https://italk-server.vercel.app//updateProfile", {
             method: "POST",
             body: formData,
         });
@@ -150,7 +150,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
     };
 
     const handleRemoveFriend = async (friendUsername: string) => {
-        const response = await fetch("http://localhost:3001/deleteFriend", {
+        const response = await fetch("https://italk-server.vercel.app//deleteFriend", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

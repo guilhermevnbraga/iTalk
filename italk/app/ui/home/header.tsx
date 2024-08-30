@@ -43,7 +43,7 @@ export default function Header({ name, username, email }: HeaderProps) {
     const searchBarRef = useRef(null);
 
     const logOut = async () => {
-        const response = await fetch("http://localhost:3001/logout", {
+        const response = await fetch("https://italk-server.vercel.app//logout", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export default function Header({ name, username, email }: HeaderProps) {
     };
 
     const searchFriends = async (search: string) => {
-        const response = await fetch("http://localhost:3001/user", {
+        const response = await fetch("https://italk-server.vercel.app//user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -63,7 +63,7 @@ export default function Chat({
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const fetchFriend = async () => {
-        const response = await fetch("http://localhost:3001/profile", {
+        const response = await fetch("https://italk-server.vercel.app//profile", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export default function Chat({
     };
 
     const fetchUser = async () => {
-        const response = await fetch("http://localhost:3001/username", {
+        const response = await fetch("https://italk-server.vercel.app//username", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -97,7 +97,7 @@ export default function Chat({
     };
 
     const fetchMessages = async () => {
-        const response = await fetch("http://localhost:3001/messages", {
+        const response = await fetch("https://italk-server.vercel.app//messages", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -149,7 +149,7 @@ export default function Chat({
         if (messageRef.current) {
             messageRef.current.value = "";
         }
-        const response = await fetch("http://localhost:3001/sendMessage", {
+        const response = await fetch("https://italk-server.vercel.app//sendMessage", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

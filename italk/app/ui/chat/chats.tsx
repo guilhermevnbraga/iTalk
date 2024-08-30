@@ -32,7 +32,7 @@ export default function Chats({ email }: { email: string }) {
     const [hiddenChevron, setHiddenChrevron] = useState<boolean[]>([]);
 
     const fetchFriends = async () => {
-        const response = await fetch("http://localhost:3001/friends", {
+        const response = await fetch("https://italk-server.vercel.app//friends", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -115,7 +115,7 @@ export default function Post({ email, profile, name }: PostProps) {
         if (moodVisibility) setMoodVisibility(false);
 
         try {
-            const response = await fetch("http://localhost:3001/post", {
+            const response = await fetch("https://italk-server.vercel.app//post", {
                 method: "POST",
                 body: formData,
             });
