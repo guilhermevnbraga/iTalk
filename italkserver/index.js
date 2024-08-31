@@ -13,6 +13,7 @@ const allowedOrigins = [
 ];
 
 app.use((req, res, next) => {
+    console.log('a')
     res.setHeader("Access-Control-Allow-Credentials", true);
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
