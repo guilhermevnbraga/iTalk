@@ -1,6 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
-const cors = require("cors");
 const express = require("express");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
@@ -13,33 +12,21 @@ const allowedOrigins = [
     "http://localhost:3000",
 ];
 
-const corsOptions = {
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-    optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
-app.use(express.json());
-app.options('*', cors(corsOptions));
-
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        res.setHeader("Access-Control-Allow-Credentials", "true");
+    }
     if (req.method === "OPTIONS") {
-        return res.status(200).json({});
+        return res.sendStatus(200);
     }
     next();
 });
+
+app.use(express.json());
 
 const storage = multer.memoryStorage();
 const limits = { fileSize: 1024 * 1024 * 5 };
