@@ -7,6 +7,25 @@ const { v4: uuidv4 } = require("uuid");
 
 const prisma = new PrismaClient();
 const app = express();
+
+const allowedOrigins = [
+    "https://italk-zeta.vercel.app",
+    "http://localhost:3000",
+];
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const storage = multer.memoryStorage();
