@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 const app = express();
 
 const allowedOrigins = [
-    "https://italk-zeta.vercel.app",
+    "https://italk-server-5u4xh5fdi-s0la1r3s-projects.vercel.app",
     "http://localhost:3000",
 ];
 
@@ -26,20 +26,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://italk-zeta.vercel.app");
-    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    
-    // Permitir que os navegadores lidem com as requisições OPTIONS automaticamente
-    if (req.method === "OPTIONS") {
-      return res.sendStatus(204);
-    }
-  
-    next();
-  });
-
 app.use(express.json());
 
 const storage = multer.memoryStorage();
