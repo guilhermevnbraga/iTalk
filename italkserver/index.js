@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 const app = express();
 
 const allowedOrigins = [
-    "https://italk-server-5u4xh5fdi-s0la1r3s-projects.vercel.app",
+    "https://italk-zeta.vercel.app",
     "http://localhost:3000",
 ];
 
