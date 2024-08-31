@@ -13,15 +13,19 @@ const allowedOrigins = [
 ];
 
 app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader("Access-Control-Allow-Origin", origin);
-        res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-        res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        res.setHeader("Access-Control-Allow-Credentials", "true");
-    }
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+    );
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+    );
     if (req.method === "OPTIONS") {
-        return res.sendStatus(204);
+        res.status(200).end();
+        return;
     }
     next();
 });
@@ -482,8 +486,8 @@ app.post(
     }
 );
 
-app.get('/test', (req, res) => {
-    res.send('Hello World!');
+app.get("/test", (req, res) => {
+    res.send("Hello World!");
 });
 
 app.listen(3001, () => {
