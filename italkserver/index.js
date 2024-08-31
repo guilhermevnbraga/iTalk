@@ -23,6 +23,8 @@ const corsOptions = {
     },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
@@ -31,6 +33,8 @@ app.use(express.json());
 const storage = multer.memoryStorage();
 const limits = { fileSize: 1024 * 1024 * 5 };
 const upload = multer({ storage, limits });
+
+app.options('*', cors(corsOptions));
 
 app.post("/register", async (req, res) => {
     const { userName, email, password } = req.body;
