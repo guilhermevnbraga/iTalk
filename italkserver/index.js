@@ -8,18 +8,26 @@ const { v4: uuidv4 } = require("uuid");
 const prisma = new PrismaClient();
 const app = express();
 
+app.use(
+    cors({
+        origin: "*", // Permitir qualquer origem. Ajuste conforme necessário.
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
+
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "https://italk-zeta.vercel.app");
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    
+
     // Permitir que os navegadores lidem com as requisições OPTIONS automaticamente
     if (req.method === "OPTIONS") {
-      return res.sendStatus(204);
+        return res.sendStatus(204);
     }
-  
+
     next();
-  });
+});
 
 app.use(express.json());
 
@@ -477,8 +485,8 @@ app.post(
     }
 );
 
-app.get('/test', (req, res) => {
-    res.send('Hello World!');
+app.get("/test", (req, res) => {
+    res.send("Hello World!");
 });
 
 app.listen(3001, () => {
