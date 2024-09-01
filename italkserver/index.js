@@ -2,41 +2,10 @@ const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const express = require("express");
 const multer = require("multer");
-const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
 
 const prisma = new PrismaClient();
 const app = express();
-
-const allowedOrigins = [
-    "https://italk-zeta.vercel.app",
-    "http://localhost:3000",
-];
-
-app.use(cors());
-
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Access-Control-Allow-Origin", req.headers.origin);
-    res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token,Authorization"
-    );
-    if (req.method === "OPTIONS") {
-        return res.status(200).end();
-    } else {
-        next();
-    }
-});
-
-app.use((req, res, next) => {
-    if (req.method === "OPTIONS") {
-        res.status(200).send();
-    } else {
-        next();
-    }
-});
 
 app.use(express.json());
 
