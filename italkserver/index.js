@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const express = require("express");
 const multer = require("multer");
+const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
 
 const prisma = new PrismaClient();
@@ -14,7 +15,7 @@ const allowedOrigins = [
 
 app.use(cors());
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Access-Control-Allow-Origin", req.headers.origin);
     res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
