@@ -2,7 +2,7 @@ import Header from "./ui/header";
 import Footer from "./ui/footer";
 import Link from "next/link";
 import Image from "next/image";
-import town from './ui/imgs/town.webp'
+import town from "./ui/imgs/town.webp";
 
 export default function Page() {
     return (
@@ -24,13 +24,7 @@ export default function Page() {
                     </Link>
                 </section>
                 <aside className="hidden lg:flex justify-center w-1/2">
-                <figure className="shadow-md 2xl:w-2/3 xl:w-4/5 md:w-11/12 border-8 border-yellow-400 border-solid rounded-xl">
-                        <Image
-                            className="w-full"
-                            src={town}
-                            alt="club penguin"
-                        />
-                    </figure>
+                    <figure className="shadow-md 2xl:w-2/3 xl:w-4/5 md:w-11/12 border-8 border-yellow-400 border-solid rounded-xl"></figure>
                 </aside>
             </div>
             <div className="hidden landscape:flex w-full">
