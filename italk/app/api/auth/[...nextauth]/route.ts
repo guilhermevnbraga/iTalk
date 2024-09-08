@@ -37,6 +37,7 @@ const handler = NextAuth({
                                 email: credentials?.email,
                                 password: credentials?.password,
                             }),
+                            credentials: "include",
                         }
                     );
 
@@ -56,7 +57,7 @@ const handler = NextAuth({
                 }
             },
         }),
-    ]
+    ],
 });
 
 export { handler as GET, handler as POST };

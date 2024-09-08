@@ -61,17 +61,21 @@ export default function Page() {
 
         const userName = firstName.trim() + " " + lastName.trim();
 
-        const response = await fetch("https://italk-server.vercel.app/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                userName: userName,
-                email: email,
-                password: password,
-            }),
-        });
+        const response = await fetch(
+            "https://italk-server.vercel.app/register",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userName: userName,
+                    email: email,
+                    password: password,
+                }),
+                credentials: "include",
+            }
+        );
 
         const data = await response.json();
 
