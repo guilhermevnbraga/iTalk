@@ -1,7 +1,6 @@
-import Header from "../ui/header";
 import Footer from "../ui/footer";
 import Image from "next/image";
-import talk1 from "../ui/imgs/talk1.webp";
+import talk from "../ui/imgs/talk5.webp";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
@@ -10,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <aside className="flex justify-center items-center w-1/2">
                     <figure className="w-1/2 shadow-md">
                         <Image
-                            src={talk1}
+                            src={talk}
                             width={999}
                             height={999}
                             alt="talk"
