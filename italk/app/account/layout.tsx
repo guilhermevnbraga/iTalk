@@ -6,7 +6,6 @@ import talk1 from "../ui/imgs/talk1.webp";
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <main className="flex flex-col justify-center items-center bg-[#edeff1] h-screen">
-            <Header></Header>
             <div className="flex flex-row w-full justify-center items-center p-6 h-full">
                 <aside className="flex justify-center items-center w-1/2">
                     <figure className="w-1/2 shadow-md">
