@@ -7,7 +7,7 @@ import instagram from "./imgs/instagram.webp";
 
 export default function Footer() {
     return (
-        <footer className="flex flex-row justify-around items-center w-full py-3 shadow-inner bg-blue-700 text-teal-100 ">
+        <footer className="flex flex-row justify-around items-center w-full py-3 shadow-inner bg-[#2d85c3] text-teal-100 ">
             <section className="flex flex-col h-full justify-around">
                 <span className="mb-1 md:text-sm text-xs">
                     Stay connected with us:

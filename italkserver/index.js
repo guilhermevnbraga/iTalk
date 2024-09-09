@@ -27,6 +27,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
+app.use((req, res, next) => {
+    console.log("Request origin:", req.headers.origin);
+    next();
+});
 
 app.use(express.json());
 
@@ -63,6 +67,7 @@ app.post("/register", async (req, res) => {
 
         res.status(200).json({ message: "User registered successfully" });
     } catch (err) {
+        console.log(err)
         let result = "Error when entering user: " + err;
         if (err.code === "P2002") {
             if (err.meta.target.includes("username")) {

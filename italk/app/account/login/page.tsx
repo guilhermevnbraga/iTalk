@@ -17,7 +17,7 @@ export default function Page() {
     const [error, setError] = useState("");
 
     return (
-        <div className="flex flex-col justify-evenly landscape:min-h-screen items-center w-full">
+        <div className="flex flex-col justify-evenly h-full items-center w-full">
             <h1 className="text-5xl font-bold">Log in</h1>
             <div className="flex flex-col w-full justify-center items-center">
                 <form className="flex flex-col w-full landscape:w-3/5 md:w-5/6">
@@ -27,7 +27,7 @@ export default function Page() {
                     >
                         Email
                     </label>
-                    <div className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white mb-6 px-2 w-full">
+                    <div className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-[#2d85c3] bg-white mb-6 px-2 w-full">
                         <input
                             onChange={(e) => {
                                 setEmail(e.target.value);
@@ -54,7 +54,7 @@ export default function Page() {
                     <div className="flex flex-row items-center justify-center">
                         <input
                             type="checkbox"
-                            className="accent-yellow-400 w-3 h-3 mr-1 ml-3"
+                            className="accent-[#2d85c3] w-3 h-3 mr-1 ml-3"
                         ></input>
                         <span>Remember me</span>
                     </div>
@@ -76,7 +76,7 @@ export default function Page() {
                             router.push("/home");
                         }
                     }}
-                    className="mb-6 shadow-lg w-full landscape:w-3/5 bg-yellow-400 w-7/12 rounded-3xl p-1 text-white md:text-base lg:text-lg xl:text-xl md:w-4/5 font-medium hover:bg-white hover:text-yellow-400 border-solid border-2 border-yellow-400"
+                    className="mb-6 shadow-lg w-full landscape:w-3/5 bg-[#2d85c3] w-7/12 rounded-3xl p-2 text-white md:text-base lg:text-lg xl:text-xl md:w-4/5 font-medium hover:bg-white hover:text-[#2d85c3] border-solid border-2 border-[#2d85c3]"
                 >
                     Login
                 </button>

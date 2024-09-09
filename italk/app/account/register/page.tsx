@@ -87,7 +87,7 @@ export default function Page() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col w-full h-full justify-evenly items-center">
+        <div className="flex flex-col w-full h-full justify-evenly items-center">
             <h1 className="md:text-5xl text-3xl font-bold mb-6">Sign Up</h1>
             <div className="flex flex-col w-full justify-center items-center">
                 <form className="flex flex-col w-full md:w-3/4">
@@ -107,7 +107,7 @@ export default function Page() {
                                 type="text"
                                 id="first-name"
                                 placeholder="First Name"
-                                className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white px-3 w-full w-11/12 py-2 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
+                                className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-[#2d85c3] bg-white px-3 w-full w-11/12 py-2 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
                             />
                             <ErrorButton error={firstNameError}></ErrorButton>
                         </div>
@@ -126,7 +126,7 @@ export default function Page() {
                                 type="text"
                                 id="last-name"
                                 placeholder="Last Name"
-                                className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white px-3 w-full w-11/12 py-2 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
+                                className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-[#2d85c3] bg-white px-3 w-full w-11/12 py-2 bg-transparent focus:outline-0 placeholder:text-xs landscape:placeholder:text-base"
                             />
                             <ErrorButton error={lastNameError}></ErrorButton>
                         </div>
@@ -137,7 +137,7 @@ export default function Page() {
                     >
                         Email
                     </label>
-                    <div className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-yellow-400 bg-white px-2 w-full">
+                    <div className="shadow-lg flex items-center justify-between border-solid border-2 rounded-3xl border-[#2d85c3] bg-white px-2 w-full">
                         <input
                             onChange={(e) => {
                                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -215,7 +215,7 @@ export default function Page() {
                     <div className="flex flex-row items-center justify-center">
                         <input
                             type="checkbox"
-                            className="accent-yellow-400 w-3 h-3 mr-1 ml-3"
+                            className="accent-[#2d85c3] w-3 h-3 mr-1 ml-3"
                         ></input>
                         <span>Remember me</span>
                     </div>
@@ -225,7 +225,7 @@ export default function Page() {
                 </div>
                 <button
                     onClick={handleSubmit}
-                    className="active:scale-95 mb-6 shadow-lg w-full landscape:w-3/4 bg-yellow-400 rounded-3xl p-1 text-white md:text-base lg:text-lg xl:text-xl font-medium hover:bg-white hover:text-yellow-400 border-solid border-2 border-yellow-400"
+                    className="active:scale-95 mb-6 shadow-lg w-full landscape:w-3/4 bg-[#2d85c3] rounded-3xl p-2 text-white md:text-base lg:text-lg xl:text-xl font-medium hover:bg-white hover:text-[#2d85c3] border-solid border-2 border-[#2d85c3]"
                 >
                     Sign Up
                 </button>
