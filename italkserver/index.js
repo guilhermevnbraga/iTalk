@@ -505,6 +505,48 @@ app.post("/deleteFriend", async (req, res) => {
     }
 });
 
+app.post("/lastMessage", async (req, res) => {
+    try {
+        const { senderName, receiverName } = req.body;
+
+        const sender = await prisma.user.findUnique({
+            where: { username: senderName },
+        });
+
+        const receiver = await prisma.user.findUnique({
+            where: { username: receiverName },
+        });
+
+        const lastMessage = await prisma.message.findFirst({
+            where: {
+                OR: [
+                    { senderId: sender.id, receiverId: receiver.id },
+                    { senderId: receiver.id, receiverId: sender.id },
+                ],
+            },
+            orderBy: { date: "desc" },
+            take: 1,
+        });
+        
+        if (lastMessage && typeof lastMessage.date === 'bigint') {
+            lastMessage.date = lastMessage.date.toString();
+        }
+
+        if (lastMessage.senderId === sender.id) {
+            lastMessage.senderName = 'You';
+            lastMessage.receiverName = receiver.name;
+        } else {
+            lastMessage.senderName = receiver.name;
+            lastMessage.receiverName = 'You';
+        }
+
+        res.status(200).json({ lastMessage });
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({ error: err.message });
+    }
+});
+
 app.get("/test", (req, res) => {
     res.send("Hello World!");
 });
