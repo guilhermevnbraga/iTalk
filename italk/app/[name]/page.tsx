@@ -9,7 +9,7 @@ export default async function Page({ params }: { params: { name: string } }) {
 
     const { name } = params;
 
-    const fetchUser = await fetch("https://italk-server.vercel.app/profile", {
+    const fetchUser = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/profile`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: { name: string } }) {
         user = userData.user;
     }
 
-    const hasFriend = await fetch("https://italk-server.vercel.app/hasFriend", {
+    const hasFriend = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/hasFriend`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -36,7 +36,7 @@ export default async function Page({ params }: { params: { name: string } }) {
     });
 
     let acessUsername = "";
-    const fetchAcessUsername = await fetch("https://italk-server.vercel.app/username", {
+    const fetchAcessUsername = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/username`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

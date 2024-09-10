@@ -9,12 +9,17 @@ import PasswordInput from "@/app/ui/passwordInput";
 import ErrorButton from "@/app/ui/errorButton";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Page() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        console.log(process.env.NEXT_PUBLIC_DB_URL);
+    }, []);
 
     return (
         <div className="flex flex-col justify-evenly h-full items-center w-full">

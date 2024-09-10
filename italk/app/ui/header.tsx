@@ -8,7 +8,7 @@ export default function Header() {
             </span>
             <button></button>
             <Link
-                className="hover:scale-105 lg:text-md md:text-sm text-xs border-solid p-3 rounded-3xl border-2 border-[#edeff1] hover:bg-[#edeff1] hover:text-black hover:border-[#2d85c3] hover:text-gray-50"
+                className="lg:text-md md:text-sm text-xs border-solid p-3 rounded-3xl border-2 border-[#edeff1] hover:bg-[#edeff1] hover:text-black hover:border-[#2d85c3] hover:text-[#2d85c3]"
                 href="/account/login"
             >
                 <button>Connect now</button>

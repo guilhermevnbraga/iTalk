@@ -63,7 +63,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
     }, []);
 
     const fetchFriends = async () => {
-        const response = await fetch("https://italk-server.vercel.app/friends", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/friends`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
     };
 
     const handleAboutSubmit = async () => {
-        const response = await fetch("https://italk-server.vercel.app/about", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/about`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -120,7 +120,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
             formData.append("banner", banner);
         }
 
-        const response = await fetch("https://italk-server.vercel.app/updateProfile", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/updateProfile`, {
             method: "POST",
             body: formData,
         });
@@ -150,7 +150,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
     };
 
     const handleRemoveFriend = async (friendUsername: string) => {
-        const response = await fetch("https://italk-server.vercel.app/deleteFriend", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/deleteFriend`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

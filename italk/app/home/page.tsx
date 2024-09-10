@@ -17,7 +17,7 @@ export default async function Page() {
     }
 
     let username = "";
-    const fetchUsername = await fetch("https://italk-server.vercel.app/username", {
+    const fetchUsername = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/username`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export default async function Page() {
     }
 
     let profilePicture = "";
-    const fetchProfile = await fetch("https://italk-server.vercel.app/profile", {
+    const fetchProfile = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/profile`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
