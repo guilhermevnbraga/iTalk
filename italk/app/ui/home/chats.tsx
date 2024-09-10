@@ -49,7 +49,6 @@ export default function Chats({
         } else {
             setFriends(data.friends);
             data.friends.forEach(async (friend: User) => {
-                console.log(username, friend.username)
                 const response = await fetch(
                     "https://italk-server.vercel.app/lastMessage",
                     {
@@ -88,10 +87,9 @@ export default function Chats({
     }, []);
 
     return (
-        <div className="p-6">
-            {friends
+        <div className={`p-6 ${friends.length === 0 ? 'flex justify-center' : null}`}>
+            {friends.length > 0
                 ? friends.map((user: User, idx: number) => {
-                      console.log(lastMessages);
                       return (
                           <div
                               key={idx}
@@ -120,7 +118,7 @@ export default function Chats({
                                           {lastMessages.length >= idx + 1
                                               ? lastMessages[idx].id
                                                   ? `${lastMessages[idx].senderName}: ${lastMessages[idx].content}`
-                                                  : ""
+                                                  : null
                                               : null}
                                       </span>
                                   </div>
@@ -128,7 +126,9 @@ export default function Chats({
                           </div>
                       );
                   })
-                : null}
+                : (
+                    <span className="text-gray-400">Sadly you have no friends...</span>
+                )}
         </div>
     );
 }

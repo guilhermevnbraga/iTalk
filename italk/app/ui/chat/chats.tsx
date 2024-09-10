@@ -41,9 +41,8 @@ export default function Chats({ email }: { email: string }) {
         });
 
         const data = await response.json();
-        if (response.status === 400) {
-            console.log(data);
-        }
+        console.log(data);
+        console.log('a');
         setData(data);
     };
 
@@ -70,59 +69,61 @@ export default function Chats({ email }: { email: string }) {
                 />
             </div>
             <div className="w-full p-3 mt-6">
-                {data.error
-                    ? data.error
-                    : data.friends
-                    ? data.friends.map((user: User, idx) => {
-                          if (!user.name.toLowerCase().includes(search))
-                              return null;
-                          return (
-                              <div
-                                  key={idx}
-                                  className="flex hover:bg-gray-200 shadow-[0_1px_1px_0_rgba(0,0,0,0.2)]"
-                                  onMouseOut={() => {
-                                      hiddenChevron[idx] = true;
-                                      console.log(hiddenChevron[idx]);
-                                      router.refresh();
-                                  }}
-                                  onMouseOver={() => {
-                                      hiddenChevron[idx] = false;
-                                      console.log(hiddenChevron[idx]);
-                                      router.refresh();
-                                  }}
-                              >
-                                  <Link
-                                      className="flex my-3 w-full"
-                                      href={`/${user.username}/chat`}
-                                  >
-                                      {user.profilePicture ? (
-                                          <Image
-                                              src={`data:image/jpeg;base64,${user.profilePicture}`}
-                                              alt="perfil"
-                                              width={100}
-                                              height={100}
-                                              className="w-20 h-20 mr-2 rounded-[50%] p-1"
-                                          />
-                                      ) : (
-                                          <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
-                                      )}
-                                      <div className="flex grow justify-between mt-3 px-1">
-                                          <span>{user.name}</span>
-                                          <button
-                                              className={`hover:scale-110 text-gray-400 w-6 h-6 ${
-                                                  hiddenChevron[idx]
-                                                      ? "hidden"
-                                                      : ""
-                                              }`}
-                                          >
-                                              <ChevronDownIcon></ChevronDownIcon>
-                                          </button>
-                                      </div>
-                                  </Link>
-                              </div>
-                          );
-                      })
-                    : null}
+                {data.error ? (
+                    data.error
+                ) : data.friends ? (
+                    data.friends.map((user: User, idx) => {
+                        if (!user.name.toLowerCase().includes(search))
+                            return null;
+                        return (
+                            <div
+                                key={idx}
+                                className="flex hover:bg-gray-200 shadow-[0_1px_1px_0_rgba(0,0,0,0.2)]"
+                                onMouseOut={() => {
+                                    hiddenChevron[idx] = true;
+                                    console.log(hiddenChevron[idx]);
+                                    router.refresh();
+                                }}
+                                onMouseOver={() => {
+                                    hiddenChevron[idx] = false;
+                                    console.log(hiddenChevron[idx]);
+                                    router.refresh();
+                                }}
+                            >
+                                <Link
+                                    className="flex my-3 w-full"
+                                    href={`/${user.username}/chat`}
+                                >
+                                    {user.profilePicture ? (
+                                        <Image
+                                            src={`data:image/jpeg;base64,${user.profilePicture}`}
+                                            alt="perfil"
+                                            width={100}
+                                            height={100}
+                                            className="w-20 h-20 mr-2 rounded-[50%] p-1"
+                                        />
+                                    ) : (
+                                        <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
+                                    )}
+                                    <div className="flex grow justify-between mt-3 px-1">
+                                        <span>{user.name}</span>
+                                        <button
+                                            className={`hover:scale-110 text-gray-400 w-6 h-6 ${
+                                                hiddenChevron[idx]
+                                                    ? "hidden"
+                                                    : ""
+                                            }`}
+                                        >
+                                            <ChevronDownIcon></ChevronDownIcon>
+                                        </button>
+                                    </div>
+                                </Link>
+                            </div>
+                        );
+                    })
+                ) : (
+                    <span>Sadly you have no friends...</span>
+                )}
             </div>
         </aside>
     );

@@ -61,8 +61,6 @@ export default function Banner({
         const data = await response.json();
         if (response.status === 400) {
             console.log(data.error);
-        } else {
-            console.log(data);
         }
 
         router.refresh();

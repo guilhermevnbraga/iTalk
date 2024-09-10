@@ -22,15 +22,11 @@ const corsOptions = {
     },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
+    credentials: true,
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-app.use((req, res, next) => {
-    console.log("Request origin:", req.headers.origin);
-    next();
-});
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
@@ -67,7 +63,6 @@ app.post("/register", async (req, res) => {
 
         res.status(200).json({ message: "User registered successfully" });
     } catch (err) {
-        console.log(err)
         let result = "Error when entering user: " + err;
         if (err.code === "P2002") {
             if (err.meta.target.includes("username")) {
@@ -271,7 +266,6 @@ app.post("/userPost", async (req, res) => {
 
         res.status(200).json({ posts: enrichedPosts });
     } catch (err) {
-        console.log(err);
         res.status(400).json({ error: err.message });
     }
 });
@@ -410,7 +404,6 @@ app.post("/messages", async (req, res) => {
 
         res.status(200).json({ messages: newMessages });
     } catch (err) {
-        console.log(err);
         res.status(400).json({ error: err.message });
     }
 });
@@ -418,8 +411,6 @@ app.post("/messages", async (req, res) => {
 app.post("/sendMessage", async (req, res) => {
     try {
         const { senderName, receiverName, content } = req.body;
-
-        console.log(content);
 
         const sender = await prisma.user.findUnique({
             where: { username: senderName },
@@ -439,7 +430,6 @@ app.post("/sendMessage", async (req, res) => {
 
         res.status(200).json({ message: "Message sent successfully" });
     } catch (err) {
-        console.log(err);
         res.status(400).json({ error: err.message });
     }
 });
@@ -488,6 +478,32 @@ app.post(
         }
     }
 );
+
+app.post("/deleteFriend", async (req, res) => {
+    try {
+        const { username, acessUsername } = req.body;
+
+        const user = await prisma.user.findUnique({
+            where: { username: acessUsername },
+        });
+        const friend = await prisma.user.findUnique({
+            where: { username: username },
+        });
+
+        await prisma.friend.delete({
+            where: {
+                userId_friendId: {
+                    userId: user.id,
+                    friendId: friend.id,
+                },
+            },
+        });
+
+        res.status(200).json({ message: "Friend deleted successfully" });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
 
 app.get("/test", (req, res) => {
     res.send("Hello World!");
