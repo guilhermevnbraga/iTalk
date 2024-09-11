@@ -136,16 +136,12 @@ export default function Chats({
                 {friends ? (
                     friends.length > 0 ? (
                         friends.map((user: User, idx: number) => {
+                            if (!user.name.toLowerCase().includes(search))
+                                return null;
                             return (
                                 <div
                                     key={idx}
-                                    className={`flex ${
-                                        friends
-                                            ? idx === friends.length - 1
-                                                ? ""
-                                                : "mb-6"
-                                            : null
-                                    }`}
+                                    className="flex shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] hover:bg-gray-100 py-1"
                                 >
                                     <Link
                                         className="flex"
@@ -192,9 +188,7 @@ export default function Chats({
                             );
                         })
                     ) : (
-                        <span className="text-gray-400">
-                            Loading...
-                        </span>
+                        <span className="text-gray-400">Loading...</span>
                     )
                 ) : null}
             </div>
