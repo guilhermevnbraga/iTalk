@@ -62,7 +62,7 @@ export default function Page() {
         const userName = firstName.trim() + " " + lastName.trim();
 
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/register",
+            `${process.env.NEXT_PUBLIC_DB_URL}/register`,
             {
                 method: "POST",
                 headers: {
