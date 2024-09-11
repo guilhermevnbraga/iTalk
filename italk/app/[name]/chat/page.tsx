@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: { name: string } }) {
                 username={username}
             ></Header>
             <main className="flex w-full h-[92vh]">
-                <Chats email={session?.user?.email || ""}></Chats>
+                <Chats username={username} email={session?.user?.email || ""}></Chats>
                 <Chat username={name} email={session?.user?.email || ""}></Chat>
             </main>
         </>

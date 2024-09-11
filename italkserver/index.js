@@ -540,9 +540,10 @@ app.post("/lastMessage", async (req, res) => {
             lastMessage.receiverName = 'You';
         }
 
+        lastMessage.receiverId = receiver.id;
+
         res.status(200).json({ lastMessage });
     } catch (err) {
-        console.log(err);
         res.status(400).json({ error: err.message });
     }
 });

@@ -8,11 +8,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
-interface Data {
-    error?: string;
-    friends?: Array<User>;
-}
-
 interface User {
     id: Number;
     name: string;
@@ -25,35 +20,104 @@ interface User {
     about?: string;
 }
 
-export default function Chats({ email }: { email: string }) {
+interface Message {
+    id: number;
+    content: string;
+    senderName: string;
+    receiverId: number;
+}
+
+export default function Chats({
+    email,
+    username,
+}: {
+    email: string;
+    username: string;
+}) {
     const router = useRouter();
-    const [data, setData] = useState<Data>({});
+    const [friends, setFriends] = useState<User[]>([]);
     const [search, setSearch] = useState("");
     const [hiddenChevron, setHiddenChrevron] = useState<boolean[]>([]);
+    const [lastMessages, setLastMessages] = useState<Message[]>([]);
+    const [count, setCount] = useState(0);
 
     const fetchFriends = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/friends`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/friends`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email }),
+            }
+        );
 
-        const data = await response.json();
-        console.log(data);
-        console.log('a');
-        setData(data);
+        const friendData = await response.json();
+        setFriends(friendData.friends);
+
+        friendData.friends.forEach(async (friend: User) => {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_DB_URL}/lastMessage`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        senderName: username,
+                        receiverName: friend.username,
+                    }),
+                }
+            );
+
+            const data = await response.json();
+
+            if (data.lastMessage && data.lastMessage.id) {
+                setLastMessages((lastMessages) => {
+                    if (lastMessages.length < friendData.friends.length) {
+                        return [
+                            ...lastMessages,
+                            {
+                                id: data.lastMessage.id,
+                                content: data.lastMessage.content,
+                                senderName: data.lastMessage.senderName,
+                                receiverId: data.lastMessage.receiverId,
+                            },
+                        ];
+                    } else {
+                        return lastMessages.map((message, idx) => {
+                            if (
+                                message.receiverId ===
+                                data.lastMessage.receiverId
+                            ) {
+                                return {
+                                    id: data.lastMessage.id,
+                                    content: data.lastMessage.content,
+                                    senderName: data.lastMessage.senderName,
+                                    receiverId: data.lastMessage.receiverId,
+                                };
+                            } else {
+                                return message;
+                            }
+                        });
+                    }
+                });
+            }
+
+            if (response.status === 400) {
+                console.log("Last Message Error");
+                console.log(response);
+            }
+        });
     };
 
     useEffect(() => {
-        fetchFriends();
+        const interval = setInterval(() => {
+            fetchFriends();
+        }, 1000);
 
-        data.friends?.forEach((friend, idx) => {
-            if (hiddenChevron.length <= idx) {
-                setHiddenChrevron((hiddenChevron) => [...hiddenChevron, true]);
-            }
-        });
+        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -69,61 +133,70 @@ export default function Chats({ email }: { email: string }) {
                 />
             </div>
             <div className="w-full p-3 mt-6">
-                {data.error ? (
-                    data.error
-                ) : data.friends ? (
-                    data.friends.map((user: User, idx) => {
-                        if (!user.name.toLowerCase().includes(search))
-                            return null;
-                        return (
-                            <div
-                                key={idx}
-                                className="flex hover:bg-gray-200 shadow-[0_1px_1px_0_rgba(0,0,0,0.2)]"
-                                onMouseOut={() => {
-                                    hiddenChevron[idx] = true;
-                                    console.log(hiddenChevron[idx]);
-                                    router.refresh();
-                                }}
-                                onMouseOver={() => {
-                                    hiddenChevron[idx] = false;
-                                    console.log(hiddenChevron[idx]);
-                                    router.refresh();
-                                }}
-                            >
-                                <Link
-                                    className="flex my-3 w-full"
-                                    href={`/${user.username}/chat`}
+                {friends ? (
+                    friends.length > 0 ? (
+                        friends.map((user: User, idx: number) => {
+                            return (
+                                <div
+                                    key={idx}
+                                    className={`flex ${
+                                        friends
+                                            ? idx === friends.length - 1
+                                                ? ""
+                                                : "mb-6"
+                                            : null
+                                    }`}
                                 >
-                                    {user.profilePicture ? (
-                                        <Image
-                                            src={`data:image/jpeg;base64,${user.profilePicture}`}
-                                            alt="perfil"
-                                            width={100}
-                                            height={100}
-                                            className="w-20 h-20 mr-2 rounded-[50%] p-1"
-                                        />
-                                    ) : (
-                                        <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
-                                    )}
-                                    <div className="flex grow justify-between mt-3 px-1">
-                                        <span>{user.name}</span>
-                                        <button
-                                            className={`hover:scale-110 text-gray-400 w-6 h-6 ${
-                                                hiddenChevron[idx]
-                                                    ? "hidden"
-                                                    : ""
+                                    <Link
+                                        className="flex"
+                                        href={`/${user.username}/chat`}
+                                    >
+                                        {user.profilePicture ? (
+                                            <Image
+                                                src={`data:image/jpeg;base64,${user.profilePicture}`}
+                                                alt="perfil"
+                                                width={100}
+                                                height={100}
+                                                className="w-20 h-20 mr-2 rounded-[50%] p-1"
+                                            />
+                                        ) : (
+                                            <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
+                                        )}
+                                        <div
+                                            className={`h-full flex flex-col ${
+                                                lastMessages.length >= idx + 1
+                                                    ? "justify-between"
+                                                    : "justify-center"
                                             }`}
                                         >
-                                            <ChevronDownIcon></ChevronDownIcon>
-                                        </button>
-                                    </div>
-                                </Link>
-                            </div>
-                        );
-                    })
-                ) : (
-                    <span>Sadly you have no friends...</span>
-                )}
+                                            <span
+                                                className={`${
+                                                    lastMessages.length >=
+                                                    idx + 1
+                                                        ? "mt-3"
+                                                        : null
+                                                }`}
+                                            >
+                                                {user.name}
+                                            </span>
+                                            {lastMessages.length >= idx + 1 ? (
+                                                <span className="mb-3 text-gray-500 font-medium">
+                                                    {`${lastMessages[idx].senderName}: ${lastMessages[idx].content}`}
+                                                </span>
+                                            ) : (
+                                                <div>Loading...</div>
+                                            )}
+                                        </div>
+                                    </Link>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <span className="text-gray-400">
+                            Loading...
+                        </span>
+                    )
+                ) : null}
             </div>
         </aside>
     );
