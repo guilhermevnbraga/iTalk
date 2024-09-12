@@ -37,7 +37,7 @@ export default function Chats({
     const router = useRouter();
     const [friends, setFriends] = useState<User[]>([]);
     const [search, setSearch] = useState("");
-    const [hiddenChevron, setHiddenChrevron] = useState<boolean[]>([]);
+    const [hiddenChevronMenu, setHiddenChevronMenu] = useState<boolean[]>([]);
     const [lastMessages, setLastMessages] = useState<Message[]>([]);
     const [count, setCount] = useState(0);
 
@@ -120,6 +120,10 @@ export default function Chats({
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+        setHiddenChevronMenu(new Array(friends.length).fill(true));
+    }, []);
+
     return (
         <aside className="w-1/4 flex flex-col items-center shadow-[-3px_3px_6px_0px_rgba(0,0,0,0.3)] min-h-full">
             <div className="mt-4 text-xl font-medium">Chats</div>
@@ -132,7 +136,7 @@ export default function Chats({
                     onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
-            <div className="w-full p-3 mt-6">
+            <div className="w-full mt-6">
                 {friends ? (
                     friends.length > 0 ? (
                         friends.map((user: User, idx: number) => {
@@ -140,11 +144,18 @@ export default function Chats({
                                 return null;
                             return (
                                 <div
+                                    onMouseOut={() => {
+                                        setHiddenChevronMenu((prev) => {
+                                            const newState = [...prev];
+                                            newState[idx] = true;
+                                            return newState;
+                                        });
+                                    }}
                                     key={idx}
-                                    className="flex shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] hover:bg-gray-100 py-1"
+                                    className="flex justify-between shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] hover:bg-gray-100 py-1 text-white hover:text-gray-400 p-3"
                                 >
                                     <Link
-                                        className="flex"
+                                        className="flex text-black"
                                         href={`/${user.username}/chat`}
                                     >
                                         {user.profilePicture ? (
@@ -184,6 +195,40 @@ export default function Chats({
                                             )}
                                         </div>
                                     </Link>
+                                    <button
+                                        onClick={() =>
+                                            setHiddenChevronMenu((prev) => {
+                                                const newState = [...prev];
+                                                newState[idx] = !newState[idx];
+                                                return newState;
+                                            })
+                                        }
+                                        className="mt-2 mr-3 flex flex-col items-end w-5/12 h-full"
+                                    >
+                                        <ChevronDownIcon className="h-6 w-6"></ChevronDownIcon>
+                                        <div
+                                            className={`text-black relative bg-blue-400 w-full h-full ${
+                                                hiddenChevronMenu[idx] || hiddenChevronMenu.length < friends.length
+                                                    ? "hidden"
+                                                    : ""
+                                            }`}
+                                        >
+                                            <div className="absolute bg-[#edeff1] w-full flex flex-col left-32 text-xs">
+                                                <button className="hover:bg-[#fbfdff] p-3 w-full text-left">
+                                                    Delete conversation
+                                                </button>
+                                                <button className="hover:bg-[#fbfdff] p-3 w-full text-left">
+                                                    Pin
+                                                </button>
+                                                <button className="hover:bg-[#fbfdff] p-3 w-full text-left">
+                                                    Mark as read
+                                                </button>
+                                                <button className="hover:bg-[#fbfdff] p-3 w-full text-left">
+                                                    Block
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </button>
                                 </div>
                             );
                         })
