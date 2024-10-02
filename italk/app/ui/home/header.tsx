@@ -173,7 +173,7 @@ export default function Header({ name, username, email }: HeaderProps) {
                 <div
                     className={`${
                         isHidden ? "hidden" : "absolute"
-                    } top-16 right-6`}
+                    } top-16 right-6 w-[15vw]`}
                 >
                     <div className="flex flex-col p-6 bg-white shadow-lg rounded">
                         <button className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95">
@@ -181,22 +181,6 @@ export default function Header({ name, username, email }: HeaderProps) {
                             <Link href={username}>
                                 <span>Your Profile</span>
                             </Link>
-                        </button>
-                        <button className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 mt-3">
-                            <Cog6ToothIcon className="text-gray-900 w-6 h-6 mr-3" />
-                            <span>Settings and Privacy</span>
-                        </button>
-                        <button className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 mt-3">
-                            <QuestionMarkCircleIcon className="text-gray-900 w-6 h-6 mr-3" />
-                            <span>Help and Support</span>
-                        </button>
-                        <button className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 mt-3">
-                            <WindowIcon className="text-gray-900 w-6 h-6 mr-3" />
-                            <span>Screen and Accessibility</span>
-                        </button>
-                        <button className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 mt-3">
-                            <ExclamationCircleIcon className="text-gray-900 w-6 h-6 mr-3" />
-                            <span>Feedback</span>
                         </button>
                         <button
                             className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 mt-3"
