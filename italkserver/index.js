@@ -542,6 +542,8 @@ app.post("/lastMessage", async (req, res) => {
 
         lastMessage.receiverId = receiver.id;
 
+        console.log(lastMessage)
+
         res.status(200).json({ lastMessage });
     } catch (err) {
         res.status(400).json({ error: err.message });

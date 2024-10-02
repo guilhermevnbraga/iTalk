@@ -2,9 +2,15 @@ import Header from "@/app/ui/home/header";
 import Chats from "@/app/ui/chat/chats";
 import Chat from "@/app/ui/chat/chat";
 import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 export default async function Page({ params }: { params: { name: string } }) {
     const session = await getServerSession();
+
+    if (!session) {
+        redirect("/");
+    }
+
     const { name } = params;
 
     const fetchUsername = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/username`, {

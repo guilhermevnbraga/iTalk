@@ -24,7 +24,7 @@ interface Message {
     id: number;
     content: string;
     senderName: string;
-    receiverId: number;
+    receiverName: string;
 }
 
 export default function Chats({
@@ -39,7 +39,6 @@ export default function Chats({
     const [search, setSearch] = useState("");
     const [hiddenChevronMenu, setHiddenChevronMenu] = useState<boolean[]>([]);
     const [lastMessages, setLastMessages] = useState<Message[]>([]);
-    const [count, setCount] = useState(0);
 
     const fetchFriends = async () => {
         const response = await fetch(
@@ -82,20 +81,20 @@ export default function Chats({
                                 id: data.lastMessage.id,
                                 content: data.lastMessage.content,
                                 senderName: data.lastMessage.senderName,
-                                receiverId: data.lastMessage.receiverId,
+                                receiverName: data.lastMessage.receiverName,
                             },
                         ];
                     } else {
                         return lastMessages.map((message, idx) => {
                             if (
-                                message.receiverId ===
-                                data.lastMessage.receiverId
+                                message.receiverName ===
+                                data.lastMessage.receiverName
                             ) {
                                 return {
                                     id: data.lastMessage.id,
                                     content: data.lastMessage.content,
                                     senderName: data.lastMessage.senderName,
-                                    receiverId: data.lastMessage.receiverId,
+                                    receiverName: data.lastMessage.receiverName,
                                 };
                             } else {
                                 return message;
@@ -142,20 +141,29 @@ export default function Chats({
                         friends.map((user: User, idx: number) => {
                             if (!user.name.toLowerCase().includes(search))
                                 return null;
+
+                            let lastMessage: Message | null = null;
+                            const userReceiver = lastMessages.find(
+                                (message) => message.receiverName === user.name
+                            );
+                            const userSender = lastMessages.find(
+                                (message) => message.senderName === user.name
+                            );
+                            if (userReceiver) {
+                                lastMessage = userReceiver;
+                            } else if (userSender) {
+                                lastMessage = userSender;
+                            } else {
+                                lastMessage = null;
+                            }
+
                             return (
                                 <div
-                                    onMouseOut={() => {
-                                        setHiddenChevronMenu((prev) => {
-                                            const newState = [...prev];
-                                            newState[idx] = true;
-                                            return newState;
-                                        });
-                                    }}
                                     key={idx}
                                     className="flex justify-between shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] hover:bg-gray-100 py-1 text-white hover:text-gray-400 p-3"
                                 >
                                     <Link
-                                        className="flex text-black"
+                                        className="flex text-black grow"
                                         href={`/${user.username}/chat`}
                                     >
                                         {user.profilePicture ? (
@@ -188,7 +196,13 @@ export default function Chats({
                                             </span>
                                             {lastMessages.length >= idx + 1 ? (
                                                 <span className="mb-3 text-gray-500 font-medium">
-                                                    {`${lastMessages[idx].senderName}: ${lastMessages[idx].content}`}
+                                                    {`${
+                                                        lastMessage?.senderName ||
+                                                        "null"
+                                                    }: ${
+                                                        lastMessage?.content ||
+                                                        "null"
+                                                    }`}
                                                 </span>
                                             ) : (
                                                 <div>Loading...</div>
@@ -203,17 +217,19 @@ export default function Chats({
                                                 return newState;
                                             })
                                         }
-                                        className="mt-2 mr-3 flex flex-col items-end w-5/12 h-full"
+                                        className="mt-2 mr-3 flex flex-col items-end h-full"
                                     >
                                         <ChevronDownIcon className="h-6 w-6"></ChevronDownIcon>
                                         <div
                                             className={`text-black relative bg-blue-400 w-full h-full ${
-                                                hiddenChevronMenu[idx] || hiddenChevronMenu.length < friends.length
+                                                hiddenChevronMenu[idx] ||
+                                                hiddenChevronMenu.length <
+                                                    friends.length
                                                     ? "hidden"
                                                     : ""
                                             }`}
                                         >
-                                            <div className="absolute bg-[#edeff1] w-full flex flex-col left-32 text-xs">
+                                            <div className="absolute bg-[#edeff1] w-[10vw] flex flex-col text-xs">
                                                 <button className="hover:bg-[#fbfdff] p-3 w-full text-left">
                                                     Delete conversation
                                                 </button>

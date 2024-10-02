@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import Banner from "../ui/profile/banner";
 import Header from "../ui/home/header";
 import Option from "../ui/profile/options";
@@ -6,6 +7,10 @@ import Option from "../ui/profile/options";
 export default async function Page({ params }: { params: { name: string } }) {
     let user = null;
     const session = await getServerSession();
+
+    if (!session) {
+        redirect("/");
+    }
 
     const { name } = params;
 
