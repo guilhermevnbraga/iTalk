@@ -34,13 +34,16 @@ export default function Chats({
     const [friends, setFriends] = useState<User[]>([]);
 
     const fetchFriends = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/friends`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/friends`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email }),
+            }
+        );
 
         const data = await response.json();
 
@@ -86,6 +89,14 @@ export default function Chats({
     };
 
     useEffect(() => {
+        const interval = setInterval(() => {
+            fetchFriends();
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
         fetchFriends();
     }, []);
 
@@ -108,17 +119,22 @@ export default function Chats({
                                 className="flex"
                                 href={`/${user.username}/chat`}
                             >
-                                {user.profilePicture ? (
-                                    <Image
-                                        src={`data:image/jpeg;base64,${user.profilePicture}`}
-                                        alt="perfil"
-                                        width={100}
-                                        height={100}
-                                        className="w-20 h-20 mr-2 rounded-[50%] p-1"
-                                    />
-                                ) : (
-                                    <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
-                                )}
+                                <div className="flex">
+                                    {user.profilePicture ? (
+                                        <Image
+                                            src={`data:image/jpeg;base64,${user.profilePicture}`}
+                                            alt="perfil"
+                                            width={100}
+                                            height={100}
+                                            className="w-20 h-20 mr-2 rounded-[50%] p-1"
+                                        />
+                                    ) : (
+                                        <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
+                                    )}
+                                    {user.status ? (
+                                        <div className="relative right-8 top-1 bg-yellow-400 w-4 h-4 rounded-2xl"></div>
+                                    ) : null}
+                                </div>
                                 <div
                                     className={`h-full flex flex-col ${
                                         lastMessages.length >= idx + 1

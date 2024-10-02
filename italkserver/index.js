@@ -108,7 +108,7 @@ app.post("/logout", async (req, res) => {
 
         await prisma.user.updateMany({
             where: { email },
-            data: { status: 0 },
+            data: { status: false },
         });
 
         res.status(200).json({ message: "User logged out successfully" });
@@ -527,22 +527,20 @@ app.post("/lastMessage", async (req, res) => {
             orderBy: { date: "desc" },
             take: 1,
         });
-        
-        if (lastMessage && typeof lastMessage.date === 'bigint') {
+
+        if (lastMessage && typeof lastMessage.date === "bigint") {
             lastMessage.date = lastMessage.date.toString();
         }
 
         if (lastMessage.senderId === sender.id) {
-            lastMessage.senderName = 'You';
+            lastMessage.senderName = "You";
             lastMessage.receiverName = receiver.name;
         } else {
             lastMessage.senderName = receiver.name;
-            lastMessage.receiverName = 'You';
+            lastMessage.receiverName = "You";
         }
 
         lastMessage.receiverId = receiver.id;
-
-        console.log(lastMessage)
 
         res.status(200).json({ lastMessage });
     } catch (err) {
