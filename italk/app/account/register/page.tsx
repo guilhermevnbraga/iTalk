@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import emailIcon from "../../ui/imgs/email.png";
-import ProvidersButtons from "@/app/ui/providersButtons";
 import PasswordInput from "@/app/ui/passwordInput";
 import ErrorButton from "@/app/ui/errorButton";
 import { useState } from "react";
@@ -211,27 +211,18 @@ export default function Page() {
                     ></PasswordInput>
                     <ErrorButton error={compareError}></ErrorButton>
                 </form>
-                <div className="portrait:mt-2 flex justify-around items-center w-full mb-3 landscape:w-3/4 landscape:justify-between md:text-sm xl:text-base text-xs">
-                    <div className="flex flex-row items-center justify-center">
-                        <input
-                            type="checkbox"
-                            className="accent-[#2d85c3] w-3 h-3 mr-1 ml-3"
-                        ></input>
-                        <span>Remember me</span>
-                    </div>
-                    <span className="hover:underline cursor-pointer">
-                        Forgot Password?
-                    </span>
-                </div>
                 <button
                     onClick={handleSubmit}
-                    className="active:scale-95 mb-6 shadow-lg w-full landscape:w-3/4 bg-[#2d85c3] rounded-3xl p-2 text-white md:text-base lg:text-lg xl:text-xl font-medium hover:bg-white hover:text-[#2d85c3] border-solid border-2 border-[#2d85c3]"
+                    className="active:scale-95 mt-8 mb-6 shadow-lg w-full landscape:w-3/4 bg-[#2d85c3] rounded-3xl p-2 text-white md:text-base lg:text-lg xl:text-xl font-medium hover:bg-white hover:text-[#2d85c3] border-solid border-2 border-[#2d85c3]"
                 >
                     Sign Up
                 </button>
-                <ProvidersButtons></ProvidersButtons>
             </div>
-            <div></div>
+            <Link href="./login">
+                <span className="font-light md:text-base text-xs hover:underline cursor-pointer">
+                    Already have an account?
+                </span>
+            </Link>
         </div>
     );
 }

@@ -4,7 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import emailIcon from "../../ui/imgs/email.png";
-import ProvidersButtons from "@/app/ui/providersButtons";
 import PasswordInput from "@/app/ui/passwordInput";
 import ErrorButton from "@/app/ui/errorButton";
 import { signIn } from "next-auth/react";
@@ -55,18 +54,6 @@ export default function Page() {
                     ></PasswordInput>
                     <ErrorButton error={error}></ErrorButton>
                 </form>
-                <div className="portrait:mt-2 flex justify-around items-center w-full landscape:w-3/5 mb-3 landscape:w-3/5 landscape:justify-between md:text-sm xl:text-base text-xs">
-                    <div className="flex flex-row items-center justify-center">
-                        <input
-                            type="checkbox"
-                            className="accent-[#2d85c3] w-3 h-3 mr-1 ml-3"
-                        ></input>
-                        <span>Remember me</span>
-                    </div>
-                    <span className="hover:underline cursor-pointer">
-                        Forgot Password?
-                    </span>
-                </div>
                 <button
                     onClick={async () => {
                         const response = await signIn("credentials", {
@@ -81,11 +68,10 @@ export default function Page() {
                             router.push("/home");
                         }
                     }}
-                    className="mb-6 shadow-lg w-full landscape:w-3/5 bg-[#2d85c3] w-7/12 rounded-3xl p-2 text-white md:text-base lg:text-lg xl:text-xl md:w-4/5 font-medium hover:bg-white hover:text-[#2d85c3] border-solid border-2 border-[#2d85c3]"
+                    className="mt-8 mb-6 shadow-lg w-full landscape:w-3/5 bg-[#2d85c3] w-7/12 rounded-3xl p-2 text-white md:text-base lg:text-lg xl:text-xl md:w-4/5 font-medium hover:bg-white hover:text-[#2d85c3] border-solid border-2 border-[#2d85c3]"
                 >
                     Login
                 </button>
-                <ProvidersButtons></ProvidersButtons>
             </div>
             <Link href="./register">
                 <span className="font-light md:text-base text-xs hover:underline cursor-pointer">
