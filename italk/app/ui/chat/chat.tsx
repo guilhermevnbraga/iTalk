@@ -192,14 +192,6 @@ export default function Chat({
                         ) : null}
                         <p>{friend ? friend.name : ""}</p>
                     </Link>
-                    <div className="flex w-[6%] justify-between mr-9">
-                        <button>
-                            <MagnifyingGlassIcon className="w-6 h-6"></MagnifyingGlassIcon>
-                        </button>
-                        <button>
-                            <EllipsisVerticalIcon className="w-6 h-6"></EllipsisVerticalIcon>
-                        </button>
-                    </div>
                 </div>
             </section>
             <section className="w-full grow bg-gray-100 flex flex-col h-full overflow-y-auto">
@@ -236,12 +228,6 @@ export default function Chat({
             </section>
             <section>
                 <div className="flex justify-between items-center py-3 px-6 shadow-[1px_1px_0_0_rgba(200,200,200,0.5)] w-full h-fit">
-                    <div className="flex items-center mr-3">
-                        <FaceSmileIcon className="w-9 h-9 mr-4"></FaceSmileIcon>
-                        <button>
-                            <PlusIcon className="w-9 h-9 text-gray-700 mr-3"></PlusIcon>
-                        </button>
-                    </div>
                     <input
                         ref={messageRef}
                         type="text"
@@ -257,9 +243,6 @@ export default function Chat({
                         }}
                     />
                     <div className="flex items-center">
-                        <button className={disableSend ? "" : "hidden"}>
-                            <MicrophoneIcon className="w-9 h-9 text-gray-700"></MicrophoneIcon>
-                        </button>
                         <button
                             className={disableSend ? "hidden" : ""}
                             onClick={handleSendMessage}

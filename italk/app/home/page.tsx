@@ -89,9 +89,6 @@ export default async function Page() {
                         </Link>
                         <Chats email={session?.user?.email || ""} username={username}></Chats>
                     </div>
-                    <div className="flex justify-center shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] h-fit w-full p-6">
-                        Groups
-                    </div>
                 </div>
             </main>
             <Footer></Footer>

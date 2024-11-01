@@ -34,10 +34,8 @@ export default function Chats({
     email: string;
     username: string;
 }) {
-    const router = useRouter();
     const [friends, setFriends] = useState<User[]>([]);
     const [search, setSearch] = useState("");
-    const [hiddenChevronMenu, setHiddenChevronMenu] = useState<boolean[]>([]);
     const [lastMessages, setLastMessages] = useState<Message[]>([]);
 
     const fetchFriends = async () => {
@@ -85,7 +83,7 @@ export default function Chats({
                             },
                         ];
                     } else {
-                        return lastMessages.map((message, idx) => {
+                        return lastMessages.map((message) => {
                             if (
                                 message.receiverName ===
                                 data.lastMessage.receiverName
@@ -117,10 +115,6 @@ export default function Chats({
         }, 1000);
 
         return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
-        setHiddenChevronMenu(new Array(friends.length).fill(true));
     }, []);
 
     return (
@@ -160,23 +154,32 @@ export default function Chats({
                             return (
                                 <div
                                     key={idx}
-                                    className="flex justify-between shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] hover:bg-gray-100 py-1 text-white hover:text-gray-400 p-3"
+                                    className="flex justify-between shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] hover:bg-gray-100 py-1 p-3"
                                 >
                                     <Link
-                                        className="flex text-black grow"
+                                        className="flex"
                                         href={`/${user.username}/chat`}
                                     >
-                                        {user.profilePicture ? (
-                                            <Image
-                                                src={`data:image/jpeg;base64,${user.profilePicture}`}
-                                                alt="perfil"
-                                                width={100}
-                                                height={100}
-                                                className="w-20 h-20 mr-2 rounded-[50%] p-1"
-                                            />
-                                        ) : (
-                                            <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
-                                        )}
+                                        <div className="flex">
+                                            {user.profilePicture ? (
+                                                <Image
+                                                    src={`data:image/jpeg;base64,${user.profilePicture}`}
+                                                    alt="perfil"
+                                                    width={100}
+                                                    height={100}
+                                                    className="w-20 h-20 mr-2 rounded-[50%] p-1"
+                                                />
+                                            ) : (
+                                                <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
+                                            )}
+                                            <div
+                                                className={`relative right-8 top-1 ${
+                                                    user.status
+                                                        ? "bg-yellow-400"
+                                                        : ""
+                                                } w-4 h-4 rounded-2xl`}
+                                            ></div>
+                                        </div>
                                         <div
                                             className={`h-full flex flex-col ${
                                                 lastMessages.length >= idx + 1
@@ -196,55 +199,11 @@ export default function Chats({
                                             </span>
                                             {lastMessages.length >= idx + 1 ? (
                                                 <span className="mb-3 text-gray-500 font-medium">
-                                                    {`${
-                                                        lastMessage?.senderName ||
-                                                        "null"
-                                                    }: ${
-                                                        lastMessage?.content ||
-                                                        "null"
-                                                    }`}
+                                                    {`${lastMessages[idx].senderName}: ${lastMessages[idx].content}`}
                                                 </span>
-                                            ) : (
-                                                <div>Loading...</div>
-                                            )}
+                                            ) : null}
                                         </div>
                                     </Link>
-                                    <button
-                                        onClick={() =>
-                                            setHiddenChevronMenu((prev) => {
-                                                const newState = [...prev];
-                                                newState[idx] = !newState[idx];
-                                                return newState;
-                                            })
-                                        }
-                                        className="mt-2 mr-3 flex flex-col items-end h-full"
-                                    >
-                                        <ChevronDownIcon className="h-6 w-6"></ChevronDownIcon>
-                                        <div
-                                            className={`text-black relative bg-blue-400 w-full h-full ${
-                                                hiddenChevronMenu[idx] ||
-                                                hiddenChevronMenu.length <
-                                                    friends.length
-                                                    ? "hidden"
-                                                    : ""
-                                            }`}
-                                        >
-                                            <div className="absolute bg-[#edeff1] w-[10vw] flex flex-col text-xs">
-                                                <button className="hover:bg-[#fbfdff] p-3 w-full text-left">
-                                                    Delete conversation
-                                                </button>
-                                                <button className="hover:bg-[#fbfdff] p-3 w-full text-left">
-                                                    Pin
-                                                </button>
-                                                <button className="hover:bg-[#fbfdff] p-3 w-full text-left">
-                                                    Mark as read
-                                                </button>
-                                                <button className="hover:bg-[#fbfdff] p-3 w-full text-left">
-                                                    Block
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </button>
                                 </div>
                             );
                         })

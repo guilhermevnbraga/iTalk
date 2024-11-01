@@ -43,13 +43,16 @@ export default function Header({ name, username, email }: HeaderProps) {
     const searchBarRef = useRef(null);
 
     const logOut = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/logout`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/logout`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email }),
+            }
+        );
 
         const data = await response.json();
         if (response.status === 400) console.log(data);
@@ -92,7 +95,7 @@ export default function Header({ name, username, email }: HeaderProps) {
     }, [searchBarRef]);
 
     return (
-        <header className="w-full flex flex-row items-center py-3 px-6 shadow-lg z-50 h-[8vh]">
+        <header className="w-full flex flex-row items-center py-3 px-6 shadow-lg z-50 h-[8vh] justify-between">
             <div className="flex w-1/6 font-bold text-2xl">
                 <Link href="/home">
                     <h1>iTalk</h1>
@@ -142,54 +145,35 @@ export default function Header({ name, username, email }: HeaderProps) {
                     </div>
                 )}
             </div>
-            <div className="w-1/6 flex">
-                <div className="w-1/5"></div>
-                <div className="w-4/5 flex flex-row justify-between">
-                    <div className="flex flex-row justify-between">
-                        <Link
-                            href={`/home/chat`}
-                            className="mr-2 w-10 p-2 shadow rounded-3xl hover:scale-110"
-                        >
-                            <ChatBubbleOvalLeftIcon className="h-6 w-6 text-gray-900" />
+            <div className="flex">
+                <button className="mr-3" onClick={toggleDiv}>
+                    <span className="items-center flex hover:scale-105 hover:underline">
+                        {name}
+                    </span>
+                </button>
+                <button className="w-6 h-6 hover:scale-110" onClick={toggleDiv}>
+                    <UserIcon className="text-gray-900" />
+                </button>
+            </div>
+            <div
+                className={`${
+                    isHidden ? "hidden" : "absolute"
+                } top-16 right-6 w-[15vw]`}
+            >
+                <div className="flex flex-col p-6 bg-white shadow-lg rounded">
+                    <button className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95">
+                        <UserIcon className="text-gray-900 w-6 h-6 mr-3" />
+                        <Link href={username}>
+                            <span>Your Profile</span>
                         </Link>
-                        <button className="w-10 p-2 shadow rounded-3xl hover:scale-110">
-                            <BellIcon className="h-6 w-6 text-gray-900" />
-                        </button>
-                    </div>
-                    <div className="flex flex-row justify-between items-center">
-                        <button className="mr-3" onClick={toggleDiv}>
-                            <span className="items-center flex hover:scale-105 hover:underline">
-                                {name}
-                            </span>
-                        </button>
-                        <button
-                            className="w-6 h-6 hover:scale-110"
-                            onClick={toggleDiv}
-                        >
-                            <UserIcon className="text-gray-900" />
-                        </button>
-                    </div>
-                </div>
-                <div
-                    className={`${
-                        isHidden ? "hidden" : "absolute"
-                    } top-16 right-6 w-[15vw]`}
-                >
-                    <div className="flex flex-col p-6 bg-white shadow-lg rounded">
-                        <button className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95">
-                            <UserIcon className="text-gray-900 w-6 h-6 mr-3" />
-                            <Link href={username}>
-                                <span>Your Profile</span>
-                            </Link>
-                        </button>
-                        <button
-                            className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 mt-3"
-                            onClick={() => logOut()}
-                        >
-                            <ArrowRightOnRectangleIcon className="text-gray-900 w-6 h-6 mr-3" />
-                            <span>Logout</span>
-                        </button>
-                    </div>
+                    </button>
+                    <button
+                        className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 mt-3"
+                        onClick={() => logOut()}
+                    >
+                        <ArrowRightOnRectangleIcon className="text-gray-900 w-6 h-6 mr-3" />
+                        <span>Logout</span>
+                    </button>
                 </div>
             </div>
         </header>
