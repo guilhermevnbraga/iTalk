@@ -178,7 +178,6 @@ export default function Posts({ username }: HeaderProps) {
                                       className="flex items-center m-1"
                                   >
                                       <Image
-                                          onClick={() => console.log("a")}
                                           src={`data:image/jpeg;base64,${p}`}
                                           alt="perfil"
                                           width={360}

@@ -125,12 +125,10 @@ export default function Option({ user, acessUser }: HeaderProps) {
             body: formData,
         });
 
-        console.log(formData);
         const data = await response.json();
         if (response.status === 400) {
             setCredentialError(data.error);
         } else if (passwordError == "" && confirmPasswordError == "") {
-            console.log(data);
             setFirstName("");
             setLastName("");
             setUsername("");

@@ -34,8 +34,6 @@ model Post {
   mood      String?
   date      BigInt?
   user      User?        @relation(fields: [userId], references: [id])
-  parentPost Post?       @relation("PostParent", fields: [postId], references: [id])
-  childPosts Post[]      @relation("PostParent")
   attachments Attachment[]
   postPictures PostPicture[]
 }
