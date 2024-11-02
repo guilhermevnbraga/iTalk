@@ -1,11 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import { PaperClipIcon } from "@heroicons/react/24/solid";
-import { MapPinIcon } from "@heroicons/react/24/solid";
+import {
+    PaperClipIcon,
+    MapPinIcon,
+    PhotoIcon,
+    UserIcon,
+} from "@heroicons/react/24/solid";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
-import { PhotoIcon } from "@heroicons/react/24/solid";
-import { UserIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
 import Image from "next/image";
 
@@ -115,10 +117,13 @@ export default function Post({ email, profile, name }: PostProps) {
         if (moodVisibility) setMoodVisibility(false);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/post`, {
-                method: "POST",
-                body: formData,
-            });
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_DB_URL}/post`,
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
 
             const data = await response.json();
             console.log(data);
@@ -190,7 +195,9 @@ export default function Post({ email, profile, name }: PostProps) {
                                       className="flex items-center m-1"
                                   >
                                       <Image
-                                          onClick={() => handleRemovePicture(idx)}
+                                          onClick={() =>
+                                              handleRemovePicture(idx)
+                                          }
                                           src={URL.createObjectURL(p)}
                                           alt="perfil"
                                           width={333}
@@ -207,7 +214,9 @@ export default function Post({ email, profile, name }: PostProps) {
                                   return (
                                       <a
                                           key={idx}
-                                          onClick={() => handleRemoveAttachment(idx)}
+                                          onClick={() =>
+                                              handleRemoveAttachment(idx)
+                                          }
                                           className="text-blue-500 hover:cursor-pointer"
                                       >
                                           {p.name}

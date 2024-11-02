@@ -2,12 +2,6 @@
 
 import { UserIcon } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-import { ChatBubbleOvalLeftIcon } from "@heroicons/react/24/outline";
-import { BellIcon } from "@heroicons/react/24/outline";
-import { Cog6ToothIcon } from "@heroicons/react/24/outline";
-import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-import { WindowIcon } from "@heroicons/react/24/outline";
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect, useRef } from "react";
 import { signOut } from "next-auth/react";
@@ -18,6 +12,7 @@ interface HeaderProps {
     name: string;
     username: string;
     email: string;
+    profile: string | null;
 }
 
 interface Data {
@@ -36,7 +31,12 @@ interface User {
     status: Number;
 }
 
-export default function Header({ name, username, email }: HeaderProps) {
+export default function Header({
+    name,
+    username,
+    email,
+    profile,
+}: HeaderProps) {
     const [isHidden, setIsHidden] = useState(true);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [data, setData] = useState<Data>({});
@@ -95,7 +95,7 @@ export default function Header({ name, username, email }: HeaderProps) {
     }, [searchBarRef]);
 
     return (
-        <header className="w-full flex flex-row items-center py-3 px-6 shadow-lg z-50 h-[8vh] justify-between">
+        <header className="w-full flex items-center px-6 shadow-lg z-50 h-[8vh] justify-between">
             <div className="flex w-1/6 font-bold text-2xl">
                 <Link href="/home">
                     <h1>iTalk</h1>
@@ -151,8 +151,18 @@ export default function Header({ name, username, email }: HeaderProps) {
                         {name}
                     </span>
                 </button>
-                <button className="w-6 h-6 hover:scale-110" onClick={toggleDiv}>
-                    <UserIcon className="text-gray-900" />
+                <button className="h-12 w-12 hover:scale-105" onClick={toggleDiv}>
+                    {profile ? (
+                        <Image
+                            src={`data:image/jpeg;base64,${profile}`}
+                            alt="perfil"
+                            className="rounded-[50%]"
+                            width={999}
+                            height={999}
+                        />
+                    ) : (
+                        <UserIcon className="w-6 h-6"></UserIcon>
+                    )}
                 </button>
             </div>
             <div

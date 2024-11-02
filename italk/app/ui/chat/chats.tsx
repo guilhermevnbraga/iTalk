@@ -208,7 +208,7 @@ export default function Chats({
                             );
                         })
                     ) : (
-                        <span className="text-gray-400">Loading...</span>
+                        null
                     )
                 ) : null}
             </div>

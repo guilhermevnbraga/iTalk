@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { UserIcon } from "@heroicons/react/24/solid";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 
 interface BannerProps {

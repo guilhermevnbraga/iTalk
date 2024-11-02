@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 interface PasswordInputProps {
     label: string;
@@ -9,30 +10,6 @@ interface PasswordInputProps {
 
 export default function PasswordInput({ label, onChange }: PasswordInputProps) {
     const [showPassword, setShowPassword] = useState(false);
-    const [eyeClass, setEyeClass] = useState("hidden");
-    const [closedEyeClass, setEyeClosedClass] = useState(
-        "bg-[url(https://static.thenounproject.com/png/22249-200.png)]"
-    );
-
-    const handleClick = (
-        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ) => {
-        e.preventDefault();
-    };
-
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-        setEyeClass(
-            showPassword
-                ? "hidden"
-                : "bg-[url(https://static.vecteezy.com/system/resources/thumbnails/014/551/056/small_2x/eye-icon-simple-flat-eye-design-vision-care-concept-wear-glasses-for-a-clear-vision-png.png)]"
-        );
-        setEyeClosedClass(
-            showPassword
-                ? "bg-[url(https://static.thenounproject.com/png/22249-200.png)]"
-                : "hidden"
-        );
-    };
 
     return (
         <div>
@@ -49,23 +26,21 @@ export default function PasswordInput({ label, onChange }: PasswordInputProps) {
                     className="w-11/12 px-3 p-2 bg-transparent focus:outline-0 placeholder:text-sm landscape:placeholder:text-base"
                     placeholder="•••••••••••••••"
                     onChange={(e) => {
-                        if (onChange) return onChange(e.target.value)
+                        if (onChange) return onChange(e.target.value);
                     }}
                 />
                 <button
-                    className={`bg-cover w-7 h-7 mr-1 ${closedEyeClass}`}
                     onClick={(e) => {
-                        handleClick(e);
-                        togglePasswordVisibility();
+                        e.preventDefault();
+                        setShowPassword(!showPassword);
                     }}
-                ></button>
-                <button
-                    className={`bg-cover w-7 h-7 mr-1 ${eyeClass}`}
-                    onClick={(e) => {
-                        handleClick(e);
-                        togglePasswordVisibility();
-                    }}
-                ></button>
+                >
+                    {showPassword ? (
+                        <EyeIcon className="w-6 h-6 mr-1" />
+                    ) : (
+                        <EyeSlashIcon className="w-6 h-6 mr-1" />
+                    )}
+                </button>
             </div>
         </div>
     );

@@ -54,6 +54,7 @@ export default async function Page() {
                 name={session?.user?.name || ""}
                 username={username}
                 email={session?.user?.email || ""}
+                profile={profilePicture}
             ></Header>
             <main className="flex grow min-h-screen">
                 <div className="w-1/6 shadow-[3px_0_9px_0_rgba(0,0,0,0.15)]">

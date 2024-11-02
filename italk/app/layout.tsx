@@ -3,8 +3,8 @@ import { montserrat } from "./ui/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AuthConnect",
-  description: "Secure authentication app",
+  title: "iTalk",
+  description: "Social Media",
 };
 
 export default function RootLayout({

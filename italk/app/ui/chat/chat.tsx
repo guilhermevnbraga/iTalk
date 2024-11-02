@@ -1,17 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { UserIcon } from "@heroicons/react/24/outline";
-import {
-    MagnifyingGlassIcon,
-    EllipsisVerticalIcon,
-    PlusIcon,
-} from "@heroicons/react/24/solid";
-import {
-    FaceSmileIcon,
-    MicrophoneIcon,
-    PaperAirplaneIcon,
-} from "@heroicons/react/24/outline";
+import { UserIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -63,13 +53,16 @@ export default function Chat({
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const fetchFriend = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/profile`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name: username }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/profile`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name: username }),
+            }
+        );
 
         const data = await response.json();
         if (response.status === 400) {
@@ -80,13 +73,16 @@ export default function Chat({
     };
 
     const fetchUser = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/username`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/username`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email }),
+            }
+        );
 
         const data = await response.json();
         if (response.status === 400) {
@@ -97,16 +93,19 @@ export default function Chat({
     };
 
     const fetchMessages = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/messages`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                senderName: userName,
-                receiverName: username,
-            }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/messages`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    senderName: userName,
+                    receiverName: username,
+                }),
+            }
+        );
 
         const data = await response.json();
         if (response.status === 400) {
@@ -140,7 +139,6 @@ export default function Chat({
         if (userName === "") return;
 
         fetchMessages();
-        
     }, [Date.now()]);
 
     const handleSendMessage = async () => {
@@ -149,17 +147,20 @@ export default function Chat({
         if (messageRef.current) {
             messageRef.current.value = "";
         }
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/sendMessage`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                senderName: userName,
-                receiverName: username,
-                content: message,
-            }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/sendMessage`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    senderName: userName,
+                    receiverName: username,
+                    content: message,
+                }),
+            }
+        );
 
         const data = await response.json();
         if (response.status === 400) {
@@ -199,14 +200,16 @@ export default function Chat({
                     <div
                         key={idx}
                         className={`flex ${
-                            message.senderId === friend.id
+                            message.senderId === friend.id &&
+                            message.receiverId !== friend.id
                                 ? "justify-start"
                                 : "justify-end"
                         }`}
                     >
                         <div
                             className={`flex items-center p-2 m-3 shadow-[1px_1px_0_0_rgba(200,200,200,0.5)] bg-white rounded-2xl max-w-[69%] ${
-                                message.senderId === friend.id
+                                message.senderId === friend.id &&
+                                message.receiverId !== friend.id
                                     ? "rounded-bl-none"
                                     : "rounded-br-none"
                             }`}
@@ -215,7 +218,9 @@ export default function Chat({
                                 {message.content}
                             </p>
                             <p className="flex text-end text-xs h-full items-end">
-                                {new Date(parseInt(message.date)).toLocaleTimeString([], {
+                                {new Date(
+                                    parseInt(message.date)
+                                ).toLocaleTimeString([], {
                                     hour: "2-digit",
                                     minute: "2-digit",
                                     hour12: false,

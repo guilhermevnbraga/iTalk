@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import emailIcon from "../../ui/imgs/email.png";
 import PasswordInput from "@/app/ui/passwordInput";
 import ErrorButton from "@/app/ui/errorButton";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { EnvelopeIcon } from "@heroicons/react/24/outline";
 
 export default function Page() {
     const router = useRouter();
@@ -159,11 +159,7 @@ export default function Page() {
                             placeholder="email@email.com"
                             autoComplete="off"
                         />
-                        <Image
-                            src={emailIcon}
-                            className="mr-3 w-6 h-4"
-                            alt="email"
-                        />
+                        <EnvelopeIcon className="mr-3 w-6 h-6 text-black" />
                     </div>
                     <ErrorButton error={emailError}></ErrorButton>
                     <PasswordInput
