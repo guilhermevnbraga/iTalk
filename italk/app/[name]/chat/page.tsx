@@ -14,14 +14,7 @@ export default async function Page({ params }: { params: { name: string } }) {
     const { name } = params;
 
     const fetchUsername = await fetch(
-        `${process.env.NEXT_PUBLIC_DB_URL}/username`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email: session?.user?.email }),
-        }
+        `${process.env.NEXT_PUBLIC_DB_URL}/user/email/${session?.user?.email}`
     );
 
     let username = "";
@@ -29,16 +22,12 @@ export default async function Page({ params }: { params: { name: string } }) {
     if (fetchUsername.status === 400) {
         console.log(usernameData);
     } else {
-        username = usernameData.username;
+        username = usernameData.user.username;
     }
 
-    const fetchUser = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/profile`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: username }),
-    });
+    const fetchUser = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/user/username/${name}`
+    );
 
     let profilePicture = "";
     const userData = await fetchUser.json();

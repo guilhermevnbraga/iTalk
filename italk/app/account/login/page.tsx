@@ -16,10 +16,6 @@ export default function Page() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        console.log(process.env.NEXT_PUBLIC_DB_URL);
-    }, []);
-
     return (
         <div className="flex flex-col justify-evenly h-full items-center w-full">
             <h1 className="text-5xl font-bold">Log in</h1>

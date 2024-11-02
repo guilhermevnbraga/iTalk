@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import PasswordInput from "@/app/ui/passwordInput";
 import ErrorButton from "@/app/ui/errorButton";
@@ -62,7 +61,7 @@ export default function Page() {
         const userName = firstName.trim() + " " + lastName.trim();
 
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/register`,
+            `${process.env.NEXT_PUBLIC_DB_URL}/user/register`,
             {
                 method: "POST",
                 headers: {

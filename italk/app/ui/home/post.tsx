@@ -118,7 +118,7 @@ export default function Post({ email, profile, name }: PostProps) {
 
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_DB_URL}/post`,
+                `${process.env.NEXT_PUBLIC_DB_URL}/post/create`,
                 {
                     method: "POST",
                     body: formData,

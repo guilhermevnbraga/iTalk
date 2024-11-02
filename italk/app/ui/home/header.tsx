@@ -44,7 +44,7 @@ export default function Header({
 
     const logOut = async () => {
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/logout`,
+            `${process.env.NEXT_PUBLIC_DB_URL}/user/logout`,
             {
                 method: "POST",
                 headers: {
@@ -60,13 +60,9 @@ export default function Header({
     };
 
     const searchFriends = async (search: string) => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/user`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ search }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/user/search/${search}`
+        );
 
         const data = await response.json();
         console.log(data);

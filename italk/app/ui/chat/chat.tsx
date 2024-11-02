@@ -54,14 +54,7 @@ export default function Chat({
 
     const fetchFriend = async () => {
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/profile`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ name: username }),
-            }
+            `${process.env.NEXT_PUBLIC_DB_URL}/user/username/${username}`
         );
 
         const data = await response.json();
@@ -74,37 +67,20 @@ export default function Chat({
 
     const fetchUser = async () => {
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/username`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email }),
-            }
+            `${process.env.NEXT_PUBLIC_DB_URL}/user/email/${email}`
         );
 
         const data = await response.json();
         if (response.status === 400) {
             console.log(data);
         } else {
-            setUsername(data.username);
+            setUsername(data.user.username);
         }
     };
 
     const fetchMessages = async () => {
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/messages`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    senderName: userName,
-                    receiverName: username,
-                }),
-            }
+            `${process.env.NEXT_PUBLIC_DB_URL}/message/chat?senderName=${userName}&receiverName=${username}`
         );
 
         const data = await response.json();
@@ -148,7 +124,7 @@ export default function Chat({
             messageRef.current.value = "";
         }
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/sendMessage`,
+            `${process.env.NEXT_PUBLIC_DB_URL}/message/send`,
             {
                 method: "POST",
                 headers: {

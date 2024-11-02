@@ -71,7 +71,7 @@ export async function login(req, res) {
     }
 }
 
-export default async function logout(req, res) {
+export async function logout(req, res) {
     try {
         const { email } = req.body;
 
@@ -91,6 +91,14 @@ export async function getUserByEmail(req, res) {
         const { email } = req.params;
 
         const user = await prisma.user.findUnique({ where: { email } });
+
+        if (user.profilePicture)
+            user.profilePicture = Buffer.from(user.profilePicture).toString(
+                "base64"
+            );
+        if (user.banner)
+            user.banner = Buffer.from(user.banner).toString("base64");
+
         res.status(200).json({ user });
     } catch (err) {
         res.status(400).json({ error: err.message });
@@ -102,6 +110,14 @@ export async function getUserByUserName(req, res) {
         const { username } = req.params;
 
         const user = await prisma.user.findUnique({ where: { username } });
+
+        if (user.profilePicture)
+            user.profilePicture = Buffer.from(user.profilePicture).toString(
+                "base64"
+            );
+        if (user.banner)
+            user.banner = Buffer.from(user.banner).toString("base64");
+
         res.status(200).json({ user });
     } catch (err) {
         res.status(400).json({ error: err.message });

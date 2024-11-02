@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { UserIcon } from "@heroicons/react/24/outline";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -40,14 +38,7 @@ export default function Chats({
 
     const fetchFriends = async () => {
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/friends`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email }),
-            }
+            `${process.env.NEXT_PUBLIC_DB_URL}/friend/list/${email}`
         );
 
         const friendData = await response.json();
@@ -55,17 +46,7 @@ export default function Chats({
 
         friendData.friends.forEach(async (friend: User) => {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_DB_URL}/lastMessage`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        senderName: username,
-                        receiverName: friend.username,
-                    }),
-                }
+                `${process.env.NEXT_PUBLIC_DB_URL}/message/last?senderName=${username}&receiverName=${friend.username}`
             );
 
             const data = await response.json();
@@ -130,87 +111,87 @@ export default function Chats({
                 />
             </div>
             <div className="w-full mt-6">
-                {friends ? (
-                    friends.length > 0 ? (
-                        friends.map((user: User, idx: number) => {
-                            if (!user.name.toLowerCase().includes(search))
-                                return null;
+                {friends
+                    ? friends.length > 0
+                        ? friends.map((user: User, idx: number) => {
+                              if (!user.name.toLowerCase().includes(search))
+                                  return null;
 
-                            let lastMessage: Message | null = null;
-                            const userReceiver = lastMessages.find(
-                                (message) => message.receiverName === user.name
-                            );
-                            const userSender = lastMessages.find(
-                                (message) => message.senderName === user.name
-                            );
-                            if (userReceiver) {
-                                lastMessage = userReceiver;
-                            } else if (userSender) {
-                                lastMessage = userSender;
-                            } else {
-                                lastMessage = null;
-                            }
+                              let lastMessage: Message | null = null;
+                              const userReceiver = lastMessages.find(
+                                  (message) =>
+                                      message.receiverName === user.name
+                              );
+                              const userSender = lastMessages.find(
+                                  (message) => message.senderName === user.name
+                              );
+                              if (userReceiver) {
+                                  lastMessage = userReceiver;
+                              } else if (userSender) {
+                                  lastMessage = userSender;
+                              } else {
+                                  lastMessage = null;
+                              }
 
-                            return (
-                                <div
-                                    key={idx}
-                                    className="flex justify-between shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] hover:bg-gray-100 py-1 p-3"
-                                >
-                                    <Link
-                                        className="flex"
-                                        href={`/${user.username}/chat`}
-                                    >
-                                        <div className="flex">
-                                            {user.profilePicture ? (
-                                                <Image
-                                                    src={`data:image/jpeg;base64,${user.profilePicture}`}
-                                                    alt="perfil"
-                                                    width={100}
-                                                    height={100}
-                                                    className="w-20 h-20 mr-2 rounded-[50%] p-1"
-                                                />
-                                            ) : (
-                                                <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
-                                            )}
-                                            <div
-                                                className={`relative right-8 top-1 ${
-                                                    user.status
-                                                        ? "bg-yellow-400"
-                                                        : ""
-                                                } w-4 h-4 rounded-2xl`}
-                                            ></div>
-                                        </div>
-                                        <div
-                                            className={`h-full flex flex-col ${
-                                                lastMessages.length >= idx + 1
-                                                    ? "justify-between"
-                                                    : "justify-center"
-                                            }`}
-                                        >
-                                            <span
-                                                className={`${
-                                                    lastMessages.length >=
-                                                    idx + 1
-                                                        ? "mt-3"
-                                                        : null
-                                                }`}
-                                            >
-                                                {user.name}
-                                            </span>
-                                            {lastMessages.length >= idx + 1 ? (
-                                                <span className="mb-3 text-gray-500 font-medium">
-                                                    {`${lastMessages[idx].senderName}: ${lastMessages[idx].content}`}
-                                                </span>
-                                            ) : null}
-                                        </div>
-                                    </Link>
-                                </div>
-                            );
-                        })
-                    ) : (
-                        null
-                    )
-                ) : null}
+                              return (
+                                  <div
+                                      key={idx}
+                                      className="flex justify-between shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] hover:bg-gray-100 py-1 p-3"
+                                  >
+                                      <Link
+                                          className="flex"
+                                          href={`/${user.username}/chat`}
+                                      >
+                                          <div className="flex">
+                                              {user.profilePicture ? (
+                                                  <Image
+                                                      src={`data:image/jpeg;base64,${user.profilePicture}`}
+                                                      alt="perfil"
+                                                      width={100}
+                                                      height={100}
+                                                      className="w-20 h-20 mr-2 rounded-[50%] p-1"
+                                                  />
+                                              ) : (
+                                                  <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
+                                              )}
+                                              <div
+                                                  className={`relative right-8 top-1 ${
+                                                      user.status
+                                                          ? "bg-yellow-400"
+                                                          : ""
+                                                  } w-4 h-4 rounded-2xl`}
+                                              ></div>
+                                          </div>
+                                          <div
+                                              className={`h-full flex flex-col ${
+                                                  lastMessages.length >= idx + 1
+                                                      ? "justify-between"
+                                                      : "justify-center"
+                                              }`}
+                                          >
+                                              <span
+                                                  className={`${
+                                                      lastMessages.length >=
+                                                      idx + 1
+                                                          ? "mt-3"
+                                                          : null
+                                                  }`}
+                                              >
+                                                  {user.name}
+                                              </span>
+                                              {lastMessages.length >=
+                                              idx + 1 ? (
+                                                  <span className="mb-3 text-gray-500 font-medium">
+                                                      {`${lastMessages[idx].senderName}: ${lastMessages[idx].content}`}
+                                                  </span>
+                                              ) : null}
+                                          </div>
+                                      </Link>
+                                  </div>
+                              );
+                          })
+                        : null
+                    : null}
             </div>
         </aside>
     );

@@ -33,7 +33,7 @@ export default function Banner({
     const profilePictureRef = useRef(null);
 
     const addFriend = async () => {
-        await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/addFriend`, {
+        await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/friend/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -47,16 +47,12 @@ export default function Banner({
     };
 
     const handleRemoveFriend = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/deleteFriend`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username: user.username,
-                acessUsername: acessUsername,
-            }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/friend/delete?username=${user.username}&acessUsername=${acessUsername}`,
+            {
+                method: "DELETE",
+            }
+        );
 
         const data = await response.json();
         if (response.status === 400) {
@@ -98,7 +94,9 @@ export default function Banner({
                 {user.username === acessUsername ? null : user.hasFriend ? (
                     <div className="mt-3 text-white text-sm">
                         <button
-                            onClick={() =>  router.push(`/${user.username}/chat`)}
+                            onClick={() =>
+                                router.push(`/${user.username}/chat`)
+                            }
                             className="bg-green-500 rounded-md px-1 py-1"
                         >
                             Send Message

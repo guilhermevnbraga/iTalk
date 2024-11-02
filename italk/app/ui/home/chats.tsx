@@ -35,14 +35,7 @@ export default function Chats({
 
     const fetchFriends = async () => {
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_DB_URL}/friends`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email }),
-            }
+            `${process.env.NEXT_PUBLIC_DB_URL}/friend/list/${email}`
         );
 
         const data = await response.json();
@@ -53,17 +46,7 @@ export default function Chats({
             setFriends(data.friends);
             data.friends.forEach(async (friend: User) => {
                 const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_DB_URL}/lastMessage`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            senderName: username,
-                            receiverName: friend.username,
-                        }),
-                    }
+                    `${process.env.NEXT_PUBLIC_DB_URL}/message/last?senderName${username}&receiverName=${friend.username}`
                 );
 
                 const data = await response.json();

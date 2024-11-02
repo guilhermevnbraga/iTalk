@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
-import friendRouter from "./routes/friend.routes";
-import messageRouter from "./routes/message.routes";
-import postRouter from "./routes/post.routes";
-import userRouter from "./routes/user.routes";
+import friendRouter from "./routes/friend.routes.js";
+import messageRouter from "./routes/message.routes.js";
+import postRouter from "./routes/post.routes.js";
+import userRouter from "./routes/user.routes.js";
 
 const app = express();
 

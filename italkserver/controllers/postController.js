@@ -11,7 +11,6 @@ export async function createPost(req, res) {
 
         const post = await prisma.post.create({
             data: {
-                id: uuidv4(),
                 userId: user.id,
                 message,
                 locale,
@@ -25,7 +24,6 @@ export async function createPost(req, res) {
                 req.files.pictures.map((picture) =>
                     prisma.postPicture.create({
                         data: {
-                            id: uuidv4(),
                             postId: post.id,
                             picture: picture.buffer,
                         },
@@ -39,7 +37,6 @@ export async function createPost(req, res) {
                 req.files.attachments.map((attachment) =>
                     prisma.attachment.create({
                         data: {
-                            id: uuidv4(),
                             postId: post.id,
                             title: attachment.originalname,
                             attachment: attachment.buffer,
@@ -60,7 +57,7 @@ export async function getUserPost(req, res) {
         const { ids, username } = req.query;
 
         let id;
-        if (username) {
+        if (username !== 'undefined') {
             const user = await prisma.user.findUnique({
                 where: { username: username },
             });
@@ -69,7 +66,7 @@ export async function getUserPost(req, res) {
 
         const posts = await prisma.post.findMany({
             where: {
-                id: { notIn: ids },
+                id: { notIn: JSON.parse(ids) },
                 ...(username && { userId: id }),
             },
             orderBy: { date: "desc" },

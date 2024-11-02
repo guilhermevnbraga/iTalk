@@ -45,13 +45,9 @@ export default function Posts({ username }: HeaderProps) {
 
         setLoading(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/userPost`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ ids, username }),
-            });
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_DB_URL}/post/user?ids=${JSON.stringify(ids)}&username=${username}`
+            );
 
             const data = await response.json();
             if (response.status === 400) {

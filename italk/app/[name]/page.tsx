@@ -4,7 +4,11 @@ import Banner from "../ui/profile/banner";
 import Header from "../ui/home/header";
 import Option from "../ui/profile/options";
 
-export default async function Page({ params }: { params: { name: string } }) {
+export default async function Page({
+    params,
+}: {
+    params: { name: string };
+}) {
     let user = null;
     const session = await getServerSession();
 
@@ -14,13 +18,9 @@ export default async function Page({ params }: { params: { name: string } }) {
 
     const { name } = params;
 
-    const fetchUser = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/profile`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
-    });
+    const fetchUser = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/user/username/${name}`
+    );
 
     const userData = await fetchUser.json();
     if (fetchUser.status === 400) {
@@ -29,31 +29,20 @@ export default async function Page({ params }: { params: { name: string } }) {
         user = userData.user;
     }
 
-    const hasFriend = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/hasFriend`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            userEmail: session?.user?.email,
-            friendEmail: user.email,
-        }),
-    });
+    const hasFriend = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/friend/hasFriend?userEmail=${session?.user?.email}&friendEmail=${user.email}`
+    );
 
     let acessUsername = "";
-    const fetchAcessUsername = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/username`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: session?.user?.email }),
-    });
+    const fetchAcessUsername = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/user/email/${session?.user?.email}`
+    );
 
     const acessUsernameData = await fetchAcessUsername.json();
     if (fetchAcessUsername.status === 400) {
         console.log(acessUsernameData);
     } else {
-        acessUsername = acessUsernameData.username;
+        acessUsername = acessUsernameData.user.username;
     }
 
     const friendData = await hasFriend.json();

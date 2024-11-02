@@ -3,9 +3,9 @@ import { createFriend, getFriends, deleteFriend, hasFriend } from "../controller
 
 const friendRouter = express.Router();
 
-friendRouter.get("/getFriends/:email", getFriends);
+friendRouter.get("/list/:email", getFriends);
 friendRouter.get("/hasFriend", hasFriend);
 friendRouter.post("/create", createFriend);
-friendRouter.delete("/deleteFriend", deleteFriend);
+friendRouter.delete("/delete", deleteFriend);
 
 export default friendRouter;

@@ -63,13 +63,9 @@ export default function Option({ user, acessUser }: HeaderProps) {
     }, []);
 
     const fetchFriends = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/friends`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email: user.email }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/friend/list/${user.email}`
+        );
 
         const data = await response.json();
         if (response.status === 400) {
@@ -79,13 +75,16 @@ export default function Option({ user, acessUser }: HeaderProps) {
     };
 
     const handleAboutSubmit = async () => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/about`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email: user.email, about: content }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/user/about`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: user.email, about: content }),
+            }
+        );
 
         const data = await response.json();
         if (response.status === 400) {
@@ -120,10 +119,13 @@ export default function Option({ user, acessUser }: HeaderProps) {
             formData.append("banner", banner);
         }
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/updateProfile`, {
-            method: "POST",
-            body: formData,
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/user/profile`,
+            {
+                method: "PATCH",
+                body: formData,
+            }
+        );
 
         const data = await response.json();
         if (response.status === 400) {
@@ -148,16 +150,12 @@ export default function Option({ user, acessUser }: HeaderProps) {
     };
 
     const handleRemoveFriend = async (friendUsername: string) => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/deleteFriend`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username: friendUsername,
-                acessUsername: user.username,
-            }),
-        });
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_DB_URL}/friend/delete?username=${friendUsername}&acessUsername=${user.username}`,
+            {
+                method: "DELETE",
+            }
+        );
 
         const data = await response.json();
         if (response.status === 400) {

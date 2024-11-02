@@ -3,12 +3,12 @@ import {
     getMessages,
     sendMessage,
     getLastMessage,
-} from "../controllers/messageController";
+} from "../controllers/messageController.js";
 
 const messageRouter = express.Router();
 
 messageRouter.get("/chat", getMessages);
-messageRouter.get("last", getLastMessage);
-messageRouter.post("send", sendMessage);
+messageRouter.get("/last", getLastMessage);
+messageRouter.post("/send", sendMessage);
 
 export default messageRouter;
