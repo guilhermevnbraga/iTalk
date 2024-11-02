@@ -163,7 +163,7 @@ export default function Chats({
                 })
             ) : (
                 <span className="text-gray-400">
-                    You doesn't have any friends yet
+                    You doesn&apos;t have any friends yet
                 </span>
             )}
         </div>
