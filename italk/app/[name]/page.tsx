@@ -69,6 +69,7 @@ export default async function Page({ params }: { params: { name: string } }) {
                 name={session?.user?.name || ""}
                 username={user.username}
                 email={session?.user?.email || ""}
+                profile={user.profilePicture}
             ></Header>
             <div className="flex flex-col w-4/6 grow shadow-[0_0_9px_0_rgba(0,0,0,0.15)]">
                 <Banner
