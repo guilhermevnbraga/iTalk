@@ -13,13 +13,16 @@ export default async function Page({ params }: { params: { name: string } }) {
 
     const { name } = params;
 
-    const fetchUsername = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/username`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: session?.user?.email }),
-    });
+    const fetchUsername = await fetch(
+        `${process.env.NEXT_PUBLIC_DB_URL}/username`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: session?.user?.email }),
+        }
+    );
 
     let username = "";
     const usernameData = await fetchUsername.json();
@@ -29,15 +32,35 @@ export default async function Page({ params }: { params: { name: string } }) {
         username = usernameData.username;
     }
 
+    const fetchUser = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/profile`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: username }),
+    });
+
+    let profilePicture = "";
+    const userData = await fetchUser.json();
+    if (fetchUser.status === 400) {
+        console.log(userData);
+    } else {
+        profilePicture = userData.user.profilePicture;
+    }
+
     return (
         <>
             <Header
                 name={session?.user?.name || " "}
                 email={session?.user?.email || ""}
                 username={username}
+                profile={profilePicture}
             ></Header>
             <main className="flex w-full h-[92vh]">
-                <Chats username={username} email={session?.user?.email || ""}></Chats>
+                <Chats
+                    username={username}
+                    email={session?.user?.email || ""}
+                ></Chats>
                 <Chat username={name} email={session?.user?.email || ""}></Chat>
             </main>
         </>
