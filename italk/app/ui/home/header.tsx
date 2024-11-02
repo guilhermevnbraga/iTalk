@@ -151,12 +151,12 @@ export default function Header({
                         {name}
                     </span>
                 </button>
-                <button className="h-12 w-12 hover:scale-105" onClick={toggleDiv}>
+                <button className="hover:scale-105" onClick={toggleDiv}>
                     {profile ? (
                         <Image
                             src={`data:image/jpeg;base64,${profile}`}
                             alt="perfil"
-                            className="rounded-[50%]"
+                            className="rounded-[50%] w-12 h-12"
                             width={999}
                             height={999}
                         />
