@@ -111,7 +111,7 @@ export default function Banner({
                 ) : (
                     <button
                         onClick={addFriend}
-                        className="bg-green-500 text-white rounded-md px-3 py-1 mt-3 sm:items-center"
+                        className="flex bg-green-500 text-white rounded-md px-3 py-1 mt-3 sm:items-center"
                     >
                         Add Friend
                     </button>
