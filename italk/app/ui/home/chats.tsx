@@ -46,7 +46,7 @@ export default function Chats({
             setFriends(data.friends);
             data.friends.forEach(async (friend: User) => {
                 const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_DB_URL}/message/last?senderName${username}&receiverName=${friend.username}`
+                    `${process.env.NEXT_PUBLIC_DB_URL}/message/last?senderName=${username}&receiverName=${friend.username}`
                 );
 
                 const data = await response.json();
@@ -86,7 +86,7 @@ export default function Chats({
     return (
         <div
             className={`p-6 ${
-                friends.length === 0 ? "flex justify-center" : null
+                friends.length === 0 ? "flex justify-center" : ""
             }`}
         >
             {friends.length > 0 ? (
@@ -94,12 +94,12 @@ export default function Chats({
                     return (
                         <div
                             key={idx}
-                            className={`flex ${
+                            className={`flex flex-col ${
                                 idx === friends.length - 1 ? "" : "mb-6"
                             }`}
                         >
                             <Link
-                                className="flex"
+                                className="flex flex-col 2xl:flex-row items-center"
                                 href={`/${user.username}/chat`}
                             >
                                 <div className="flex">
@@ -109,17 +109,17 @@ export default function Chats({
                                             alt="perfil"
                                             width={100}
                                             height={100}
-                                            className="w-20 h-20 mr-2 rounded-[50%] p-1"
+                                            className="w-20 h-20 mr-2 rounded-full p-1"
                                         />
                                     ) : (
-                                        <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-[50%] p-1"></UserIcon>
+                                        <UserIcon className="w-20 h-20 mr-3 text-gray-400 border-2 rounded-full p-1"></UserIcon>
                                     )}
                                     {user.status ? (
-                                        <div className="relative right-8 top-1 bg-yellow-400 w-4 h-4 rounded-2xl"></div>
+                                        <div className="bg-yellow-400 w-4 h-4 rounded-full absolute ml-14"></div>
                                     ) : null}
                                 </div>
                                 <div
-                                    className={`h-full flex flex-col ${
+                                    className={`hidden 2xl:flex h-full flex flex-col items-start ${
                                         lastMessages.length >= idx + 1
                                             ? "justify-between"
                                             : "justify-center"
@@ -129,13 +129,13 @@ export default function Chats({
                                         className={`${
                                             lastMessages.length >= idx + 1
                                                 ? "mt-3"
-                                                : null
+                                                : ""
                                         }`}
                                     >
                                         {user.name}
                                     </span>
                                     {lastMessages.length >= idx + 1 ? (
-                                        <span className="mb-3 text-gray-500 font-medium">
+                                        <span className="mb-3 text-gray-500 font-medium text-center">
                                             {`${lastMessages[idx].senderName}: ${lastMessages[idx].content}`}
                                         </span>
                                     ) : null}
@@ -145,8 +145,8 @@ export default function Chats({
                     );
                 })
             ) : (
-                <span className="text-gray-400">
-                    You doesn&apos;t have any friends yet
+                <span className="text-gray-400 text-center">
+                    You don&apos;t have any friends yet
                 </span>
             )}
         </div>

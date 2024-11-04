@@ -111,7 +111,7 @@ export default function Posts({ username }: HeaderProps) {
                     key={index}
                     className="flex flex-col w-full bg-white rounded-2xl shadow-[0_5px_15px_0px_rgba(0,0,0,0.15)] p-6 mb-6"
                 >
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col sm:flex-row justify-between">
                         <Link
                             href={`/${element.username}`}
                             className="flex flex-row mb-2"
@@ -141,7 +141,7 @@ export default function Posts({ username }: HeaderProps) {
                                 ) : null}
                             </div>
                         </Link>
-                        <aside className="font-thin">
+                        <aside className="font-thin text-sm sm:text-base">
                             <span>{`${
                                 element.date.getMonth() + 1 >= 10
                                     ? element.date.getMonth() + 1

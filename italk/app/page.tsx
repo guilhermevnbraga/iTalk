@@ -6,30 +6,31 @@ import talk from "./ui/imgs/talk.webp";
 
 export default function Page() {
     return (
-        <main className="h-screen flex justify-center flex-col bg-[#edeff1]">
+        <main className="min-h-screen flex flex-col bg-[#edeff1]">
             <Header></Header>
-            <div className="flex lg:flex-row flex-col justify-around items-center grow">
-                <section className="flex flex-col lg:w-1/2 items-center w-full">
-                    <span className="font-black lg:text-5xl md:text-7xl sm:text-5xl text-4xl lg:mb-3 mb-6 w-fit">
+            <div className="flex flex-col lg:flex-row justify-around items-center grow">
+                <section className="flex flex-col items-center w-full lg:w-1/2 text-center lg:text-left">
+                    <span className="font-black text-4xl sm:text-5xl md:text-7xl lg:text-5xl mb-6 lg:mb-3">
                         Manage your life
                     </span>
-                    <span className="lg:text-lg md:text-2xl sm:text-lg text-sm font-light mb-16 w-fit">
+                    <span className="font-light text-sm sm:text-lg md:text-2xl lg:text-lg mb-16">
                         Connect with friends and family
                     </span>
                     <Link
-                        className="hover:scale-105 shadow flex justify-center 2xl:w-1/5 xl:w-1/4 lg:w-1/3 md:w-1/5 p-3 rounded-3xl border-solid border-2 border-[#2d85c3] bg-[#2d85c3] text-white hover:bg-white hover:text-[#2d85c3] font-medium"
+                        className="shadow flex justify-center p-3 rounded-3xl border-2 border-[#2d85c3] bg-[#2d85c3] text-white hover:bg-white hover:text-[#2d85c3] font-medium hover:scale-105 transition-transform duration-300
+                        w-full max-w-xs sm:max-w-sm md:max-w-md lg:w-1/3"
                         href="/account/login"
                     >
                         <button>Connect now</button>
                     </Link>
                 </section>
-                <aside className="hidden lg:flex justify-center w-1/2">
-                    <figure className="shadow-md w-1/2 rounded-xl">
-                        <Image src={talk} width={999} height={999} alt='talk'></Image>
+                <aside className="hidden landscape:flex justify-center lg:w-1/2">
+                    <figure className="shadow-md w-2/3 rounded-xl">
+                        <Image src={talk} width={999} height={999} alt="talk"></Image>
                     </figure>
                 </aside>
             </div>
-            <div className="hidden landscape:flex w-full">
+            <div className="w-full mt-auto">
                 <Footer></Footer>
             </div>
         </main>

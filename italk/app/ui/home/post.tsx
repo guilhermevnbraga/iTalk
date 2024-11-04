@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
     PaperClipIcon,
     MapPinIcon,
@@ -8,7 +8,6 @@ import {
     UserIcon,
 } from "@heroicons/react/24/solid";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
 import Image from "next/image";
 
 interface PostProps {
@@ -227,8 +226,8 @@ export default function Post({ email, profile, name }: PostProps) {
                     </div>
                 </div>
             </div>
-            <div className="w-full flex flex-row justify-between items-center p-6">
-                <div className="flex flex-row justify-between ml-1">
+            <div className="w-full flex flex-col sm:flex-row justify-between items-center p-6">
+                <div className="flex flex-row justify-between ml-1 mb-4 sm:mb-0">
                     <button type="button" onClick={handlePicturesClick}>
                         <input
                             type="file"

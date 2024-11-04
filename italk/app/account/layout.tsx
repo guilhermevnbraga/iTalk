@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <main className="flex flex-col justify-center items-center bg-[#edeff1] h-screen">
             <div className="flex flex-row w-full justify-center items-center p-6 h-full">
-                <aside className="flex justify-center items-center w-1/2">
+                <aside className="hidden landscape:flex flex justify-center items-center w-1/2">
                     <figure className="w-1/2 shadow-md">
                         <Image
                             src={talk}
@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         ></Image>
                     </figure>
                 </aside>
-                <section className="items-center h-full flex w-1/2 p-3">
+                <section className="items-center h-full flex landscape:w-1/2 w-full p-3">
                     {children}
                 </section>
             </div>

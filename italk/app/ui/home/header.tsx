@@ -92,14 +92,14 @@ export default function Header({
 
     return (
         <header className="w-full flex items-center px-6 shadow-lg z-50 h-[8vh] justify-between">
-            <div className="flex w-1/6 font-bold text-2xl">
+            <div className="flex w-1/6 font-bold sm:text-2xl">
                 <Link href="/home">
                     <h1>iTalk</h1>
                 </Link>
             </div>
             <div className="w-2/3 relative" ref={searchBarRef}>
                 <div
-                    className="flex flex-row rounded-3xl shadow p-3 cursor-pointer"
+                    className="flex flex-row rounded-3xl shadow p-2 sm:p-3 cursor-pointer"
                     onClick={() => setIsSearchActive(true)}
                 >
                     <MagnifyingGlassIcon className="h-6 w-6 mr-3" />
@@ -141,7 +141,7 @@ export default function Header({
                     </div>
                 )}
             </div>
-            <div className="flex">
+            <div className="flex items-center">
                 <button className="mr-3" onClick={toggleDiv}>
                     <span className="items-center flex hover:scale-105 hover:underline">
                         {name}
@@ -164,20 +164,20 @@ export default function Header({
             <div
                 className={`${
                     isHidden ? "hidden" : "absolute"
-                } top-16 right-6 w-[15vw]`}
+                } top-16 right-6 lg:w-[15vw] w-[40vw]`}
             >
                 <div className="flex flex-col p-6 bg-white shadow-lg rounded">
-                    <button className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95">
-                        <UserIcon className="text-gray-900 w-6 h-6 mr-3" />
+                    <button className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 items-center justify-center lg:justify-start">
+                        <UserIcon className="hidden lg:flex text-gray-900 w-6 h-6 mr-3" />
                         <Link href={username}>
                             <span>Your Profile</span>
                         </Link>
                     </button>
                     <button
-                        className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 mt-3"
+                        className="flex flex-row shadow rounded-lg p-3 hover:scale-105 active:scale-95 mt-3 items-center justify-center lg:justify-start"
                         onClick={() => logOut()}
                     >
-                        <ArrowRightOnRectangleIcon className="text-gray-900 w-6 h-6 mr-3" />
+                        <ArrowRightOnRectangleIcon className="hidden lg:flex text-gray-900 w-6 h-6 mr-3" />
                         <span>Logout</span>
                     </button>
                 </div>

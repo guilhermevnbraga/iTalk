@@ -208,7 +208,7 @@ export default function Page() {
                 </form>
                 <button
                     onClick={handleSubmit}
-                    className="active:scale-95 mt-8 mb-6 shadow-lg w-full landscape:w-3/4 bg-[#2d85c3] rounded-3xl p-2 text-white md:text-base lg:text-lg xl:text-xl font-medium hover:bg-white hover:text-[#2d85c3] border-solid border-2 border-[#2d85c3]"
+                    className="active:scale-95 mt-8 mb-6 shadow-lg w-full md:w-3/4 bg-[#2d85c3] rounded-3xl p-2 text-white md:text-base lg:text-lg xl:text-xl font-medium hover:bg-white hover:text-[#2d85c3] border-solid border-2 border-[#2d85c3]"
                 >
                     Sign Up
                 </button>

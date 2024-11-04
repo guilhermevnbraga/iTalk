@@ -53,20 +53,20 @@ export default async function Page({
     }
 
     return (
-        <main className="flex items-center flex-col min-h-screen">
+        <main className="flex flex-col items-center min-h-screen">
             <Header
                 name={session?.user?.name || ""}
                 username={user.username}
                 email={session?.user?.email || ""}
                 profile={user.profilePicture}
-            ></Header>
-            <div className="flex flex-col w-4/6 grow shadow-[0_0_9px_0_rgba(0,0,0,0.15)]">
+            />
+            <div className="flex flex-col w-full sm:w-5/6 lg:w-4/6 grow shadow-[0_0_9px_0_rgba(0,0,0,0.15)]">
                 <Banner
                     user={user}
                     acessUsername={acessUsername}
                     acessUserEmail={session?.user?.email || ""}
-                ></Banner>
-                <Option user={user} acessUser={acessUsername}></Option>
+                />
+                <Option user={user} acessUser={acessUsername} />
             </div>
         </main>
     );

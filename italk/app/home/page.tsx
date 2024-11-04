@@ -1,7 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { UserIcon } from "@heroicons/react/24/solid";
-import { HomeIcon } from "@heroicons/react/24/solid";
+import { UserIcon, HomeIcon, ChatBubbleOvalLeftIcon } from "@heroicons/react/24/solid";
 import Header from "../ui/home/header";
 import Footer from "../ui/footer";
 import Post from "../ui/home/post";
@@ -17,12 +16,7 @@ export default async function Page() {
     }
 
     const fetchProfile = await fetch(`${process.env.NEXT_PUBLIC_DB_URL}/user/email/${session?.user?.email}`);
-
     const userData = await fetchProfile.json();
-    if (fetchProfile.status === 400) {
-        console.log(userData);
-    } else {
-    }
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -32,25 +26,29 @@ export default async function Page() {
                 email={session?.user?.email || ""}
                 profile={userData.user.profilePicture}
             ></Header>
-            <main className="flex grow min-h-screen">
-                <div className="w-1/6 shadow-[3px_0_9px_0_rgba(0,0,0,0.15)]">
-                    <div className="mt-16 w-full shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] p-6">
+            
+            <main className="flex grow flex-col lg:flex-row min-h-screen">
+                {/* Sidebar */}
+                <div className="w-full lg:w-1/6 shadow-[3px_0_9px_0_rgba(0,0,0,0.15)]">
+                    <div className="mt-6 lg:mt-16 w-full shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] p-6">
                         <button className="flex flex-row w-full mb-3">
-                            <HomeIcon className="h-6 w-6 text-gray-500 mr-4"></HomeIcon>
+                            <HomeIcon className="h-6 w-6 text-gray-500 mr-4" />
                             <span className="flex items-end hover:underline hover:scale-105 active:scale-95">
                                 Home
                             </span>
                         </button>
-                        <button className="flex flex-row w-full">
-                            <UserIcon className="h-6 w-6 text-gray-500 mr-4"></UserIcon>
+                        <button className="flex flex-row w-full mb-3">
+                            <UserIcon className="h-6 w-6 text-gray-500 mr-4" />
                             <Link href={`/${userData.user.username}`}>
-                                <span className="flex items-end hover:underline hover:scale-105 active:scale-95">
+                                <span className="flex items-end hover:underline hover:scale-105 active:scale-95 text-sm xl:text-md">
                                     My Profile
                                 </span>
                             </Link>
                         </button>
                     </div>
                 </div>
+
+                {/* Main Content */}
                 <div className="p-6 items-center flex flex-col grow">
                     <Post
                         email={session?.user?.email || ""}
@@ -59,7 +57,9 @@ export default async function Page() {
                     ></Post>
                     <Posts></Posts>
                 </div>
-                <div className="flex align-center flex-col w-1/6 shadow-[-3px_0px_9px_0px_rgba(0,0,0,0.15)]">
+
+                {/* Chat Sidebar */}
+                <div className="hidden lg:flex flex-col w-1/6 shadow-[-3px_0px_9px_0px_rgba(0,0,0,0.15)]">
                     <div className="flex flex-col shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] h-fit w-full">
                         <Link href={`/${userData.user.username}/chat`} className="shadow-[0_1px_1px_0_rgba(0,0,0,0.1)] w-full p-6 flex justify-center">
                             Chats
@@ -68,6 +68,7 @@ export default async function Page() {
                     </div>
                 </div>
             </main>
+
             <Footer></Footer>
         </div>
     );

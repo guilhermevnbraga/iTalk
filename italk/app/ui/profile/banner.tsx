@@ -72,7 +72,7 @@ export default function Banner({
                     alt="banner"
                 ></Image>
             ) : null}
-            <div className="relative top-20 left-6 flex-row flex items-center justify-between w-[96%]">
+            <div className="relative top-20 left-6 flex flex-col sm:flex-row justify-between w-[96%]">
                 <div className="flex items-center">
                     {user.profilePicture ? (
                         <Image
@@ -81,29 +81,29 @@ export default function Banner({
                             alt="Profile Picture"
                             width={100}
                             height={100}
-                            className="rounded-[100%] w-32 h-32 border-4 border-white"
+                            className="rounded-full w-24 h-24 sm:w-32 sm:h-32 border-4 border-white"
                         />
                     ) : (
-                        <UserIcon className="bg-white h-32 w-32 text-gray-400 border-4 p-1 rounded-[999px]"></UserIcon>
+                        <UserIcon className="bg-white h-24 w-24 sm:h-32 sm:w-32 text-gray-400 border-4 p-1 rounded-full"></UserIcon>
                     )}
 
-                    <div className="relative ml-3 top-3 font-medium text-3xl">
+                    <div className="relative ml-3 top-3 font-medium text-xl sm:text-3xl">
                         {user.name}
                     </div>
                 </div>
                 {user.username === acessUsername ? null : user.hasFriend ? (
-                    <div className="mt-3 text-white text-sm">
+                    <div className="mt-3 text-white text-sm flex flex-col sm:flex-row">
                         <button
                             onClick={() =>
                                 router.push(`/${user.username}/chat`)
                             }
-                            className="bg-green-500 rounded-md px-1 py-1"
+                            className="bg-green-500 rounded-md px-3 py-1 mb-2 sm:mb-0 sm:mr-3"
                         >
                             Send Message
                         </button>
                         <button
                             onClick={handleRemoveFriend}
-                            className="ml-3 bg-red-500 rounded-md px-1 py-1"
+                            className="bg-red-500 rounded-md px-3 py-1"
                         >
                             Remove Friend
                         </button>
@@ -111,7 +111,7 @@ export default function Banner({
                 ) : (
                     <button
                         onClick={addFriend}
-                        className="ml-3 bg-green-500 text-white rounded-md px-3 py-1 mt-3"
+                        className="bg-green-500 text-white rounded-md px-3 py-1 mt-3"
                     >
                         Add Friend
                     </button>

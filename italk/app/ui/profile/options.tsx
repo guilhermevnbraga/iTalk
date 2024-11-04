@@ -338,10 +338,10 @@ export default function Option({ user, acessUser }: HeaderProps) {
                     ref={formRef}
                     className="flex flex-col bg-gray-200 rounded-2xl h-fit p-6"
                 >
-                    <div className="flex w-full justify-between mb-12">
-                        <div className="flex flex-col w-[48%]">
-                            <div className="flex flex-row w-full justify-between mb-6">
-                                <div className="flex flex-col w-[48%]">
+                    <div className="flex flex-col sm:flex-row w-full justify-between mb-12">
+                        <div className="flex flex-col w-full sm:w-[48%]">
+                            <div className="flex flex-col sm:flex-row w-full justify-between mb-6">
+                                <div className="flex flex-col w-full sm:w-[48%]">
                                     <label
                                         htmlFor="first-name"
                                         className="ml-2"
@@ -362,7 +362,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
                                         }
                                     />
                                 </div>
-                                <div className="flex flex-col w-[48%]">
+                                <div className="flex flex-col w-full sm:w-[48%]">
                                     <label htmlFor="last-name" className="ml-2">
                                         Last Name
                                     </label>
@@ -495,7 +495,7 @@ export default function Option({ user, acessUser }: HeaderProps) {
                                 ) : null}
                             </div>
                         </div>
-                        <div className="w-[48%] flex-col flex justify-center items-center">
+                        <div className="w-full sm:w-[48%] flex-col flex justify-center items-center">
                             <div className="w-full h-full flex justify-around items-center">
                                 <div className="w-full h-full flex flex-col justify-around items-center">
                                     <span className="mb-1">
