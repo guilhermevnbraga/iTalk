@@ -102,7 +102,7 @@ export default function Chats({
         <aside className="w-1/4 flex flex-col items-center shadow-[-3px_3px_6px_0px_rgba(0,0,0,0.3)] min-h-full">
             <div className="mt-4 text-xl font-medium">Chats</div>
             <div className="flex p-2 mt-3 border-2 border-gray-700 rounded-2xl bg-gray-100 h-fit w-11/12">
-                <MagnifyingGlassIcon className="h-6 w-6 mr-3" />
+                <MagnifyingGlassIcon className="hidden 2xl:flex h-6 w-6 mr-3" />
                 <input
                     type="text"
                     placeholder="Search"

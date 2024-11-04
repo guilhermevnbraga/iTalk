@@ -92,12 +92,12 @@ export default function Banner({
                     </div>
                 </div>
                 {user.username === acessUsername ? null : user.hasFriend ? (
-                    <div className="mt-3 text-white text-sm flex flex-col sm:flex-row">
+                    <div className="mt-3 text-white text-sm flex flex-col sm:flex-row sm:items-center">
                         <button
                             onClick={() =>
                                 router.push(`/${user.username}/chat`)
                             }
-                            className="bg-green-500 rounded-md px-3 py-1 mb-2 sm:mb-0 sm:mr-3"
+                            className="hidden landscape:flex bg-green-500 rounded-md px-3 py-1 mb-2 sm:mb-0 sm:mr-3"
                         >
                             Send Message
                         </button>
